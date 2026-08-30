@@ -1,0 +1,44 @@
+# Laravel specific
+/vendor
+/node_modules
+/public/storage
+/storage/*.key
+/storage/app/public
+/storage/debugbar
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/logs/*
+
+# Environment files
+.env
+.env.backup
+.env.production
+
+# Composer
+composer.lock
+
+# NPM
+npm-debug.log
+yarn-error.log
+
+# IDE / Editor
+/.idea
+/.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# PHPUnit
+.phpunit.result.cache
+
+# Misc
+Homestead.yaml
+Homestead.json
+auth.json
