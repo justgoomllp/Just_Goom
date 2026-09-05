@@ -31,10 +31,20 @@ function initMobileNav() {
 
   if (!toggle || !overlay) return;
 
-  toggle.addEventListener('click', () => overlay.classList.add('open'));
-  closeBtn?.addEventListener('click', () => overlay.classList.remove('open'));
+  function setOpen(open) {
+    overlay.classList.toggle('open', open);
+    document.body.classList.toggle('nav-open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+
+  toggle.addEventListener('click', () => setOpen(!overlay.classList.contains('open')));
+  closeBtn?.addEventListener('click', () => setOpen(false));
   overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) overlay.classList.remove('open');
+    if (e.target === overlay) setOpen(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) setOpen(false);
   });
 }
 

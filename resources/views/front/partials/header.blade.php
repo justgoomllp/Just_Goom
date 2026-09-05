@@ -63,11 +63,11 @@
         <a href="{{ route('front.register') }}" class="btn btn-accent btn-sm @if(request()->routeIs('front.register')) active-nav-btn @endif">Register</a>
       @endauth
     </div>
-    <button class="mobile-toggle" aria-label="Open menu">☰</button>
+    <button class="mobile-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">☰</button>
   </div>
 </header>
 
-<div class="mobile-nav">
+<div class="mobile-nav" id="mobileNav">
   <div class="mobile-nav-panel">
     <button class="mobile-nav-close" aria-label="Close menu">✕</button>
     <nav class="mobile-nav-links">

@@ -41,7 +41,8 @@
   --user-panel-bg: var(--user-surface);
 }
 
-html, body { height: 100%; }
+html, body { height: 100%; max-width: 100%; }
+html { overflow-x: clip; }
 
 body.user-panel-body {
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
