@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Advertisement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class AdvertisementController extends Controller
 {
@@ -75,6 +76,18 @@ class AdvertisementController extends Controller
 
         return redirect()->route('admin.advertisements.index')
             ->with('success', 'Advertisement updated successfully.');
+    }
+
+    public function updateStatus(Request $request, Advertisement $advertisement)
+    {
+        $validated = $request->validate([
+            'is_active' => ['required', Rule::in([0, 1])],
+        ]);
+
+        $isActive = (int) $validated['is_active'] === 1;
+        $advertisement->update(['is_active' => $isActive]);
+
+        return back()->with('success', 'Advertisement status updated to '.($isActive ? 'Active' : 'Inactive').'.');
     }
 
     public function destroy(Advertisement $advertisement)

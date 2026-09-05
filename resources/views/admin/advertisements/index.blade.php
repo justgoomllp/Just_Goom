@@ -44,9 +44,11 @@
                                         <td>{{ $ad->priority }}</td>
                                         <td>{{ $ad->start_date->format('d M Y') }} - {{ $ad->end_date->format('d M Y') }}</td>
                                         <td>
-                                            <span class="badge {{ $ad->is_active ? 'badge-success' : 'badge-secondary' }}">
-                                                {{ $ad->is_active ? 'Active' : 'Inactive' }}
-                                            </span>
+                                            @include('admin.partials.status-toggle', [
+                                                'action' => route('admin.advertisements.status', $ad),
+                                                'name' => 'is_active',
+                                                'active' => (bool) $ad->is_active,
+                                            ])
                                         </td>
                                         <td>
                                             <a href="{{ route('admin.advertisements.edit', $ad) }}" class="btn btn-sm btn-info">Edit</a>

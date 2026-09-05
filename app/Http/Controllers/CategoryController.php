@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Admin\CategoryRequest;
 use App\Models\Category;
 use App\Services\Admin\CategoryService;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
@@ -48,6 +50,18 @@ class CategoryController extends Controller
         return redirect()
             ->route('admin.categories.index')
             ->with('success', 'Category updated successfully.');
+    }
+
+    public function updateStatus(Request $request, Category $category)
+    {
+        $validated = $request->validate([
+            'status' => ['required', Rule::in([0, 1])],
+        ]);
+
+        $status = (int) $validated['status'] === 1;
+        $this->categoryService->updateStatus($category, $status);
+
+        return back()->with('success', 'Category status updated to '.($status ? 'Active' : 'Inactive').'.');
     }
 
     public function destroy(Category $category)

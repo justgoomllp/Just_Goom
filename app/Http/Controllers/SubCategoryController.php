@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Admin\SubCategoryRequest;
 use App\Models\SubCategory;
 use App\Services\Admin\SubCategoryService;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SubCategoryController extends Controller
 {
@@ -52,6 +54,18 @@ class SubCategoryController extends Controller
         return redirect()
             ->route('admin.sub-categories.index')
             ->with('success', 'Sub category updated successfully.');
+    }
+
+    public function updateStatus(Request $request, SubCategory $subCategory)
+    {
+        $validated = $request->validate([
+            'status' => ['required', Rule::in([0, 1])],
+        ]);
+
+        $status = (int) $validated['status'] === 1;
+        $this->subCategoryService->updateStatus($subCategory, $status);
+
+        return back()->with('success', 'Sub category status updated to '.($status ? 'Active' : 'Inactive').'.');
     }
 
     public function destroy(SubCategory $subCategory)

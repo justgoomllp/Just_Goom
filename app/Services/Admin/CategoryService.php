@@ -40,6 +40,13 @@ class CategoryService
         return $category;
     }
 
+    public function updateStatus(Category $category, bool $status): Category
+    {
+        $category->update(['status' => $status]);
+
+        return $category;
+    }
+
     public function delete(Category $category): void
     {
         $this->deleteIcon($category->icon);

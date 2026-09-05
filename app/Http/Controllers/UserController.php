@@ -7,7 +7,9 @@ use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\User;
 use App\Services\Admin\UserService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -55,6 +57,25 @@ class UserController extends Controller
         return redirect()
             ->route('admin.users.index')
             ->with('success', 'User updated successfully.');
+    }
+
+    public function updateStatus(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'status' => ['required', Rule::in([0, 1])],
+        ]);
+
+        $status = (int) $validated['status'];
+
+        if (Auth::id() === $user->id && $status !== 1) {
+            return back()->with('error', 'You cannot deactivate your own account.');
+        }
+
+        $this->userService->updateStatus($user, $status);
+
+        $labels = [1 => 'Active', 0 => 'Inactive'];
+
+        return back()->with('success', 'User status updated to '.$labels[$status].'.');
     }
 
     public function destroy(User $user)

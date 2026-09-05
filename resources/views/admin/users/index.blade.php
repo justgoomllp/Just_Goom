@@ -64,13 +64,13 @@
                                         <td>{{ $user->phone ?: '-' }}</td>
                                         <td>{{ $user->category->name ?? '-' }}</td>
                                         <td>
-                                            @if ($user->status === 1)
-                                                <label class="badge badge-success">Active</label>
-                                            @elseif ($user->status === 2)
-                                                <label class="badge badge-warning">Suspended</label>
-                                            @else
-                                                <label class="badge badge-danger">Inactive</label>
-                                            @endif
+                                            @include('admin.partials.status-toggle', [
+                                                'action' => route('admin.users.status', $user),
+                                                'active' => (int) $user->status === 1,
+                                                'suspended' => (int) $user->status === 2,
+                                                'disabled' => auth()->id() === $user->id,
+                                                'disabledTitle' => 'You cannot change your own status',
+                                            ])
                                         </td>
                                         <td>
                                             @if ($user->hasVerifiedEmail())

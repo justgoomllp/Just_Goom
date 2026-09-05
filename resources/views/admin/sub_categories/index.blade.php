@@ -44,11 +44,10 @@
                                             @include('admin.partials.catalog-icon', ['icon' => $subCategory->icon, 'alt' => $subCategory->name])
                                         </td>
                                         <td>
-                                            @if ($subCategory->status)
-                                                <label class="badge badge-success">Active</label>
-                                            @else
-                                                <label class="badge badge-danger">Inactive</label>
-                                            @endif
+                                            @include('admin.partials.status-toggle', [
+                                                'action' => route('admin.sub-categories.status', $subCategory),
+                                                'active' => (bool) $subCategory->status,
+                                            ])
                                         </td>
                                         <td>
                                             <a href="{{ route('admin.sub-categories.edit', $subCategory) }}" class="btn btn-outline-primary btn-sm">Edit</a>

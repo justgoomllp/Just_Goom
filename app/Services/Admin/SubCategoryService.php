@@ -46,6 +46,13 @@ class SubCategoryService
         return $subCategory;
     }
 
+    public function updateStatus(SubCategory $subCategory, bool $status): SubCategory
+    {
+        $subCategory->update(['status' => $status]);
+
+        return $subCategory;
+    }
+
     public function delete(SubCategory $subCategory): void
     {
         $this->deleteIcon($subCategory->icon);

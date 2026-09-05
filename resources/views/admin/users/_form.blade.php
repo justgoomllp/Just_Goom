@@ -83,16 +83,18 @@
         <div class="form-group">
             <div class="form-check">
                 <input type="checkbox" name="email_verified" id="email_verified" value="1" class="form-check-input" {{ old('email_verified', !empty($user) && $user->hasVerifiedEmail()) ? 'checked' : '' }}>
-                <label class="form-check-label" for="email_verified">Email verified</label>
+                <div>
+                    <label class="form-check-label" for="email_verified">Email verified</label>
+                    @if (!empty($user) && $user->email_verified_at)
+                        <small class="text-muted d-block mt-1">Verified at {{ $user->email_verified_at->format('d M Y, h:i A') }}</small>
+                    @else
+                        <small class="text-muted d-block mt-1">Front users must verify email before login when unchecked.</small>
+                    @endif
+                    @error('email_verified')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
             </div>
-            @if (!empty($user) && $user->email_verified_at)
-                <small class="text-muted d-block mt-1">Verified at {{ $user->email_verified_at->format('d M Y, h:i A') }}</small>
-            @else
-                <small class="text-muted d-block mt-1">Front users must verify email before login when unchecked.</small>
-            @endif
-            @error('email_verified')
-                <div class="invalid-feedback d-block">{{ $message }}</div>
-            @enderror
         </div>
     </div>
 </div>

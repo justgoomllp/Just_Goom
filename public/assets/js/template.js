@@ -38,15 +38,17 @@
     }
 
     var current = location.pathname.split("/").slice(-1)[0].replace(/^\/|\/$/g, '');
-    $('.nav li a', sidebar).each(function() {
-      var $this = $(this);
-      addActiveClass($this);
-    })
+    if (!body.hasClass('admin-app')) {
+      $('.nav li a', sidebar).each(function() {
+        var $this = $(this);
+        addActiveClass($this);
+      })
 
-    $('.horizontal-menu .nav li a').each(function() {
-      var $this = $(this);
-      addActiveClass($this);
-    })
+      $('.horizontal-menu .nav li a').each(function() {
+        var $this = $(this);
+        addActiveClass($this);
+      })
+    }
 
     //Close other submenu in sidebar on opening any
 

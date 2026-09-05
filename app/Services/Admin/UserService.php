@@ -86,6 +86,13 @@ class UserService
         return $user;
     }
 
+    public function updateStatus(User $user, int $status): User
+    {
+        $user->update(['status' => $status]);
+
+        return $user;
+    }
+
     public function delete(User $user): void
     {
         $this->deleteProfile($user->profile);

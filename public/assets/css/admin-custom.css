@@ -561,6 +561,167 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
   font-size: 0.8125rem;
 }
 
+.admin-app .form-check,
+.admin-auth .form-check {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  padding-left: 0 !important;
+  margin-top: 0.15rem;
+  margin-bottom: 0.15rem;
+  min-height: 0;
+  gap: 0.55rem;
+}
+
+.admin-app .form-check .form-check-input,
+.admin-app .form-check .form-check-label input[type="checkbox"],
+.admin-app .form-check .form-check-label input[type="radio"],
+.admin-auth .form-check .form-check-input,
+.admin-auth .form-check .form-check-label input[type="checkbox"] {
+  position: static !important;
+  float: none !important;
+  left: auto !important;
+  top: auto !important;
+  margin: 0.15rem 0 0 !important;
+  opacity: 1 !important;
+  filter: none !important;
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1.5px solid #ced4da;
+  border-radius: 0.2rem;
+  background-color: #fff;
+  background-image: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 0.7rem;
+}
+
+.admin-app .form-check .form-check-input:checked,
+.admin-app .form-check .form-check-label input[type="checkbox"]:checked,
+.admin-auth .form-check .form-check-input:checked,
+.admin-auth .form-check .form-check-label input[type="checkbox"]:checked {
+  background-color: var(--admin-primary);
+  border-color: var(--admin-primary);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+}
+
+.admin-app .form-check .form-check-input:focus,
+.admin-app .form-check .form-check-label input[type="checkbox"]:focus,
+.admin-auth .form-check .form-check-input:focus,
+.admin-auth .form-check .form-check-label input[type="checkbox"]:focus {
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 0.15rem rgba(var(--admin-primary-rgb), 0.18);
+  outline: 0;
+}
+
+.admin-app .form-check .form-check-label,
+.admin-auth .form-check .form-check-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0;
+  min-height: 0;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.admin-app .form-check .input-helper,
+.admin-auth .form-check .input-helper {
+  display: none;
+}
+
+.admin-app .admin-status-form {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+}
+
+.admin-app .admin-status-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.admin-app .admin-status-toggle.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.admin-app .admin-status-toggle-input {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  opacity: 0 !important;
+  float: none !important;
+  pointer-events: none;
+  appearance: none;
+}
+
+.admin-app .admin-status-toggle-slider {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  background: #adb5bd;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+  transition: background 0.2s ease;
+}
+
+.admin-app .admin-status-toggle-slider::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease;
+}
+
+.admin-app .admin-status-toggle.is-on .admin-status-toggle-slider,
+.admin-app .admin-status-toggle-input:checked + .admin-status-toggle-slider {
+  background: var(--admin-success);
+}
+
+.admin-app .admin-status-toggle.is-on .admin-status-toggle-slider::after,
+.admin-app .admin-status-toggle-input:checked + .admin-status-toggle-slider::after {
+  transform: translateX(18px);
+}
+
+.admin-app .admin-status-toggle-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  min-width: 4.25rem;
+}
+
+.admin-app .admin-status-toggle.is-on .admin-status-toggle-text {
+  color: var(--admin-success);
+}
+
+.admin-app .admin-status-toggle.is-off .admin-status-toggle-text {
+  color: var(--admin-danger);
+}
+
+.admin-app .admin-status-toggle.is-suspended .admin-status-toggle-text {
+  color: #cc9a2e;
+}
+
 .admin-app .form-control,
 .admin-app select.form-control {
   border: 1px solid var(--admin-border);
@@ -1065,6 +1226,18 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
   background: #1a1d21;
   color: #e9ebec;
   border-color: #32383e;
+}
+
+.admin-app.admin-dark .form-check .form-check-input,
+.admin-app.admin-dark .form-check .form-check-label input[type="checkbox"] {
+  background-color: #1a1d21;
+  border-color: #6c757d;
+}
+
+.admin-app.admin-dark .form-check .form-check-input:checked,
+.admin-app.admin-dark .form-check .form-check-label input[type="checkbox"]:checked {
+  background-color: var(--admin-primary);
+  border-color: var(--admin-primary);
 }
 
 /* -------------------------------------------------------------------------- */

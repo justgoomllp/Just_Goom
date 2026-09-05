@@ -264,6 +264,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
     Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::patch('/categories/{category}/status', [CategoryController::class, 'updateStatus'])->name('categories.status');
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
     Route::get('/sub-categories', [SubCategoryController::class, 'index'])->name('sub-categories.index');
@@ -271,6 +272,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('/sub-categories', [SubCategoryController::class, 'store'])->name('sub-categories.store');
     Route::get('/sub-categories/{subCategory}/edit', [SubCategoryController::class, 'edit'])->name('sub-categories.edit');
     Route::put('/sub-categories/{subCategory}', [SubCategoryController::class, 'update'])->name('sub-categories.update');
+    Route::patch('/sub-categories/{subCategory}/status', [SubCategoryController::class, 'updateStatus'])->name('sub-categories.status');
     Route::delete('/sub-categories/{subCategory}', [SubCategoryController::class, 'destroy'])->name('sub-categories.destroy');
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -278,6 +280,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::patch('/users/{user}/status', [UserController::class, 'updateStatus'])->name('users.status');
     Route::patch('/users/{user}/documents/{document}/approval', [CompanyProfileDocumentController::class, 'updateApproval'])->name('users.documents.approval');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
@@ -286,6 +289,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('/advertisements', [AdvertisementController::class, 'store'])->name('advertisements.store');
     Route::get('/advertisements/{advertisement}/edit', [AdvertisementController::class, 'edit'])->name('advertisements.edit');
     Route::put('/advertisements/{advertisement}', [AdvertisementController::class, 'update'])->name('advertisements.update');
+    Route::patch('/advertisements/{advertisement}/status', [AdvertisementController::class, 'updateStatus'])->name('advertisements.status');
     Route::delete('/advertisements/{advertisement}', [AdvertisementController::class, 'destroy'])->name('advertisements.destroy');
 
     Route::get('/settings', function () {
