@@ -15,7 +15,8 @@
     @include('partials.favicon', ['favicon' => 'assets/images/favicon.png'])
     @stack('styles')
 </head>
-<body>
+<body class="admin-app">
+    <script>if (localStorage.getItem('admin-theme') === 'dark') document.body.classList.add('admin-dark');</script>
     <div class="container-scroller d-flex">
         @include('admin.partials.sidebar')
 
@@ -24,6 +25,7 @@
 
             <div class="main-panel">
                 <div class="content-wrapper">
+                    @include('admin.partials.page-header')
                     @yield('content')
                 </div>
 
@@ -40,6 +42,7 @@
     <script src="{{ asset('assets/js/template.js') }}"></script>
     <script src="{{ asset('assets/js/settings.js') }}"></script>
     <script src="{{ asset('assets/js/todolist.js') }}"></script>
+    <script src="{{ asset('assets/js/admin-ui.js') }}"></script>
     @stack('scripts')
 </body>
 </html>

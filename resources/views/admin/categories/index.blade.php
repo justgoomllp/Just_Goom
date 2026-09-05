@@ -2,19 +2,19 @@
 
 @section('title', 'Categories')
 @section('page-title', 'Categories')
+@section('page-subtitle', 'Organize the catalog groups shown across the site.')
+@section('page-action')
+    <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
+        <i class="mdi mdi-plus"></i>
+        Add Category
+    </a>
+@endsection
 
 @section('content')
     <div class="row">
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="card-title mb-0">Categories</h4>
-                        <a href="{{ route('admin.categories.create') }}" class="btn btn-primary btn-sm">
-                            <i class="mdi mdi-plus"></i>
-                            Add Category
-                        </a>
-                    </div>
 
                     @if (session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
@@ -39,11 +39,7 @@
                                         <td>{{ $category->name }}</td>
                                         <td>{{ $category->slug }}</td>
                                         <td>
-                                            @if ($category->icon)
-                                                <img src="{{ asset($category->icon) }}" alt="{{ $category->name }}" width="45" height="45" class="rounded border" style="object-fit: cover;">
-                                            @else
-                                                <span class="text-muted">-</span>
-                                            @endif
+                                            @include('admin.partials.catalog-icon', ['icon' => $category->icon, 'alt' => $category->name])
                                         </td>
                                         <td>
                                             @if ($category->status)

@@ -14,20 +14,19 @@
     <link rel="stylesheet" href="{{ asset('assets/css/admin-custom.css') }}">
     @include('partials.favicon', ['favicon' => 'assets/images/favicon.png'])
 </head>
-<body>
-    <div class="container-scroller d-flex">
-        <div class="container-fluid page-body-wrapper full-page-wrapper d-flex">
-            <div class="content-wrapper d-flex align-items-center auth px-0">
-                @yield('content')
+<body class="admin-auth-body">
+    <div class="admin-auth">
+        <div class="admin-auth-visual">
+            <div>
+                <div class="admin-auth-brand">Just Goom</div>
+                <h2>Welcome to the Just Goom admin dashboard.</h2>
+                <p>Sign in to manage categories, users, advertisements, and platform settings.</p>
             </div>
+            <p class="mb-0">© {{ date('Y') }} Just Goom LLP</p>
+        </div>
+        <div class="admin-auth-panel">
+            @yield('content')
         </div>
     </div>
-
-    <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
-    <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
-    <script src="{{ asset('assets/js/hoverable-collapse.js') }}"></script>
-    <script src="{{ asset('assets/js/template.js') }}"></script>
-    <script src="{{ asset('assets/js/settings.js') }}"></script>
-    <script src="{{ asset('assets/js/todolist.js') }}"></script>
 </body>
 </html>

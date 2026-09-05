@@ -2,19 +2,19 @@
 
 @section('title', 'Sub Categories')
 @section('page-title', 'Sub Categories')
+@section('page-subtitle', 'Nest catalog items under a parent category.')
+@section('page-action')
+    <a href="{{ route('admin.sub-categories.create') }}" class="btn btn-primary">
+        <i class="mdi mdi-plus"></i>
+        Add Sub Category
+    </a>
+@endsection
 
 @section('content')
     <div class="row">
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="card-title mb-0">Sub Categories</h4>
-                        <a href="{{ route('admin.sub-categories.create') }}" class="btn btn-primary btn-sm">
-                            <i class="mdi mdi-plus"></i>
-                            Add Sub Category
-                        </a>
-                    </div>
 
                     @if (session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
@@ -41,11 +41,7 @@
                                         <td>{{ $subCategory->name }}</td>
                                         <td>{{ $subCategory->slug }}</td>
                                         <td>
-                                            @if ($subCategory->icon)
-                                                <img src="{{ asset($subCategory->icon) }}" alt="{{ $subCategory->name }}" width="45" height="45" class="rounded border" style="object-fit: cover;">
-                                            @else
-                                                <span class="text-muted">-</span>
-                                            @endif
+                                            @include('admin.partials.catalog-icon', ['icon' => $subCategory->icon, 'alt' => $subCategory->name])
                                         </td>
                                         <td>
                                             @if ($subCategory->status)

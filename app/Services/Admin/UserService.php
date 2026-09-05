@@ -11,11 +11,20 @@ use Illuminate\Support\Str;
 
 class UserService
 {
-    public function getAll()
+    public function getAll(?string $search = null)
     {
         return User::with(['category', 'subCategory'])
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($inner) use ($search) {
+                    $inner->where('fname', 'like', "%{$search}%")
+                        ->orWhere('lname', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
+                });
+            })
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
     }
 
     public function store(array $data): User

@@ -38,7 +38,7 @@
 
     @if (!empty($subCategory->icon))
         <div class="mt-3">
-            <img src="{{ asset($subCategory->icon) }}" alt="{{ $subCategory->name }}" width="70" height="70" class="rounded border" style="object-fit: cover;">
+            @include('admin.partials.catalog-icon', ['icon' => $subCategory->icon, 'alt' => $subCategory->name, 'size' => 70])
         </div>
     @endif
 </div>
