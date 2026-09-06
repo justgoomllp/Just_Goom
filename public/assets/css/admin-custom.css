@@ -247,6 +247,8 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
   padding: 0 1.15rem;
   color: var(--admin-text);
   width: 100%;
+  flex-wrap: nowrap;
+  min-width: 0;
 }
 
 .admin-app .navbar.admin-topbar .navbar-toggler {
@@ -256,6 +258,13 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
   border-radius: 50%;
   background: transparent;
   font-size: 1.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  z-index: 2;
 }
 
 .admin-app .navbar.admin-topbar .navbar-toggler:hover {
@@ -1369,72 +1378,10 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Dark mode                                                                  */
-/* -------------------------------------------------------------------------- */
-
-.admin-app.admin-dark {
-  --admin-bg: #1a1d21;
-  --admin-white: #212529;
-  --admin-text: #e9ebec;
-  --admin-muted: #adb5bd;
-  --admin-border: #32383e;
-}
-
-.admin-app.admin-dark .navbar.admin-topbar {
-  background: #212529 !important;
-}
-
-.admin-app.admin-dark .admin-search input,
-.admin-app.admin-dark .admin-bar-track,
-.admin-app.admin-dark .table tbody tr:hover {
-  background: #1a1d21;
-}
-
-.admin-app.admin-dark .dataTables_wrapper .dataTables_processing {
-  background: rgba(26, 29, 33, 0.72) !important;
-}
-
-.admin-app.admin-dark .jg-loader-ring {
-  border-color: rgba(247, 148, 29, 0.18);
-  border-top-color: #F7941D;
-  border-right-color: #7aa2e8;
-}
-
-.admin-app.admin-dark .admin-donut::after {
-  background: #212529;
-  color: #e9ebec;
-}
-
-.admin-app.admin-dark .form-control {
-  background: #1a1d21;
-  color: #e9ebec;
-  border-color: #32383e;
-}
-
-.admin-app.admin-dark select.form-control {
-  background-color: #1a1d21;
-  color: #e9ebec;
-  border-color: #32383e;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23adb5bd' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-}
-
-.admin-app.admin-dark .form-check .form-check-input,
-.admin-app.admin-dark .form-check .form-check-label input[type="checkbox"] {
-  background-color: #1a1d21;
-  border-color: #6c757d;
-}
-
-.admin-app.admin-dark .form-check .form-check-input:checked,
-.admin-app.admin-dark .form-check .form-check-label input[type="checkbox"]:checked {
-  background-color: var(--admin-primary);
-  border-color: var(--admin-primary);
-}
-
-/* -------------------------------------------------------------------------- */
 /* Responsive                                                                 */
 /* -------------------------------------------------------------------------- */
 
-@media (max-width: 991px) {
+@media (max-width: 991.98px) {
   .admin-app .page-body-wrapper {
     width: 100%;
   }
@@ -1468,11 +1415,63 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
     align-items: flex-start;
   }
 
-  .admin-app .navbar.admin-topbar .navbar-toggler:not(.navbar-toggler-right) {
-    display: none;
+  .admin-app .navbar.admin-topbar .navbar-menu-wrapper {
+    padding: 0 0.75rem;
+  }
+
+  .admin-app .navbar.admin-topbar .navbar-toggler,
+  .admin-app .navbar.admin-topbar .navbar-menu-wrapper .navbar-toggler:not(.navbar-toggler-right) {
+    display: inline-flex !important;
   }
 
   .admin-app .admin-mobile-brand {
     display: inline-flex !important;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .admin-app .admin-mobile-brand-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .admin-app .navbar .navbar-nav-right {
+    flex-shrink: 0;
+  }
+
+  .admin-app .sidebar.sidebar-offcanvas {
+    position: fixed;
+    top: var(--admin-topbar-h);
+    left: -280px;
+    right: auto;
+    bottom: 0;
+    width: min(260px, 86vw);
+    min-height: calc(100vh - var(--admin-topbar-h));
+    max-height: calc(100vh - var(--admin-topbar-h));
+    height: calc(100vh - var(--admin-topbar-h));
+    z-index: 1001;
+    overflow-y: auto;
+    transition: left 0.25s ease-out;
+    box-shadow: 8px 0 32px rgba(15, 23, 42, 0.18);
+  }
+
+  .admin-app .sidebar.sidebar-offcanvas.active,
+  .admin-app.admin-sidebar-open .sidebar.sidebar-offcanvas {
+    left: 0;
+    right: auto;
+  }
+
+  .admin-sidebar-backdrop {
+    position: fixed;
+    top: var(--admin-topbar-h);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(15, 23, 42, 0.45);
+    z-index: 1000;
+  }
+
+  .admin-app.admin-sidebar-open {
+    overflow: hidden;
   }
 }

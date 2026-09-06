@@ -16,7 +16,7 @@
     @stack('styles')
 </head>
 <body class="admin-app">
-    <script>if (localStorage.getItem('admin-theme') === 'dark') document.body.classList.add('admin-dark');</script>
+    <div class="admin-sidebar-backdrop" id="adminSidebarBackdrop" hidden></div>
     <div class="container-scroller d-flex">
         @include('admin.partials.sidebar')
 

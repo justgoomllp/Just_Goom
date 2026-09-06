@@ -11,7 +11,7 @@
 
 <nav class="navbar admin-topbar col-lg-12 col-12 p-0 d-flex flex-row">
     <div class="navbar-menu-wrapper d-flex align-items-center">
-        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
+        <button class="navbar-toggler align-self-center" type="button" id="adminMenuToggle" aria-label="Toggle menu">
             <span class="mdi mdi-menu"></span>
         </button>
 
@@ -34,11 +34,6 @@
             <li class="nav-item d-none d-md-block">
                 <a class="admin-icon-btn" href="#" id="adminFullscreen" title="Fullscreen">
                     <i class="mdi mdi-fullscreen"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="admin-icon-btn" href="#" id="adminThemeToggle" title="Dark / light">
-                    <i class="mdi mdi-weather-night"></i>
                 </a>
             </li>
             <li class="nav-item nav-profile dropdown">
@@ -72,9 +67,5 @@
                 </div>
             </li>
         </ul>
-
-        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
-            <span class="mdi mdi-menu"></span>
-        </button>
     </div>
 </nav>
