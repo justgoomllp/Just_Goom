@@ -29,14 +29,20 @@
         });
     }
 
-    document.querySelectorAll('.admin-status-form .admin-status-toggle-input').forEach(function (input) {
-        input.addEventListener('change', function () {
-            if (input.disabled || !input.form) {
-                return;
-            }
+    document.addEventListener('change', function (event) {
+        var input = event.target;
+        if (!input.classList.contains('admin-status-toggle-input')) {
+            return;
+        }
+        if (input.disabled || !input.form) {
+            return;
+        }
 
-            input.form.submit();
-        });
+        if (input.form.closest('table.admin-datatable')) {
+            return;
+        }
+
+        input.form.submit();
     });
 
     function syncSidebarActive() {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\RespondsToAdminAjax;
 use App\Http\Requests\Admin\UserRequest;
 use App\Models\Category;
 use App\Models\SubCategory;
@@ -13,15 +14,33 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
+    use RespondsToAdminAjax;
+
     public function __construct(private UserService $userService)
     {
     }
 
     public function index()
     {
-        $users = $this->userService->getAll(request('q'));
+        $categories = Category::orderBy('name')->get(['id', 'name']);
 
-        return view('admin.users.index', compact('users'));
+        return view('admin.users.index', compact('categories'));
+    }
+
+    public function datatable(Request $request)
+    {
+        return $this->userService->datatable($request);
+    }
+
+    public function checkUnique(Request $request)
+    {
+        $email = strtolower(trim((string) $request->query('email', '')));
+        $referralCode = strtoupper(trim((string) $request->query('referral_code', '')));
+
+        return response()->json([
+            'email' => $email === '' || ! User::withTrashed()->where('email', $email)->exists(),
+            'referral_code' => $referralCode === '' || ! User::withTrashed()->where('referral_code', $referralCode)->exists(),
+        ]);
     }
 
     public function create()
@@ -68,28 +87,24 @@ class UserController extends Controller
         $status = (int) $validated['status'];
 
         if (Auth::id() === $user->id && $status !== 1) {
-            return back()->with('error', 'You cannot deactivate your own account.');
+            return $this->adminResponse($request, 'You cannot deactivate your own account.', true);
         }
 
         $this->userService->updateStatus($user, $status);
 
         $labels = [1 => 'Active', 0 => 'Inactive'];
 
-        return back()->with('success', 'User status updated to '.$labels[$status].'.');
+        return $this->adminResponse($request, 'User status updated to '.$labels[$status].'.');
     }
 
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
         if (Auth::id() === $user->id) {
-            return redirect()
-                ->route('admin.users.index')
-                ->with('error', 'You cannot delete your own account.');
+            return $this->adminResponse($request, 'You cannot delete your own account.', true, 'admin.users.index');
         }
 
         $this->userService->delete($user);
 
-        return redirect()
-            ->route('admin.users.index')
-            ->with('success', 'User deleted successfully.');
+        return $this->adminResponse($request, 'User deleted successfully.', false, 'admin.users.index');
     }
 }

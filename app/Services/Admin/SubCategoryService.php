@@ -4,6 +4,9 @@ namespace App\Services\Admin;
 
 use App\Models\Category;
 use App\Models\SubCategory;
+use App\Support\AdminDataTable;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -13,6 +16,53 @@ class SubCategoryService
     public function getAll()
     {
         return SubCategory::with('category')->latest()->paginate(10);
+    }
+
+    public function datatable(Request $request): JsonResponse
+    {
+        $query = SubCategory::query()->with('category');
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', (int) $request->input('category_id'));
+        }
+
+        if ($request->input('status') !== null && $request->input('status') !== '') {
+            $query->where('status', (int) $request->input('status'));
+        }
+
+        return AdminDataTable::of(
+            $request,
+            $query,
+            [
+                'name' => 'name',
+                'slug' => 'slug',
+                'status' => 'status',
+            ],
+            ['name', 'slug'],
+            function (SubCategory $subCategory, int $index) {
+                return [
+                    'DT_RowIndex' => $index,
+                    'category' => e($subCategory->category->name ?? '-'),
+                    'name' => e($subCategory->name),
+                    'slug' => e($subCategory->slug),
+                    'icon' => view('admin.partials.catalog-icon', [
+                        'icon' => $subCategory->icon,
+                        'alt' => $subCategory->name,
+                    ])->render(),
+                    'status' => AdminDataTable::statusToggle(
+                        route('admin.sub-categories.status', $subCategory),
+                        (bool) $subCategory->status
+                    ),
+                    'action' => AdminDataTable::actions(
+                        route('admin.sub-categories.edit', $subCategory),
+                        route('admin.sub-categories.destroy', $subCategory),
+                        'Delete sub category?',
+                        'This sub category will be removed.'
+                    ),
+                ];
+            },
+            ['category' => ['name']]
+        );
     }
 
     public function getCategories()

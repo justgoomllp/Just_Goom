@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\RespondsToAdminAjax;
 use App\Http\Requests\Admin\SubCategoryRequest;
 use App\Models\SubCategory;
 use App\Services\Admin\SubCategoryService;
@@ -10,6 +11,8 @@ use Illuminate\Validation\Rule;
 
 class SubCategoryController extends Controller
 {
+    use RespondsToAdminAjax;
+
     private $subCategoryService;
 
     public function __construct(SubCategoryService $subCategoryService)
@@ -19,9 +22,14 @@ class SubCategoryController extends Controller
 
     public function index()
     {
-        $subCategories = $this->subCategoryService->getAll();
+        $categories = $this->subCategoryService->getCategories();
 
-        return view('admin.sub_categories.index', compact('subCategories'));
+        return view('admin.sub_categories.index', compact('categories'));
+    }
+
+    public function datatable(Request $request)
+    {
+        return $this->subCategoryService->datatable($request);
     }
 
     public function create()
@@ -65,15 +73,13 @@ class SubCategoryController extends Controller
         $status = (int) $validated['status'] === 1;
         $this->subCategoryService->updateStatus($subCategory, $status);
 
-        return back()->with('success', 'Sub category status updated to '.($status ? 'Active' : 'Inactive').'.');
+        return $this->adminResponse($request, 'Sub category status updated to '.($status ? 'Active' : 'Inactive').'.');
     }
 
-    public function destroy(SubCategory $subCategory)
+    public function destroy(Request $request, SubCategory $subCategory)
     {
         $this->subCategoryService->delete($subCategory);
 
-        return redirect()
-            ->route('admin.sub-categories.index')
-            ->with('success', 'Sub category deleted successfully.');
+        return $this->adminResponse($request, 'Sub category deleted successfully.', false, 'admin.sub-categories.index');
     }
 }

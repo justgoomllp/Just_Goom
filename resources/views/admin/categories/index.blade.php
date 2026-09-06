@@ -20,8 +20,29 @@
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
 
+                    <form class="admin-listing-filters" id="categoriesFilters">
+                        <div class="row align-items-end">
+                            <div class="col-md-4">
+                                <label for="filter_q">Search</label>
+                                <input type="search" name="q" id="filter_q" class="form-control" placeholder="Name or slug">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="filter_status">Status</label>
+                                <select name="status" id="filter_status" class="form-control">
+                                    <option value="">All statuses</option>
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 admin-listing-filter-actions">
+                                <button type="submit" class="btn btn-primary">Filter</button>
+                                <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+
                     <div class="table-responsive">
-                        <table class="table">
+                        <table id="categoriesTable" class="table admin-datatable" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -32,41 +53,7 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @forelse ($categories as $category)
-                                    <tr>
-                                        <td>{{ $categories->firstItem() + $loop->index }}</td>
-                                        <td>{{ $category->name }}</td>
-                                        <td>{{ $category->slug }}</td>
-                                        <td>
-                                            @include('admin.partials.catalog-icon', ['icon' => $category->icon, 'alt' => $category->name])
-                                        </td>
-                                        <td>
-                                            @include('admin.partials.status-toggle', [
-                                                'action' => route('admin.categories.status', $category),
-                                                'active' => (bool) $category->status,
-                                            ])
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-outline-primary btn-sm">Edit</a>
-                                            <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" class="d-inline delete-category-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="text-center text-muted">No categories found.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
                         </table>
-                    </div>
-
-                    <div class="mt-3">
-                        {{ $categories->links() }}
                     </div>
                 </div>
             </div>
@@ -74,44 +61,21 @@
     </div>
 @endsection
 
-@push('vendor-scripts')
-    <script src="{{ asset('assets/vendors/sweetalert/sweetalert.min.js') }}"></script>
-@endpush
+@include('admin.partials.datatable-assets')
 
 @push('scripts')
     <script>
-        (function () {
-            var forms = document.querySelectorAll('.delete-category-form');
-
-            forms.forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    event.preventDefault();
-
-                    swal({
-                        title: 'Delete category?',
-                        text: 'This category will be removed.',
-                        icon: 'warning',
-                        buttons: {
-                            cancel: {
-                                text: 'Cancel',
-                                visible: true,
-                                closeModal: true
-                            },
-                            confirm: {
-                                text: 'Delete',
-                                value: true,
-                                visible: true,
-                                closeModal: true
-                            }
-                        },
-                        dangerMode: true
-                    }).then(function (willDelete) {
-                        if (willDelete) {
-                            form.submit();
-                        }
-                    });
-                });
-            });
-        })();
+        initAdminDataTable('#categoriesTable', {
+            url: @json(route('admin.categories.datatable')),
+            filters: '#categoriesFilters',
+            columns: [
+                { data: 'DT_RowIndex', orderable: false, searchable: false, width: '50px' },
+                { data: 'name' },
+                { data: 'slug' },
+                { data: 'icon', orderable: false, searchable: false },
+                { data: 'status', orderable: false, searchable: false },
+                { data: 'action', orderable: false, searchable: false }
+            ]
+        });
     </script>
 @endpush

@@ -24,81 +24,70 @@
                         <div class="alert alert-danger">{{ session('error') }}</div>
                     @endif
 
+                    <form class="admin-listing-filters" id="usersFilters">
+                        <div class="row align-items-end">
+                            <div class="col-md-3">
+                                <label for="filter_q">Search</label>
+                                <input type="search" name="q" id="filter_q" class="form-control" placeholder="Name, email, phone, referral">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="filter_type">Type</label>
+                                <select name="type" id="filter_type" class="form-control">
+                                    <option value="">All types</option>
+                                    <option value="user">User</option>
+                                    <option value="agent">Agent</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="filter_status">Status</label>
+                                <select name="status" id="filter_status" class="form-control">
+                                    <option value="">All statuses</option>
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                    <option value="2">Suspended</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="filter_email_verified">Email</label>
+                                <select name="email_verified" id="filter_email_verified" class="form-control">
+                                    <option value="">All</option>
+                                    <option value="1">Verified</option>
+                                    <option value="0">Pending</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="filter_category_id">Category</label>
+                                <select name="category_id" id="filter_category_id" class="form-control">
+                                    <option value="">All categories</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-auto admin-listing-filter-actions">
+                                <button type="submit" class="btn btn-primary">Filter</button>
+                                <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+
                     <div class="table-responsive">
-                        <table class="table">
+                        <table id="usersTable" class="table admin-datatable" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Type</th>
-                                    <th>Phone</th>
+                                    <th>Referral Code</th>
                                     <th>Category</th>
                                     <th>Status</th>
                                     <th>Email Verified</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @forelse ($users as $user)
-                                    <tr>
-                                        <td>{{ $users->firstItem() + $loop->index }}</td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                @if ($user->profile)
-                                                    <img src="{{ asset($user->profile) }}" alt="{{ $user->fullName() }}" width="36" height="36" class="rounded-circle border me-2" style="object-fit: cover;">
-                                                @endif
-                                                {{ $user->fullName() }}
-                                            </div>
-                                        </td>
-                                        <td>{{ $user->email }}</td>
-                                        <td>
-                                            @if ($user->type === 'admin')
-                                                <label class="badge badge-info">Admin</label>
-                                            @elseif ($user->type === 'agent')
-                                                <label class="badge badge-primary">Agent</label>
-                                            @else
-                                                <label class="badge badge-secondary">User</label>
-                                            @endif
-                                        </td>
-                                        <td>{{ $user->phone ?: '-' }}</td>
-                                        <td>{{ $user->category->name ?? '-' }}</td>
-                                        <td>
-                                            @include('admin.partials.status-toggle', [
-                                                'action' => route('admin.users.status', $user),
-                                                'active' => (int) $user->status === 1,
-                                                'suspended' => (int) $user->status === 2,
-                                                'disabled' => auth()->id() === $user->id,
-                                                'disabledTitle' => 'You cannot change your own status',
-                                            ])
-                                        </td>
-                                        <td>
-                                            @if ($user->hasVerifiedEmail())
-                                                <label class="badge badge-success">Verified</label>
-                                            @else
-                                                <label class="badge badge-warning">Pending</label>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-outline-primary btn-sm">Edit</a>
-                                            <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-inline delete-user-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="9" class="text-center text-muted">No users found.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
                         </table>
-                    </div>
-
-                    <div class="mt-3">
-                        {{ $users->links() }}
                     </div>
                 </div>
             </div>
@@ -106,44 +95,24 @@
     </div>
 @endsection
 
-@push('vendor-scripts')
-    <script src="{{ asset('assets/vendors/sweetalert/sweetalert.min.js') }}"></script>
-@endpush
+@include('admin.partials.datatable-assets')
 
 @push('scripts')
     <script>
-        (function () {
-            var forms = document.querySelectorAll('.delete-user-form');
-
-            forms.forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    event.preventDefault();
-
-                    swal({
-                        title: 'Delete user?',
-                        text: 'This user will be removed.',
-                        icon: 'warning',
-                        buttons: {
-                            cancel: {
-                                text: 'Cancel',
-                                visible: true,
-                                closeModal: true
-                            },
-                            confirm: {
-                                text: 'Delete',
-                                value: true,
-                                visible: true,
-                                closeModal: true
-                            }
-                        },
-                        dangerMode: true
-                    }).then(function (willDelete) {
-                        if (willDelete) {
-                            form.submit();
-                        }
-                    });
-                });
-            });
-        })();
+        initAdminDataTable('#usersTable', {
+            url: @json(route('admin.users.datatable')),
+            filters: '#usersFilters',
+            columns: [
+                { data: 'DT_RowIndex', orderable: false, searchable: false, width: '50px' },
+                { data: 'name' },
+                { data: 'email' },
+                { data: 'type' },
+                { data: 'referral_code' },
+                { data: 'category', orderable: false },
+                { data: 'status', orderable: false, searchable: false },
+                { data: 'email_verified', orderable: false, searchable: false },
+                { data: 'action', orderable: false, searchable: false }
+            ]
+        });
     </script>
 @endpush

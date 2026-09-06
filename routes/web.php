@@ -260,6 +260,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     })->name('dashboard');
 
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/categories/datatable', [CategoryController::class, 'datatable'])->name('categories.datatable');
     Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
     Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
@@ -268,6 +269,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
     Route::get('/sub-categories', [SubCategoryController::class, 'index'])->name('sub-categories.index');
+    Route::get('/sub-categories/datatable', [SubCategoryController::class, 'datatable'])->name('sub-categories.datatable');
     Route::get('/sub-categories/create', [SubCategoryController::class, 'create'])->name('sub-categories.create');
     Route::post('/sub-categories', [SubCategoryController::class, 'store'])->name('sub-categories.store');
     Route::get('/sub-categories/{subCategory}/edit', [SubCategoryController::class, 'edit'])->name('sub-categories.edit');
@@ -277,6 +279,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::get('/users/check-unique', [UserController::class, 'checkUnique'])->name('users.check-unique');
+    Route::get('/users/datatable', [UserController::class, 'datatable'])->name('users.datatable');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
@@ -285,6 +289,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
     Route::get('/advertisements', [AdvertisementController::class, 'index'])->name('advertisements.index');
+    Route::get('/advertisements/datatable', [AdvertisementController::class, 'datatable'])->name('advertisements.datatable');
     Route::get('/advertisements/create', [AdvertisementController::class, 'create'])->name('advertisements.create');
     Route::post('/advertisements', [AdvertisementController::class, 'store'])->name('advertisements.store');
     Route::get('/advertisements/{advertisement}/edit', [AdvertisementController::class, 'edit'])->name('advertisements.edit');

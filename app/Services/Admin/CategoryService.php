@@ -3,6 +3,9 @@
 namespace App\Services\Admin;
 
 use App\Models\Category;
+use App\Support\AdminDataTable;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -12,6 +15,47 @@ class CategoryService
     public function getAll()
     {
         return Category::latest()->paginate(10);
+    }
+
+    public function datatable(Request $request): JsonResponse
+    {
+        $query = Category::query();
+
+        if ($request->input('status') !== null && $request->input('status') !== '') {
+            $query->where('status', (int) $request->input('status'));
+        }
+
+        return AdminDataTable::of(
+            $request,
+            $query,
+            [
+                'name' => 'name',
+                'slug' => 'slug',
+                'status' => 'status',
+            ],
+            ['name', 'slug'],
+            function (Category $category, int $index) {
+                return [
+                    'DT_RowIndex' => $index,
+                    'name' => e($category->name),
+                    'slug' => e($category->slug),
+                    'icon' => view('admin.partials.catalog-icon', [
+                        'icon' => $category->icon,
+                        'alt' => $category->name,
+                    ])->render(),
+                    'status' => AdminDataTable::statusToggle(
+                        route('admin.categories.status', $category),
+                        (bool) $category->status
+                    ),
+                    'action' => AdminDataTable::actions(
+                        route('admin.categories.edit', $category),
+                        route('admin.categories.destroy', $category),
+                        'Delete category?',
+                        'This category will be removed.'
+                    ),
+                ];
+            }
+        );
     }
 
     public function store(array $data): Category

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\RespondsToAdminAjax;
 use App\Http\Requests\Admin\CategoryRequest;
 use App\Models\Category;
 use App\Services\Admin\CategoryService;
@@ -10,6 +11,8 @@ use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
+    use RespondsToAdminAjax;
+
     private $categoryService;
 
     public function __construct(CategoryService $categoryService)
@@ -19,9 +22,12 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $categories = $this->categoryService->getAll();
+        return view('admin.categories.index');
+    }
 
-        return view('admin.categories.index', compact('categories'));
+    public function datatable(Request $request)
+    {
+        return $this->categoryService->datatable($request);
     }
 
     public function create()
@@ -61,15 +67,13 @@ class CategoryController extends Controller
         $status = (int) $validated['status'] === 1;
         $this->categoryService->updateStatus($category, $status);
 
-        return back()->with('success', 'Category status updated to '.($status ? 'Active' : 'Inactive').'.');
+        return $this->adminResponse($request, 'Category status updated to '.($status ? 'Active' : 'Inactive').'.');
     }
 
-    public function destroy(Category $category)
+    public function destroy(Request $request, Category $category)
     {
         $this->categoryService->delete($category);
 
-        return redirect()
-            ->route('admin.categories.index')
-            ->with('success', 'Category deleted successfully.');
+        return $this->adminResponse($request, 'Category deleted successfully.', false, 'admin.categories.index');
     }
 }

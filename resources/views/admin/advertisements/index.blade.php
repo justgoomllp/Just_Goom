@@ -20,8 +20,37 @@
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
 
+                    <form class="admin-listing-filters" id="advertisementsFilters">
+                        <div class="row align-items-end">
+                            <div class="col-md-4">
+                                <label for="filter_q">Search</label>
+                                <input type="search" name="q" id="filter_q" class="form-control" placeholder="Title or link">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="filter_position">Position</label>
+                                <select name="position" id="filter_position" class="form-control">
+                                    <option value="">All positions</option>
+                                    <option value="homepage">Homepage</option>
+                                    <option value="sidebar">Sidebar</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="filter_is_active">Status</label>
+                                <select name="is_active" id="filter_is_active" class="form-control">
+                                    <option value="">All statuses</option>
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 admin-listing-filter-actions">
+                                <button type="submit" class="btn btn-primary">Filter</button>
+                                <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                            </div>
+                        </div>
+                    </form>
+
                     <div class="table-responsive">
-                        <table class="table">
+                        <table id="advertisementsTable" class="table admin-datatable" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -34,42 +63,31 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @forelse ($advertisements as $ad)
-                                    <tr>
-                                        <td>{{ $loop->iteration + ($advertisements->currentPage() - 1) * $advertisements->perPage() }}</td>
-                                        <td><img src="{{ asset('storage/' . $ad->banner_image) }}" alt="{{ $ad->title }}" style="height:40px; border-radius:4px;"></td>
-                                        <td>{{ $ad->title }}</td>
-                                        <td>{{ ucfirst($ad->position) }}</td>
-                                        <td>{{ $ad->priority }}</td>
-                                        <td>{{ $ad->start_date->format('d M Y') }} - {{ $ad->end_date->format('d M Y') }}</td>
-                                        <td>
-                                            @include('admin.partials.status-toggle', [
-                                                'action' => route('admin.advertisements.status', $ad),
-                                                'name' => 'is_active',
-                                                'active' => (bool) $ad->is_active,
-                                            ])
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('admin.advertisements.edit', $ad) }}" class="btn btn-sm btn-info">Edit</a>
-                                            <form action="{{ route('admin.advertisements.destroy', $ad) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this ad?')">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="8" class="text-center text-muted">No advertisements yet.</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
                         </table>
                     </div>
-
-                    {{ $advertisements->links() }}
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+@include('admin.partials.datatable-assets')
+
+@push('scripts')
+    <script>
+        initAdminDataTable('#advertisementsTable', {
+            url: @json(route('admin.advertisements.datatable')),
+            filters: '#advertisementsFilters',
+            columns: [
+                { data: 'DT_RowIndex', orderable: false, searchable: false, width: '50px' },
+                { data: 'banner', orderable: false, searchable: false },
+                { data: 'title' },
+                { data: 'position' },
+                { data: 'priority' },
+                { data: 'period' },
+                { data: 'status', orderable: false, searchable: false },
+                { data: 'action', orderable: false, searchable: false }
+            ]
+        });
+    </script>
+@endpush
