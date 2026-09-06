@@ -10,14 +10,17 @@ class UserNotificationService
 {
     public function listForUser(User $user): Collection
     {
-        return $user->userNotifications()
+        return UserNotification::query()
+            ->where('user_id', $user->id)
             ->latest()
             ->get();
     }
 
     public function statsForUser(User $user): array
     {
-        $notifications = $user->userNotifications()->get(['read_at']);
+        $notifications = UserNotification::query()
+            ->where('user_id', $user->id)
+            ->get(['read_at']);
 
         return [
             'total' => $notifications->count(),

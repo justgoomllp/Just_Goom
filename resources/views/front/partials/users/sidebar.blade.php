@@ -77,7 +77,7 @@
   <div class="user-nav-section">
     <div class="user-nav-heading">Engagement</div>
     <a href="{{ $hasActivePlan ? route('front.users.inquiries') : $lockHref }}" class="user-nav-link{{ request()->routeIs('front.users.inquiries', 'front.users.inquiries.*') ? ' active' : '' }}{{ $hasActivePlan ? '' : ' is-locked' }}" data-nav="inquiries"@if(! $hasActivePlan) data-requires-plan="1"@endif><span class="nav-icon">💬</span>My Inquiries</a>
-    <a href="{{ $hasActivePlan ? route('front.users.notifications') : $lockHref }}" class="user-nav-link{{ request()->routeIs('front.users.notifications', 'front.users.notifications.*') ? ' active' : '' }}{{ $hasActivePlan ? '' : ' is-locked' }}" data-nav="notifications"@if(! $hasActivePlan) data-requires-plan="1"@endif><span class="nav-icon">✉</span>Notifications</a>
+    <a href="{{ route('front.users.notifications') }}" class="user-nav-link{{ request()->routeIs('front.users.notifications', 'front.users.notifications.*') ? ' active' : '' }}" data-nav="notifications"><span class="nav-icon">✉</span>Notifications</a>
   </div>
 </nav>
 <div class="user-sidebar-footer">

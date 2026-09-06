@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest' => RedirectIfAuthenticated::class,
             'front.user' => \App\Http\Middleware\EnsureFrontUser::class,
             'front.plan' => \App\Http\Middleware\EnsureActiveSubscription::class,
+            'admin.module' => \App\Http\Middleware\EnsureAdminModule::class,
         ]);
 
         $middleware->validateCsrfTokens(except: [

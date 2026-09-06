@@ -678,6 +678,10 @@ body.user-sidebar-open { overflow: hidden; }
   border-bottom: 1px solid var(--user-border);
   font-size: 13px;
 }
+a.user-list-item {
+  text-decoration: none;
+  color: inherit;
+}
 .user-list-item:last-child { border-bottom: none; }
 .user-list-item strong {
   display: block;

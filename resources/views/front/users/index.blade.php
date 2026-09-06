@@ -68,7 +68,7 @@
             <div class="user-panel-head">Recent Notifications</div>
             <div class="user-panel-body">
               @forelse($recentNotifications as $notification)
-              <div class="user-list-item">
+              <a href="{{ route('front.users.notifications.show', $notification) }}" class="user-list-item">
                 <div>
                   <strong>{{ $notification->title }}</strong>
                   <span>{{ Str::limit($notification->body, 80) ?: ucfirst(str_replace('_', ' ', $notification->type)) }} · {{ $notification->created_at?->diffForHumans() }}</span>
@@ -76,7 +76,7 @@
                 @unless($notification->isRead())
                   <span class="user-badge user-badge-warning">New</span>
                 @endunless
-              </div>
+              </a>
               @empty
               <div class="user-list-item">
                 <div>

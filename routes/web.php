@@ -33,6 +33,7 @@ use App\Http\Controllers\Front\SubscriptionController;
 use App\Http\Controllers\Front\TeamController;
 use App\Http\Controllers\Front\UserNotificationController;
 use App\Http\Controllers\Front\VideoController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -195,7 +196,7 @@ Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name
 Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('login.submit');
 Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('logout');
 
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin.module'])->group(function () {
     Route::redirect('/', '/admin/dashboard');
 
     Route::get('/dashboard', function () {
@@ -297,9 +298,10 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::patch('/advertisements/{advertisement}/status', [AdvertisementController::class, 'updateStatus'])->name('advertisements.status');
     Route::delete('/advertisements/{advertisement}', [AdvertisementController::class, 'destroy'])->name('advertisements.destroy');
 
-    Route::get('/settings', function () {
-        return view('admin.settings.index');
-    })->name('settings.index');
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::get('/settings/users', [SettingController::class, 'searchUsers'])->name('settings.users.search');
+    Route::post('/settings/notifications', [SettingController::class, 'sendNotification'])->name('settings.notifications.send');
+    Route::put('/settings/modules', [SettingController::class, 'updateModules'])->name('settings.modules.update');
 });
 
 Route::get('/logs', function () {

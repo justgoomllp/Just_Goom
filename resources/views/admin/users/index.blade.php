@@ -84,6 +84,7 @@
                                     <th>Category</th>
                                     <th>Status</th>
                                     <th>Email Verified</th>
+                                    <th>Notifications</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -111,6 +112,7 @@
                 { data: 'category', orderable: false },
                 { data: 'status', orderable: false, searchable: false },
                 { data: 'email_verified', orderable: false, searchable: false },
+                { data: 'notifications', orderable: false, searchable: false },
                 { data: 'action', orderable: false, searchable: false }
             ]
         });

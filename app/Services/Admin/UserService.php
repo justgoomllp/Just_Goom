@@ -33,7 +33,7 @@ class UserService
 
     public function datatable(Request $request): JsonResponse
     {
-        $query = User::query()->with('category');
+        $query = User::query()->with('category')->withCount('userNotifications');
 
         if ($request->filled('type')) {
             $query->where('type', $request->string('type'));
@@ -94,6 +94,7 @@ class UserService
                     'email_verified' => $user->hasVerifiedEmail()
                         ? '<label class="badge badge-success">Verified</label>'
                         : '<label class="badge badge-warning">Pending</label>',
+                    'notifications' => '<label class="badge badge-info">'.(int) $user->user_notifications_count.'</label>',
                     'action' => AdminDataTable::actions(
                         route('admin.users.edit', $user),
                         route('admin.users.destroy', $user),

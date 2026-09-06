@@ -109,4 +109,52 @@
             </div>
         </div>
     @endif
+
+    @if ($user->type !== 'admin')
+        <div class="row">
+            <div class="col-md-10 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Notifications</h4>
+                        <p class="text-muted mb-3">Messages sent to this account from Settings and system events.</p>
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Message</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Sent</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($user->userNotifications as $notification)
+                                        <tr>
+                                            <td>{{ $notification->title }}</td>
+                                            <td>{{ \Illuminate\Support\Str::limit($notification->body, 80) ?: '-' }}</td>
+                                            <td>{{ ucfirst(str_replace('_', ' ', $notification->type)) }}</td>
+                                            <td>
+                                                @if ($notification->isRead())
+                                                    <label class="badge badge-success">Read</label>
+                                                @else
+                                                    <label class="badge badge-warning">Unread</label>
+                                                @endif
+                                            </td>
+                                            <td>{{ $notification->created_at?->format('d M Y, h:i A') }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted">No notifications for this user yet.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection

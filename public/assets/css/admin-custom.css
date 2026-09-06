@@ -788,7 +788,8 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
   opacity: 0.65;
 }
 
-.admin-app .admin-status-toggle-input {
+.admin-app .admin-status-toggle-input,
+.admin-app .admin-module-toggle-input {
   position: absolute !important;
   width: 1px !important;
   height: 1px !important;
@@ -826,12 +827,14 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
 }
 
 .admin-app .admin-status-toggle.is-on .admin-status-toggle-slider,
-.admin-app .admin-status-toggle-input:checked + .admin-status-toggle-slider {
+.admin-app .admin-status-toggle-input:checked + .admin-status-toggle-slider,
+.admin-app .admin-module-toggle-input:checked + .admin-status-toggle-slider {
   background: var(--admin-success);
 }
 
 .admin-app .admin-status-toggle.is-on .admin-status-toggle-slider::after,
-.admin-app .admin-status-toggle-input:checked + .admin-status-toggle-slider::after {
+.admin-app .admin-status-toggle-input:checked + .admin-status-toggle-slider::after,
+.admin-app .admin-module-toggle-input:checked + .admin-status-toggle-slider::after {
   transform: translateX(18px);
 }
 
@@ -1375,6 +1378,112 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--admin-primary);
+}
+
+.admin-app .form-check .form-check-input[type="radio"] {
+  border-radius: 50%;
+}
+
+.admin-app .form-check .form-check-input[type="radio"]:checked {
+  background-image: radial-gradient(circle at center, #fff 0 3px, transparent 4px);
+}
+
+.admin-app .admin-audience-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.admin-app .admin-audience-options .form-check {
+  margin: 0;
+}
+
+.admin-app .admin-audience-options .form-check span {
+  font-weight: 500;
+}
+
+.admin-app #specificUserWrap {
+  position: relative;
+}
+
+.admin-app .admin-user-suggest {
+  position: absolute;
+  top: calc(100% - 0.35rem);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: #fff;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  box-shadow: 0 10px 28px rgba(56, 65, 74, 0.12);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.admin-app .admin-user-suggest-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0.65rem 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-app .admin-user-suggest-item:hover {
+  background: #f3f6f9;
+}
+
+.admin-app .admin-user-suggest-item span,
+.admin-app .admin-user-suggest-empty {
+  color: var(--admin-muted);
+  font-size: 0.75rem;
+}
+
+.admin-app .admin-user-suggest-empty {
+  padding: 0.75rem 0.85rem;
+}
+
+.admin-app .admin-module-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.admin-app .admin-module-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--admin-border);
+  margin: 0;
+  cursor: pointer;
+}
+
+.admin-app .admin-module-row:last-child {
+  border-bottom: 0;
+}
+
+.admin-app .admin-module-row.is-locked {
+  cursor: default;
+}
+
+.admin-app .admin-module-row strong {
+  display: block;
+  font-size: 0.875rem;
+}
+
+.admin-app .admin-module-row small {
+  display: block;
+  color: var(--admin-muted);
+  font-size: 0.75rem;
+}
+
+.admin-app .req {
+  color: var(--admin-danger);
 }
 
 /* -------------------------------------------------------------------------- */

@@ -21,6 +21,10 @@ class EnsureActiveSubscription
         'front.users.payments',
         'front.users.payments.invoice',
         'front.users.audit-logs',
+        'front.users.notifications',
+        'front.users.notifications.show',
+        'front.users.notifications.mark-all-read',
+        'front.users.notifications.destroy',
     ];
 
     public function handle(Request $request, Closure $next): Response

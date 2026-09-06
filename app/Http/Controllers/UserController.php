@@ -62,7 +62,9 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $user->load(['companyProfile.profileDocuments']);
+        $user->load(['companyProfile.profileDocuments', 'userNotifications' => function ($query) {
+            $query->latest();
+        }]);
         $categories = Category::where('status', 1)->orderBy('name')->get();
         $subCategories = SubCategory::where('status', 1)->orderBy('name')->get();
 
