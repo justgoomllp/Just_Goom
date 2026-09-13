@@ -33,6 +33,7 @@ use App\Http\Controllers\Front\SubscriptionController;
 use App\Http\Controllers\Front\TeamController;
 use App\Http\Controllers\Front\UserNotificationController;
 use App\Http\Controllers\Front\VideoController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\UserController;
@@ -298,9 +299,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin.module'])->gr
     Route::patch('/advertisements/{advertisement}/status', [AdvertisementController::class, 'updateStatus'])->name('advertisements.status');
     Route::delete('/advertisements/{advertisement}', [AdvertisementController::class, 'destroy'])->name('advertisements.destroy');
 
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/users', [NotificationController::class, 'searchUsers'])->name('notifications.users.search');
+    Route::post('/notifications', [NotificationController::class, 'send'])->name('notifications.send');
+
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::get('/settings/users', [SettingController::class, 'searchUsers'])->name('settings.users.search');
-    Route::post('/settings/notifications', [SettingController::class, 'sendNotification'])->name('settings.notifications.send');
     Route::put('/settings/modules', [SettingController::class, 'updateModules'])->name('settings.modules.update');
 });
 

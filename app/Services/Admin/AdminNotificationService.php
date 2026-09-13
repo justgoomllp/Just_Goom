@@ -4,6 +4,7 @@ namespace App\Services\Admin;
 
 use App\Models\User;
 use App\Models\UserNotification;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class AdminNotificationService
@@ -68,12 +69,11 @@ class AdminNotificationService
             ->get(['id', 'fname', 'lname', 'email']);
     }
 
-    public function recent(int $limit = 12)
+    public function paginate(int $perPage = 15): LengthAwarePaginator
     {
         return UserNotification::query()
             ->with('user:id,fname,lname,email')
             ->latest()
-            ->limit($limit)
-            ->get();
+            ->paginate($perPage);
     }
 }

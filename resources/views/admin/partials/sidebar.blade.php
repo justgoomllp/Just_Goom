@@ -46,7 +46,7 @@
         </li>
         @endif
 
-        @if (!empty($adminModules['users']) || !empty($adminModules['settings']))
+        @if (!empty($adminModules['users']) || !empty($adminModules['notifications']) || !empty($adminModules['settings']))
         <li class="nav-item sidebar-category">
             <p>Components</p>
         </li>
@@ -56,6 +56,14 @@
             <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                 <i class="mdi mdi-account-circle-outline menu-icon"></i>
                 <span class="menu-title">Users</span>
+            </a>
+        </li>
+        @endif
+        @if (!empty($adminModules['notifications']))
+        <li class="nav-item {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}">
+            <a class="nav-link {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}" href="{{ route('admin.notifications.index') }}">
+                <i class="mdi mdi-bell-outline menu-icon"></i>
+                <span class="menu-title">Notifications</span>
             </a>
         </li>
         @endif

@@ -40,9 +40,14 @@ class SettingService
                 'description' => 'Admin, agent, and platform accounts.',
                 'locked' => false,
             ],
+            'notifications' => [
+                'label' => 'Notifications',
+                'description' => 'Send in-app messages to front users.',
+                'locked' => false,
+            ],
             'settings' => [
                 'label' => 'Settings',
-                'description' => 'Notifications and module controls.',
+                'description' => 'Control which admin modules are available.',
                 'locked' => true,
             ],
         ];
@@ -53,18 +58,27 @@ class SettingService
      */
     public function moduleFlags(): array
     {
-        return Cache::remember(self::MODULES_KEY, 120, function () {
+        $catalog = $this->catalog();
+        $flags = Cache::remember(self::MODULES_KEY, 120, function () use ($catalog) {
             $saved = Setting::getValue(self::MODULES_KEY, []);
-            $flags = [];
+            $resolved = [];
 
-            foreach ($this->catalog() as $key => $module) {
-                $flags[$key] = $module['locked']
+            foreach ($catalog as $key => $module) {
+                $resolved[$key] = $module['locked']
                     ? true
                     : (array_key_exists($key, $saved) ? (bool) $saved[$key] : true);
             }
 
-            return $flags;
+            return $resolved;
         });
+
+        foreach ($catalog as $key => $module) {
+            if (! array_key_exists($key, $flags)) {
+                $flags[$key] = true;
+            }
+        }
+
+        return $flags;
     }
 
     public function isEnabled(string $module): bool
