@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Admin\NotificationRequest;
 use App\Models\User;
 use App\Services\Admin\AdminNotificationService;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class NotificationController extends Controller
 {
@@ -33,26 +33,9 @@ class NotificationController extends Controller
         );
     }
 
-    public function send(Request $request)
+    public function send(NotificationRequest $request)
     {
-        $validated = $request->validate([
-            'audience' => ['required', Rule::in(['all', 'specific'])],
-            'user_id' => [
-                Rule::requiredIf($request->input('audience') === 'specific'),
-                'nullable',
-                'integer',
-                Rule::exists('users', 'id')->where(function ($query) {
-                    $query->whereIn('type', ['user', 'agent']);
-                }),
-            ],
-            'title' => ['required', 'string', 'max:255'],
-            'body' => ['nullable', 'string', 'max:2000'],
-            'type' => ['required', Rule::in(['general', 'announcement', 'alert'])],
-        ], [
-            'title.required' => 'Notification title is required.',
-            'user_id.required' => 'Please select a user.',
-            'user_id.exists' => 'Selected user is invalid.',
-        ]);
+        $validated = $request->validated();
 
         if ($validated['audience'] === 'all') {
             $count = $this->notificationService->sendToAll(

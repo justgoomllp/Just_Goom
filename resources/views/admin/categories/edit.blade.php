@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <h4 class="card-title">Edit Category</h4>
 
-                    <form method="POST" action="{{ route('admin.categories.update', $category) }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('admin.categories.update', $category) }}" enctype="multipart/form-data" class="js-admin-validate" novalidate>
                         @csrf
                         @method('PUT')
 

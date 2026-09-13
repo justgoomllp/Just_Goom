@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <h4 class="card-title">Sub Category Details</h4>
 
-                    <form method="POST" action="{{ route('admin.sub-categories.store') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('admin.sub-categories.store') }}" enctype="multipart/form-data" class="js-admin-validate" novalidate>
                         @csrf
 
                         @include('admin.sub_categories._form', [

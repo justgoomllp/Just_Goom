@@ -9,10 +9,6 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    @if ($errors->any())
-        <div class="alert alert-danger">{{ $errors->first() }}</div>
-    @endif
-
     <div class="row">
         <div class="col-lg-8 grid-margin stretch-card">
             <div class="card">
@@ -20,7 +16,7 @@
                     <h4 class="card-title mb-1">Admin modules</h4>
                     <p class="text-muted mb-4">Show or hide sidebar modules. Dashboard and Settings stay on.</p>
 
-                    <form method="POST" action="{{ route('admin.settings.modules.update') }}">
+                    <form method="POST" action="{{ route('admin.settings.modules.update') }}" class="js-admin-validate" novalidate>
                         @csrf
                         @method('PUT')
 
@@ -44,6 +40,12 @@
                                 </label>
                             @endforeach
                         </div>
+                        @error('modules')
+                            <div class="text-danger small mt-2">{{ $message }}</div>
+                        @enderror
+                        @error('modules.*')
+                            <div class="text-danger small mt-2">{{ $message }}</div>
+                        @enderror
 
                         <button type="submit" class="btn btn-primary mt-3">Save modules</button>
                     </form>

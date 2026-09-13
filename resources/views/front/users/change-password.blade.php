@@ -19,17 +19,17 @@
           @csrf
           @method('PUT')
           <div class="user-form-group" data-field="current_password">
-            <label>Current Password</label>
+            <label>Current Password *</label>
             <input type="password" name="current_password" class="user-form-control @error('current_password') is-invalid @enderror" placeholder="Enter current password" autocomplete="current-password">
             <small class="user-field-error">@error('current_password'){{ $message }}@enderror</small>
           </div>
           <div class="user-form-group" data-field="password">
-            <label>New Password</label>
+            <label>New Password *</label>
             <input type="password" name="password" class="user-form-control @error('password') is-invalid @enderror" placeholder="Enter new password" autocomplete="new-password">
             <small class="user-field-error">@error('password'){{ $message }}@enderror</small>
           </div>
           <div class="user-form-group" data-field="password_confirmation">
-            <label>Confirm New Password</label>
+            <label>Confirm New Password *</label>
             <input type="password" name="password_confirmation" class="user-form-control @error('password_confirmation') is-invalid @enderror" placeholder="Confirm new password" autocomplete="new-password">
             <small class="user-field-error">@error('password_confirmation'){{ $message }}@enderror</small>
           </div>

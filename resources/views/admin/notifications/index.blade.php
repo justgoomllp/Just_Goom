@@ -9,10 +9,6 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    @if ($errors->any())
-        <div class="alert alert-danger">{{ $errors->first() }}</div>
-    @endif
-
     <div class="row">
         <div class="col-lg-8 grid-margin stretch-card">
             <div class="card">
@@ -20,14 +16,14 @@
                     <h4 class="card-title mb-1">Send notification</h4>
                     <p class="text-muted mb-4">Deliver an in-app message to every front user, or to one account.</p>
 
-                    <form method="POST" action="{{ route('admin.notifications.send') }}" id="adminNotifyForm" novalidate>
+                    <form method="POST" action="{{ route('admin.notifications.send') }}" id="adminNotifyForm" class="js-admin-validate" novalidate>
                         @csrf
 
                         <div class="form-group">
                             <label>Audience <span class="req">*</span></label>
                             <div class="admin-audience-options">
                                 <label class="form-check">
-                                    <input type="radio" name="audience" value="all" class="form-check-input" {{ old('audience', 'all') === 'all' ? 'checked' : '' }}>
+                                    <input type="radio" name="audience" value="all" class="form-check-input" {{ old('audience', 'all') === 'all' ? 'checked' : '' }} required>
                                     <span>All users</span>
                                 </label>
                                 <label class="form-check">
@@ -35,38 +31,49 @@
                                     <span>Specific user</span>
                                 </label>
                             </div>
+                            @error('audience')
+                                <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="form-group" id="specificUserWrap" hidden>
                             <label for="notify_user_search">User <span class="req">*</span></label>
-                            <input type="hidden" name="user_id" id="notify_user_id" value="{{ old('user_id') }}">
+                            <input type="hidden" name="user_id" id="notify_user_id" value="{{ old('user_id') }}" data-required-if="audience=specific" data-error-target="#notify_user_search" data-required-message="Please select a user.">
+                            <input type="hidden" name="user_label" id="notify_user_label" value="{{ old('user_label') }}" data-skip-validate="1">
                             <input type="search" id="notify_user_search" class="form-control @error('user_id') is-invalid @enderror" placeholder="Search by name or email" autocomplete="off" value="{{ old('user_label') }}">
                             <div class="admin-user-suggest" id="notifyUserSuggest" hidden></div>
-                            <div class="invalid-feedback d-block">@error('user_id'){{ $message }}@enderror</div>
+                            @error('user_id')
+                                <div class="text-danger small">{{ $message }}</div>
+                            @enderror
                             <small class="text-muted">Agents and members only. Admins are not included.</small>
                         </div>
 
                         <div class="form-group">
                             <label for="notify_title">Title <span class="req">*</span></label>
-                            <input type="text" name="title" id="notify_title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}" maxlength="255">
-                            <div class="invalid-feedback d-block">@error('title'){{ $message }}@enderror</div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="notify_body">Message</label>
-                            <textarea name="body" id="notify_body" rows="4" class="form-control @error('body') is-invalid @enderror" maxlength="2000">{{ old('body') }}</textarea>
-                            @error('body')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <input type="text" name="title" id="notify_title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}" placeholder="Notification title" required maxlength="255" data-required-message="Title is required.">
+                            @error('title')
+                                <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="form-group">
-                            <label for="notify_type">Type</label>
-                            <select name="type" id="notify_type" class="form-control">
+                            <label for="notify_body">Message</label>
+                            <textarea name="body" id="notify_body" rows="4" class="form-control @error('body') is-invalid @enderror" placeholder="Optional message" maxlength="2000">{{ old('body') }}</textarea>
+                            @error('body')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notify_type">Type <span class="req">*</span></label>
+                            <select name="type" id="notify_type" class="form-control @error('type') is-invalid @enderror" required data-required-message="Please select a type.">
                                 <option value="general" {{ old('type', 'general') === 'general' ? 'selected' : '' }}>General</option>
                                 <option value="announcement" {{ old('type') === 'announcement' ? 'selected' : '' }}>Announcement</option>
                                 <option value="alert" {{ old('type') === 'alert' ? 'selected' : '' }}>Alert</option>
                             </select>
+                            @error('type')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <button type="submit" class="btn btn-primary">Send notification</button>
@@ -129,6 +136,7 @@
             var wrap = document.getElementById('specificUserWrap');
             var searchInput = document.getElementById('notify_user_search');
             var userIdInput = document.getElementById('notify_user_id');
+            var userLabelInput = document.getElementById('notify_user_label');
             var suggest = document.getElementById('notifyUserSuggest');
             var searchUrl = @json(route('admin.notifications.users.search'));
             var timer = null;
@@ -146,6 +154,9 @@
                 }
                 if (!specific && userIdInput) {
                     userIdInput.value = '';
+                    if (userLabelInput) {
+                        userLabelInput.value = '';
+                    }
                 }
             }
 
@@ -185,6 +196,9 @@
             if (searchInput) {
                 searchInput.addEventListener('input', function () {
                     userIdInput.value = '';
+                    if (userLabelInput) {
+                        userLabelInput.value = '';
+                    }
                     window.clearTimeout(timer);
                     var query = searchInput.value.trim();
                     if (query.length < 2) {
@@ -210,6 +224,9 @@
                     }
                     userIdInput.value = item.getAttribute('data-id');
                     searchInput.value = item.getAttribute('data-label');
+                    if (userLabelInput) {
+                        userLabelInput.value = item.getAttribute('data-label');
+                    }
                     hideSuggest();
                 });
             }

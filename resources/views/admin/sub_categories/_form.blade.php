@@ -1,6 +1,6 @@
 <div class="form-group">
-    <label for="category_id">Category</label>
-    <select name="category_id" id="category_id" class="form-control @error('category_id') is-invalid @enderror">
+    <label for="category_id">Category <span class="req">*</span></label>
+    <select name="category_id" id="category_id" class="form-control @error('category_id') is-invalid @enderror" required data-required-message="Please select a category.">
         <option value="">Select Category</option>
         @foreach ($categories as $category)
             <option value="{{ $category->id }}" {{ (string) old('category_id', $subCategory->category_id ?? '') === (string) $category->id ? 'selected' : '' }}>
@@ -14,16 +14,16 @@
 </div>
 
 <div class="form-group">
-    <label for="name">Name</label>
-    <input type="text" name="name" id="name" value="{{ old('name', $subCategory->name ?? '') }}" class="form-control @error('name') is-invalid @enderror" placeholder="Sub category name">
+    <label for="name">Name <span class="req">*</span></label>
+    <input type="text" name="name" id="name" value="{{ old('name', $subCategory->name ?? '') }}" class="form-control @error('name') is-invalid @enderror" placeholder="Sub category name" required maxlength="255" data-required-message="Name is required.">
     @error('name')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror
 </div>
 
 <div class="form-group">
-    <label for="slug">Slug</label>
-    <input type="text" name="slug" id="slug" value="{{ old('slug', $subCategory->slug ?? '') }}" class="form-control @error('slug') is-invalid @enderror" placeholder="sub-category-slug">
+    <label for="slug">Slug <span class="req">*</span></label>
+    <input type="text" name="slug" id="slug" value="{{ old('slug', $subCategory->slug ?? '') }}" class="form-control @error('slug') is-invalid @enderror" placeholder="sub-category-slug" required maxlength="255" data-required-message="Slug is required.">
     @error('slug')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror
@@ -31,7 +31,7 @@
 
 <div class="form-group">
     <label for="icon">Icon Image</label>
-    <input type="file" name="icon" id="icon" class="form-control @error('icon') is-invalid @enderror" accept="image/*">
+    <input type="file" name="icon" id="icon" class="form-control @error('icon') is-invalid @enderror" accept="image/*" data-mimes="jpg,jpeg,png,webp,svg" data-max-size="2097152" data-mime-message="Upload a JPG, PNG, WEBP, or SVG image." data-size-message="Image must be 2MB or smaller.">
     @error('icon')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror

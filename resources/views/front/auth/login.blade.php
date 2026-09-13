@@ -28,12 +28,12 @@
         <form class="auth-form auth-form-compact" method="POST" action="{{ route('front.login.submit') }}">
           @csrf
           <div class="form-group" data-field="email">
-            <label for="loginEmail">Email Address</label>
+            <label for="loginEmail">Email Address <span class="req">*</span></label>
             <input type="email" id="loginEmail" name="email" class="form-input @error('email') is-invalid @enderror" placeholder="you@example.com" value="{{ old('email') }}">
             <span class="field-error">@error('email'){{ $message }}@enderror</span>
           </div>
           <div class="form-group" data-field="password">
-            <label for="loginPassword">Password</label>
+            <label for="loginPassword">Password <span class="req">*</span></label>
             <input type="password" id="loginPassword" name="password" class="form-input @error('password') is-invalid @enderror" placeholder="Enter your password">
             <span class="field-error">@error('password'){{ $message }}@enderror</span>
           </div>
@@ -51,7 +51,7 @@
           <form class="auth-form auth-form-compact auth-resend-form" method="POST" action="{{ route('front.verification.send') }}">
             @csrf
             <div class="form-group" data-field="resend_email">
-              <label for="resendEmail">Email Address</label>
+              <label for="resendEmail">Email Address <span class="req">*</span></label>
               <input type="email" id="resendEmail" name="email" class="form-input @error('email') is-invalid @enderror" placeholder="you@example.com" value="{{ old('email') }}" required>
               <span class="field-error">@error('email'){{ $message }}@enderror</span>
             </div>

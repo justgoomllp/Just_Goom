@@ -88,9 +88,11 @@
             },
             ajax: {
                 url: options.url,
+                cache: false,
                 data: function (d) {
                     d.search = d.search || {};
                     d.search.value = '';
+                    d.q = '';
 
                     if (!filterForm) {
                         return;
@@ -104,6 +106,7 @@
                         var value = (field.value || '').trim();
                         if (field.name === 'q') {
                             d.search.value = value;
+                            d.q = value;
                             return;
                         }
 
@@ -126,18 +129,18 @@
         if (filterForm) {
             filterForm.addEventListener('submit', function (event) {
                 event.preventDefault();
-                table.ajax.reload();
+                table.ajax.reload(null, true);
             });
 
             filterForm.addEventListener('reset', function () {
                 window.setTimeout(function () {
-                    table.ajax.reload();
+                    table.ajax.reload(null, true);
                 }, 0);
             });
 
             Array.prototype.forEach.call(filterForm.querySelectorAll('select'), function (select) {
                 select.addEventListener('change', function () {
-                    table.ajax.reload();
+                    table.ajax.reload(null, true);
                 });
             });
 
@@ -146,7 +149,7 @@
                 searchInput.addEventListener('input', function () {
                     window.clearTimeout(searchTimer);
                     searchTimer = window.setTimeout(function () {
-                        table.ajax.reload();
+                        table.ajax.reload(null, true);
                     }, 400);
                 });
             }

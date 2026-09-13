@@ -20,12 +20,12 @@
             <span class="admin-mobile-brand-text">Just Goom</span>
         </a>
 
-        <form class="admin-search d-none d-md-block" action="{{ route('admin.users.index') }}" method="GET" role="search">
-            <i class="mdi mdi-magnify"></i>
-            <input type="search" name="q" value="{{ request('q') }}" placeholder="Search..." autocomplete="off">
-        </form>
-
         <ul class="navbar-nav navbar-nav-right ms-auto d-flex align-items-center">
+            <li class="nav-item d-none d-lg-block">
+                <a class="admin-icon-btn" href="{{ route('admin.dashboard') }}" title="CRM / Dashboard">
+                    <i class="mdi mdi-view-dashboard-outline"></i>
+                </a>
+            </li>
             <li class="nav-item d-none d-lg-block">
                 <a class="admin-icon-btn" href="{{ route('front.home') }}" target="_blank" rel="noopener" title="View website">
                     <i class="mdi mdi-apps"></i>
@@ -49,7 +49,7 @@
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                    <a class="dropdown-item" href="{{ route('admin.settings.index') }}">
+                    <a class="dropdown-item" href="{{ route('admin.profile.edit') }}">
                         <i class="mdi mdi-account-circle-outline text-muted"></i>
                         Profile
                     </a>

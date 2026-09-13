@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title', 'Dashboard')
-@section('page-title', 'CRM')
+@section('page-title', 'Dashboard')
 
 @php
     $userTrend = $stats['usersLastMonth'] > 0
@@ -173,9 +173,35 @@
             <div class="card w-100">
                 <div class="card-header">
                     <h4 class="card-title">Recent Users</h4>
-                    <span class="card-header-muted">{{ now()->format('d M Y') }}</span>
+                    <a href="{{ route('admin.users.index') }}" class="card-header-muted">View all</a>
                 </div>
                 <div class="card-body">
+                    <form class="admin-listing-filters mb-3" method="GET" action="{{ route('admin.dashboard') }}" id="dashboardFilters">
+                        <div class="row align-items-end">
+                            <div class="col-md-3">
+                                <label for="dashboard_type">Type</label>
+                                <select name="type" id="dashboard_type" class="form-control">
+                                    <option value="">All types</option>
+                                    <option value="user" @selected(request('type') === 'user')>User</option>
+                                    <option value="agent" @selected(request('type') === 'agent')>Agent</option>
+                                    <option value="admin" @selected(request('type') === 'admin')>Admin</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="dashboard_status">Status</label>
+                                <select name="status" id="dashboard_status" class="form-control">
+                                    <option value="">All statuses</option>
+                                    <option value="1" @selected(request('status') === '1')>Active</option>
+                                    <option value="0" @selected(request('status') === '0')>Inactive</option>
+                                    <option value="2" @selected(request('status') === '2')>Suspended</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 admin-listing-filter-actions">
+                                <button type="submit" class="btn btn-primary">Filter</button>
+                                <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary">Reset</a>
+                            </div>
+                        </div>
+                    </form>
                     <div class="table-responsive">
                         <table class="table">
                             <thead>
@@ -224,7 +250,9 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center text-muted">No users yet.</td>
+                                        <td colspan="4" class="text-center text-muted">
+                                            {{ request()->hasAny(['type', 'status']) ? 'No users match the selected filters.' : 'No users yet.' }}
+                                        </td>
                                     </tr>
                                 @endforelse
                             </tbody>

@@ -34,6 +34,7 @@ use App\Http\Controllers\Front\TeamController;
 use App\Http\Controllers\Front\UserNotificationController;
 use App\Http\Controllers\Front\VideoController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ProfileController as AdminProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\UserController;
@@ -207,6 +208,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin.module'])->gr
             now()->subMonth()->endOfMonth(),
         ])->count();
 
+        $recentUsersQuery = User::query()->latest();
+        if (request()->filled('type')) {
+            $recentUsersQuery->where('type', request('type'));
+        }
+        if (request()->filled('status')) {
+            $recentUsersQuery->where('status', (int) request('status'));
+        }
+
         $stats = [
             'categories' => Category::count(),
             'subCategories' => SubCategory::count(),
@@ -257,7 +266,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin.module'])->gr
             ],
             'monthlyUsers' => $monthlyUsers,
             'areaPoints' => implode(' ', $areaPoints),
-            'recentUsers' => User::latest()->take(6)->get(),
+            'recentUsers' => $recentUsersQuery->take(8)->get(),
         ]);
     })->name('dashboard');
 
@@ -302,6 +311,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin.module'])->gr
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications/users', [NotificationController::class, 'searchUsers'])->name('notifications.users.search');
     Route::post('/notifications', [NotificationController::class, 'send'])->name('notifications.send');
+
+    Route::get('/profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::put('/settings/modules', [SettingController::class, 'updateModules'])->name('settings.modules.update');

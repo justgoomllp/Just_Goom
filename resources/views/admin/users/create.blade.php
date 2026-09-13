@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <h4 class="card-title">User Details</h4>
 
-                    <form method="POST" action="{{ route('admin.users.store') }}" enctype="multipart/form-data" novalidate data-unique-url="{{ route('admin.users.check-unique') }}">
+                    <form method="POST" action="{{ route('admin.users.store') }}" enctype="multipart/form-data" class="js-admin-validate" novalidate>
                         @csrf
 
                         @include('admin.users._form', [

@@ -22,16 +22,12 @@
 
                     <form class="admin-listing-filters" id="categoriesFilters">
                         <div class="row align-items-end">
-                            <div class="col-md-4">
-                                <label for="filter_q">Search</label>
-                                <input type="search" name="q" id="filter_q" class="form-control" placeholder="Name or slug">
-                            </div>
                             <div class="col-md-3">
                                 <label for="filter_status">Status</label>
                                 <select name="status" id="filter_status" class="form-control">
                                     <option value="">All statuses</option>
-                                    <option value="1">Active</option>
-                                    <option value="0">Inactive</option>
+                                    <option value="1" @selected(request('status') === '1')>Active</option>
+                                    <option value="0" @selected(request('status') === '0')>Inactive</option>
                                 </select>
                             </div>
                             <div class="col-md-3 admin-listing-filter-actions">

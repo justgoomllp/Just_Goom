@@ -3,7 +3,13 @@
     <div class="admin-page-header-right">
         <ol class="admin-breadcrumb">
             <li><a href="{{ route('admin.dashboard') }}">Admin</a></li>
-            <li>@yield('page-title', 'Dashboard')</li>
+            <li>
+                @if (request()->routeIs('admin.dashboard'))
+                    <a href="{{ route('admin.dashboard') }}">CRM</a>
+                @else
+                    @yield('page-title', 'Dashboard')
+                @endif
+            </li>
         </ol>
         @yield('page-action')
     </div>

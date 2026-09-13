@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <h4 class="card-title">Edit User</h4>
 
-                    <form method="POST" action="{{ route('admin.users.update', $user) }}" enctype="multipart/form-data" novalidate>
+                    <form method="POST" action="{{ route('admin.users.update', $user) }}" enctype="multipart/form-data" class="js-admin-validate" novalidate>
                         @csrf
                         @method('PUT')
 

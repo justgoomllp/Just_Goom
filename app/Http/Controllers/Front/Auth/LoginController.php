@@ -10,10 +10,8 @@ class LoginController extends Controller
 {
     public function show()
     {
-        if (Auth::check()) {
-            return Auth::user()->isAdmin()
-                ? redirect()->route('admin.dashboard')
-                : redirect()->route(Auth::user()->hasActivePlan() ? 'front.users.dashboard' : 'front.users.profile');
+        if (Auth::check() && ! Auth::user()->isAdmin()) {
+            return redirect()->route(Auth::user()->hasActivePlan() ? 'front.users.dashboard' : 'front.users.profile');
         }
 
         return view('front.auth.login');

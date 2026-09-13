@@ -164,6 +164,26 @@ class UserService
         return $user;
     }
 
+    public function updateProfile(User $user, array $data): User
+    {
+        if (! empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
+        if (isset($data['profile']) && $data['profile'] instanceof UploadedFile) {
+            $this->deleteProfile($user->profile);
+            $data['profile'] = $this->uploadProfile($data['profile']);
+        } else {
+            unset($data['profile']);
+        }
+
+        $user->update($data);
+
+        return $user;
+    }
+
     public function updateStatus(User $user, int $status): User
     {
         $user->update(['status' => $status]);

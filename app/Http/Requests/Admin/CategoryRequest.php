@@ -38,4 +38,16 @@ class CategoryRequest extends FormRequest
             'status' => ['nullable', 'boolean'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Name is required.',
+            'slug.required' => 'Slug is required.',
+            'slug.unique' => 'This slug is already in use.',
+            'icon.image' => 'Upload a valid image file.',
+            'icon.mimes' => 'Upload a JPG, PNG, WEBP, or SVG image.',
+            'icon.max' => 'Image must be 2MB or smaller.',
+        ];
+    }
 }

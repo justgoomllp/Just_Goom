@@ -272,38 +272,6 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
   color: var(--admin-primary);
 }
 
-.admin-app .admin-search {
-  position: relative;
-  max-width: 260px;
-  width: 100%;
-  margin-left: 0.75rem;
-}
-
-.admin-app .admin-search i {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--admin-muted);
-  font-size: 1.05rem;
-}
-
-.admin-app .admin-search input {
-  width: 100%;
-  height: 38px;
-  border: 0;
-  border-radius: 6px;
-  background: #f3f6f9;
-  padding: 0.4rem 0.85rem 0.4rem 2.15rem;
-  font-size: 0.8125rem;
-  color: var(--admin-text);
-}
-
-.admin-app .admin-search input:focus {
-  outline: none;
-  box-shadow: 0 0 0 1px rgba(var(--admin-primary-rgb), 0.25);
-}
-
 .admin-app .navbar .navbar-nav-right {
   margin-left: auto;
 }
@@ -857,7 +825,8 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
   color: #cc9a2e;
 }
 
-.admin-app .form-group label .req {
+.admin-app .form-group label .req,
+.admin-auth .form-group label .req {
   color: var(--admin-danger);
   margin-left: 2px;
   font-weight: 600;
@@ -906,11 +875,13 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
 }
 
 .admin-app .form-control.is-invalid,
-.admin-app select.form-control.is-invalid {
+.admin-app select.form-control.is-invalid,
+.admin-auth .form-control.is-invalid {
   border-color: var(--admin-danger);
 }
 
-.admin-app .invalid-feedback {
+.admin-app .invalid-feedback,
+.admin-auth .invalid-feedback {
   display: none;
   color: var(--admin-danger);
   font-size: 0.75rem;
@@ -918,11 +889,14 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
 }
 
 .admin-app .is-invalid ~ .invalid-feedback,
-.admin-app .invalid-feedback.d-block {
+.admin-app .invalid-feedback.d-block,
+.admin-auth .is-invalid ~ .invalid-feedback,
+.admin-auth .invalid-feedback.d-block {
   display: block;
 }
 
-.admin-app .invalid-feedback.d-block:empty {
+.admin-app .invalid-feedback.d-block:empty,
+.admin-auth .invalid-feedback.d-block:empty {
   display: none;
 }
 
@@ -1482,7 +1456,8 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
   font-size: 0.75rem;
 }
 
-.admin-app .req {
+.admin-app .req,
+.admin-auth .req {
   color: var(--admin-danger);
 }
 
@@ -1499,10 +1474,6 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
   .admin-app .footer {
     padding-left: 0.85rem;
     padding-right: 0.85rem;
-  }
-
-  .admin-app .admin-search {
-    display: none;
   }
 
   .admin-auth {

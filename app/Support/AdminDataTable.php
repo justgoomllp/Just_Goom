@@ -32,7 +32,7 @@ class AdminDataTable
 
         $recordsTotal = (clone $query)->toBase()->getCountForPagination();
 
-        $search = trim((string) $request->input('search.value', ''));
+        $search = trim((string) ($request->input('search.value') ?: $request->input('q', '')));
         if ($search !== '' && ($searchColumns || $relationSearch)) {
             $like = '%'.$search.'%';
 

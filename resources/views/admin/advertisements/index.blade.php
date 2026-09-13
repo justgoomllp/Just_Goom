@@ -22,24 +22,20 @@
 
                     <form class="admin-listing-filters" id="advertisementsFilters">
                         <div class="row align-items-end">
-                            <div class="col-md-4">
-                                <label for="filter_q">Search</label>
-                                <input type="search" name="q" id="filter_q" class="form-control" placeholder="Title or link">
-                            </div>
                             <div class="col-md-3">
                                 <label for="filter_position">Position</label>
                                 <select name="position" id="filter_position" class="form-control">
                                     <option value="">All positions</option>
-                                    <option value="homepage">Homepage</option>
-                                    <option value="sidebar">Sidebar</option>
+                                    <option value="homepage" @selected(request('position') === 'homepage')>Homepage</option>
+                                    <option value="sidebar" @selected(request('position') === 'sidebar')>Sidebar</option>
                                 </select>
                             </div>
                             <div class="col-md-2">
                                 <label for="filter_is_active">Status</label>
                                 <select name="is_active" id="filter_is_active" class="form-control">
                                     <option value="">All statuses</option>
-                                    <option value="1">Active</option>
-                                    <option value="0">Inactive</option>
+                                    <option value="1" @selected(request('is_active') === '1')>Active</option>
+                                    <option value="0" @selected(request('is_active') === '0')>Inactive</option>
                                 </select>
                             </div>
                             <div class="col-md-3 admin-listing-filter-actions">

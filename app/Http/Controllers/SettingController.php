@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Admin\SettingRequest;
 use App\Services\Admin\SettingService;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class SettingController extends Controller
 {
@@ -20,16 +19,9 @@ class SettingController extends Controller
         ]);
     }
 
-    public function updateModules(Request $request)
+    public function updateModules(SettingRequest $request)
     {
-        $catalogKeys = array_keys($this->settingService->catalog());
-
-        $validated = $request->validate([
-            'modules' => ['nullable', 'array'],
-            'modules.*' => ['string', Rule::in($catalogKeys)],
-        ]);
-
-        $this->settingService->updateModules($validated['modules'] ?? []);
+        $this->settingService->updateModules($request->validated('modules') ?? []);
 
         return back()->with('success', 'Admin modules updated.');
     }

@@ -26,34 +26,30 @@
 
                     <form class="admin-listing-filters" id="usersFilters">
                         <div class="row align-items-end">
-                            <div class="col-md-3">
-                                <label for="filter_q">Search</label>
-                                <input type="search" name="q" id="filter_q" class="form-control" placeholder="Name, email, phone, referral">
-                            </div>
                             <div class="col-md-2">
                                 <label for="filter_type">Type</label>
                                 <select name="type" id="filter_type" class="form-control">
                                     <option value="">All types</option>
-                                    <option value="user">User</option>
-                                    <option value="agent">Agent</option>
-                                    <option value="admin">Admin</option>
+                                    <option value="user" @selected(request('type') === 'user')>User</option>
+                                    <option value="agent" @selected(request('type') === 'agent')>Agent</option>
+                                    <option value="admin" @selected(request('type') === 'admin')>Admin</option>
                                 </select>
                             </div>
                             <div class="col-md-2">
                                 <label for="filter_status">Status</label>
                                 <select name="status" id="filter_status" class="form-control">
                                     <option value="">All statuses</option>
-                                    <option value="1">Active</option>
-                                    <option value="0">Inactive</option>
-                                    <option value="2">Suspended</option>
+                                    <option value="1" @selected(request('status') === '1')>Active</option>
+                                    <option value="0" @selected(request('status') === '0')>Inactive</option>
+                                    <option value="2" @selected(request('status') === '2')>Suspended</option>
                                 </select>
                             </div>
                             <div class="col-md-2">
                                 <label for="filter_email_verified">Email</label>
                                 <select name="email_verified" id="filter_email_verified" class="form-control">
                                     <option value="">All</option>
-                                    <option value="1">Verified</option>
-                                    <option value="0">Pending</option>
+                                    <option value="1" @selected(request('email_verified') === '1')>Verified</option>
+                                    <option value="0" @selected(request('email_verified') === '0')>Pending</option>
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -61,7 +57,7 @@
                                 <select name="category_id" id="filter_category_id" class="form-control">
                                     <option value="">All categories</option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        <option value="{{ $category->id }}" @selected((string) request('category_id') === (string) $category->id)>{{ $category->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

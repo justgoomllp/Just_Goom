@@ -11,7 +11,7 @@
         <li class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
                 <i class="mdi mdi-view-dashboard-outline menu-icon"></i>
-                <span class="menu-title">Dashboards</span>
+                <span class="menu-title">Dashboard</span>
             </a>
         </li>
         @endif

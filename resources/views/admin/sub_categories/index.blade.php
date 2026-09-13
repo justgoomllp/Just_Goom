@@ -22,16 +22,12 @@
 
                     <form class="admin-listing-filters" id="subCategoriesFilters">
                         <div class="row align-items-end">
-                            <div class="col-md-4">
-                                <label for="filter_q">Search</label>
-                                <input type="search" name="q" id="filter_q" class="form-control" placeholder="Name, slug, or category">
-                            </div>
                             <div class="col-md-3">
                                 <label for="filter_category_id">Category</label>
                                 <select name="category_id" id="filter_category_id" class="form-control">
                                     <option value="">All categories</option>
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        <option value="{{ $category->id }}" @selected((string) request('category_id') === (string) $category->id)>{{ $category->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -39,8 +35,8 @@
                                 <label for="filter_status">Status</label>
                                 <select name="status" id="filter_status" class="form-control">
                                     <option value="">All statuses</option>
-                                    <option value="1">Active</option>
-                                    <option value="0">Inactive</option>
+                                    <option value="1" @selected(request('status') === '1')>Active</option>
+                                    <option value="0" @selected(request('status') === '0')>Inactive</option>
                                 </select>
                             </div>
                             <div class="col-md-3 admin-listing-filter-actions">

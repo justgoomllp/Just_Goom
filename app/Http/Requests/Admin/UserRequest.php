@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Models\City;
 use App\Models\Country;
 use App\Models\State;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -90,6 +91,8 @@ class UserRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'type.required' => 'Please select a type.',
+            'status.required' => 'Please select a status.',
             'fname.required' => 'First name is required.',
             'fname.min' => 'First name must be at least 2 characters.',
             'lname.required' => 'Last name is required.',
@@ -150,6 +153,21 @@ class UserRequest extends FormRequest
 
             if (! $city) {
                 $validator->errors()->add('city', 'Selected city does not belong to the chosen state.');
+            }
+        });
+
+        $validator->after(function (Validator $validator) {
+            $code = strtoupper(trim((string) $this->input('referral_code', '')));
+            if ($code === '') {
+                return;
+            }
+
+            $exists = User::withTrashed()
+                ->whereRaw('UPPER(referral_code) = ?', [$code])
+                ->exists();
+
+            if ($exists && ! $validator->errors()->has('referral_code')) {
+                $validator->errors()->add('referral_code', 'This referral code is already in use.');
             }
         });
     }

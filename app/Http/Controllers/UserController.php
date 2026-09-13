@@ -32,23 +32,32 @@ class UserController extends Controller
         return $this->userService->datatable($request);
     }
 
-    public function checkUnique(Request $request)
-    {
-        $email = strtolower(trim((string) $request->query('email', '')));
-        $referralCode = strtoupper(trim((string) $request->query('referral_code', '')));
-
-        return response()->json([
-            'email' => $email === '' || ! User::withTrashed()->where('email', $email)->exists(),
-            'referral_code' => $referralCode === '' || ! User::withTrashed()->where('referral_code', $referralCode)->exists(),
-        ]);
-    }
-
     public function create()
     {
         $categories = Category::where('status', 1)->orderBy('name')->get();
         $subCategories = SubCategory::where('status', 1)->orderBy('name')->get();
 
         return view('admin.users.create', compact('categories', 'subCategories'));
+    }
+
+    public function checkUnique(Request $request)
+    {
+        $email = strtolower(trim((string) $request->query('email', '')));
+        $referralCode = strtoupper(trim((string) $request->query('referral_code', '')));
+        $ignoreId = (int) $request->query('ignore', 0);
+
+        $emailQuery = User::withTrashed()->where('email', $email);
+        $referralQuery = User::withTrashed()->whereRaw('UPPER(referral_code) = ?', [$referralCode]);
+
+        if ($ignoreId > 0) {
+            $emailQuery->where('id', '!=', $ignoreId);
+            $referralQuery->where('id', '!=', $ignoreId);
+        }
+
+        return response()->json([
+            'email' => $email === '' || ! $emailQuery->exists(),
+            'referral_code' => $referralCode === '' || ! $referralQuery->exists(),
+        ]);
     }
 
     public function store(UserRequest $request)

@@ -28,5 +28,6 @@
             @yield('content')
         </div>
     </div>
+    <script src="{{ asset('assets/js/admin-validate.js') }}"></script>
 </body>
 </html>

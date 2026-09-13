@@ -20,6 +20,16 @@ class RedirectIfAuthenticated
 
             $user = Auth::guard($guard)->user();
 
+            if ($request->routeIs('front.login', 'front.login.submit', 'front.register', 'front.register.submit')) {
+                if ($user->isAdmin()) {
+                    return $next($request);
+                }
+
+                return redirect()->route(
+                    $user->hasActivePlan() ? 'front.users.dashboard' : 'front.users.profile'
+                );
+            }
+
             if ($request->is('admin/login*')) {
                 return redirect()->route('admin.dashboard');
             }
