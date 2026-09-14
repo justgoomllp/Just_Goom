@@ -1,4 +1,22 @@
-@php $ad = $ad ?? null; @endphp
+@php
+    $ad = $ad ?? null;
+    $users = $users ?? collect();
+@endphp
+
+<div class="form-group">
+    <label for="user_id">User <span class="req">*</span></label>
+    <select name="user_id" id="user_id" class="form-control @error('user_id') is-invalid @enderror" required data-required-message="Please select a user.">
+        <option value="">Select user</option>
+        @foreach ($users as $user)
+            <option value="{{ $user->id }}" {{ (string) old('user_id', $ad?->user_id) === (string) $user->id ? 'selected' : '' }}>
+                {{ $user->fullName() }} ({{ $user->email }})
+            </option>
+        @endforeach
+    </select>
+    @error('user_id')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
 
 <div class="form-group">
     <label for="title">Title <span class="req">*</span></label>
@@ -17,7 +35,7 @@
 
     @if (!empty($ad?->banner_image))
         <div class="mt-3">
-            <img src="{{ asset('storage/' . $ad->banner_image) }}" alt="{{ $ad->title }}" width="70" height="70" class="rounded border" style="object-fit: cover;">
+            <img src="{{ $ad->bannerUrl() }}" alt="{{ $ad->title }}" width="70" height="70" class="rounded border" style="object-fit: cover;">
         </div>
     @endif
 </div>

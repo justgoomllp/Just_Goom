@@ -15,6 +15,7 @@
 
                         @include('admin.advertisements._form', [
                             'ad' => null,
+                            'users' => $users,
                             'buttonText' => 'Save',
                         ])
                     </form>

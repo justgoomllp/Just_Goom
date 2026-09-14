@@ -16,6 +16,7 @@
 
                         @include('admin.advertisements._form', [
                             'ad' => $advertisement,
+                            'users' => $users,
                             'buttonText' => 'Update',
                         ])
                     </form>

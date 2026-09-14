@@ -336,7 +336,7 @@
       <div class="ads-banner-row" style="margin-top:28px;">
         @foreach($advertisements as $ad)
         <a href="{{ $ad->link_url ?? '#' }}" target="_blank" class="ad-banner-card" rel="noopener">
-          <img src="{{ asset('storage/' . $ad->banner_image) }}" alt="{{ $ad->title }}" loading="lazy">
+          <img src="{{ $ad->bannerUrl() }}" alt="{{ $ad->title }}" loading="lazy">
         </a>
         @endforeach
       </div>

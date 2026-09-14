@@ -27,6 +27,13 @@ class AdvertisementRequest extends FormRequest
         $isUpdate = $this->isMethod('put') || $this->isMethod('patch');
 
         return [
+            'user_id' => [
+                'required',
+                'integer',
+                Rule::exists('users', 'id')->where(function ($query) {
+                    $query->whereIn('type', ['user', 'agent']);
+                }),
+            ],
             'title' => ['required', 'string', 'max:200'],
             'banner_image' => [
                 $isUpdate ? 'nullable' : 'required',
@@ -46,6 +53,8 @@ class AdvertisementRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'user_id.required' => 'Please select a user.',
+            'user_id.exists' => 'Selected user is invalid.',
             'title.required' => 'Title is required.',
             'banner_image.required' => 'Banner image is required.',
             'banner_image.image' => 'Upload a valid image file.',

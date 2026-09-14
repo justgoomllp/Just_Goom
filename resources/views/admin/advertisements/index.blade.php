@@ -52,6 +52,8 @@
                                     <th>#</th>
                                     <th>Banner</th>
                                     <th>Title</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
                                     <th>Position</th>
                                     <th>Priority</th>
                                     <th>Period</th>
@@ -78,6 +80,8 @@
                 { data: 'DT_RowIndex', orderable: false, searchable: false, width: '50px' },
                 { data: 'banner', orderable: false, searchable: false },
                 { data: 'title' },
+                { data: 'name', orderable: false },
+                { data: 'email', orderable: false },
                 { data: 'position' },
                 { data: 'priority' },
                 { data: 'period' },
