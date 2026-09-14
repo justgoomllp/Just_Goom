@@ -42,8 +42,8 @@ class Advertisement extends Model
         }
 
         if (
-            str_starts_with($this->banner_image, 'advertisement/')
-            || str_starts_with($this->banner_image, 'uploads/')
+            str_starts_with($this->banner_image, 'uploads/')
+            || str_starts_with($this->banner_image, 'advertisement/')
         ) {
             return asset($this->banner_image);
         }

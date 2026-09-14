@@ -161,7 +161,7 @@ class AdvertisementController extends Controller
 
     private function storeBanner(UploadedFile $file): string
     {
-        $destination = public_path('advertisement');
+        $destination = public_path('uploads/advertisements');
         if (! File::isDirectory($destination)) {
             File::makeDirectory($destination, 0755, true);
         }
@@ -169,7 +169,7 @@ class AdvertisementController extends Controller
         $filename = time().'-'.Str::random(12).'.'.$file->getClientOriginalExtension();
         $file->move($destination, $filename);
 
-        return 'advertisement/'.$filename;
+        return 'uploads/advertisements/'.$filename;
     }
 
     private function deleteBanner(?string $path): void
