@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Support\SafeText;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
@@ -16,6 +17,7 @@ class CategoryRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
+            'name' => trim((string) $this->input('name', '')),
             'slug' => $this->slug ?: Str::slug((string) $this->name),
             'status' => $this->boolean('status'),
         ]);
@@ -27,7 +29,7 @@ class CategoryRequest extends FormRequest
         $categoryId = $category ? $category->id : null;
 
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', SafeText::titleRule()],
             'slug' => [
                 'required',
                 'string',
@@ -43,6 +45,7 @@ class CategoryRequest extends FormRequest
     {
         return [
             'name.required' => 'Name is required.',
+            'name.regex' => SafeText::titleMessage('Name'),
             'slug.required' => 'Slug is required.',
             'slug.unique' => 'This slug is already in use.',
             'icon.image' => 'Upload a valid image file.',

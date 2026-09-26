@@ -35,6 +35,7 @@
     </div>
 
     <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
+    <script src="{{ asset('assets/vendors/sweetalert/sweetalert.min.js') }}"></script>
     @stack('vendor-scripts')
     <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
     <script src="{{ asset('assets/js/hoverable-collapse.js') }}"></script>
@@ -44,6 +45,7 @@
     <script src="{{ asset('assets/js/todolist.js') }}"></script>
     <script src="{{ asset('assets/js/admin-ui.js') }}"></script>
     <script src="{{ asset('assets/js/admin-validate.js') }}"></script>
+    <script src="{{ asset('assets/js/admin-dirty-form.js') }}"></script>
     @stack('scripts')
 </body>
 </html>

@@ -1560,6 +1560,7 @@ html[data-theme="dark"] .user-tab.active {
 .jg-toast.show { opacity: 1; transform: translateY(0); }
 .jg-toast-success { background: #15803d; }
 .jg-toast-error { background: #b91c1c; }
+.jg-toast-warning { background: #b45309; }
 .jg-toast-info { background: #1d4ed8; }
 .jg-toast-message { flex: 1; }
 .jg-toast-close {

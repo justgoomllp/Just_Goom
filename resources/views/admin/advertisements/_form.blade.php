@@ -107,6 +107,6 @@
 </div>
 
 <div class="d-flex">
-    <button type="submit" class="btn btn-primary me-2">{{ $buttonText }}</button>
+    <button type="submit" class="btn btn-primary me-2" @if (!empty($ad)) disabled title="Change a field to enable Update" @endif>{{ $buttonText }}</button>
     <a href="{{ route('admin.advertisements.index') }}" class="btn btn-light">Cancel</a>
 </div>

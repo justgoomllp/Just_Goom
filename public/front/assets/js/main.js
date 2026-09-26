@@ -634,6 +634,8 @@ function initFlashToast() {
 
   if (window.JG_FLASH.success) {
     showToast(window.JG_FLASH.success, 'success');
+  } else if (window.JG_FLASH.warning) {
+    showToast(window.JG_FLASH.warning, 'warning');
   } else if (window.JG_FLASH.error) {
     showToast(window.JG_FLASH.error, 'error');
   } else if (window.JG_FLASH.info) {

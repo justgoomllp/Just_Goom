@@ -36,6 +36,7 @@ class SubscriptionController extends Controller
             'videos' => DB::table('videos')->where('user_id', $user->id)->whereNull('deleted_at')->count(),
             'projects' => $user->projects()->count(),
             'articles' => $user->articles()->count(),
+            'offers' => $user->offers()->count(),
         ];
 
         return view('front.users.subscription', [

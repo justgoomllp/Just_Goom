@@ -9,11 +9,21 @@
       <div class="user-stat-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px">
         <div class="user-stat-card green"><span class="user-stat-icon">🏷️</span><div class="user-stat-info"><h3>{{ $stats['total'] }}</h3><span>Total Offers</span></div></div>
         <div class="user-stat-card yellow"><span class="user-stat-icon">✅</span><div class="user-stat-info"><h3>{{ $stats['active'] }}</h3><span>Active</span></div></div>
-        <div class="user-stat-card grey"><span class="user-stat-icon">⏰</span><div class="user-stat-info"><h3>{{ $stats['expired'] }}</h3><span>Expired</span></div></div>
+        <div class="user-stat-card grey"><span class="user-stat-icon">📊</span><div class="user-stat-info"><h3>{{ (int) ($planQuota['limit'] ?? 0) > 0 ? max(0, (int) $planQuota['limit'] - (int) $planQuota['used']) : 0 }}</h3><span>Remaining Quota</span></div></div>
       </div>
       <div class="user-toolbar">
-        <span class="user-text-muted">Manage promotional offers displayed on the homepage</span>
-        <a href="{{ route('front.users.offer-form') }}" class="user-btn user-btn-primary">+ Create Offer</a>
+        <span class="user-text-muted">
+          @if((int) ($planQuota['limit'] ?? 0) > 0)
+            Offer quota: {{ (int) ($planQuota['used'] ?? 0) }} / {{ (int) $planQuota['limit'] }} used
+          @else
+            Upgrade your plan to create offers
+          @endif
+        </span>
+        @include('front.partials.users.plan-limit-add', [
+          'href' => route('front.users.offer-form'),
+          'label' => '+ Create Offer',
+          'quota' => $planQuota ?? [],
+        ])
       </div>
       <div class="user-table-wrap">
         <table class="user-table">

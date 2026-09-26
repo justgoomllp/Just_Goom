@@ -38,7 +38,11 @@
 
       <div class="user-toolbar">
         <span class="user-text-muted">{{ $copy['description'] }}</span>
-        <a href="{{ route('front.users.project-add') }}" class="user-btn user-btn-primary">{{ $copy['add_label'] }}</a>
+        @include('front.partials.users.plan-limit-add', [
+          'href' => route('front.users.project-add'),
+          'label' => $copy['add_label'],
+          'quota' => $planQuota ?? [],
+        ])
       </div>
       <div class="user-table-wrap">
         <table class="user-table">

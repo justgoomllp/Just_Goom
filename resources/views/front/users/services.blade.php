@@ -17,7 +17,11 @@
           <a href="{{ route('front.users.services', ['type' => 'service']) }}" class="user-table-action{{ request('type') === 'service' ? ' active' : '' }}" style="font-weight:{{ request('type') === 'service' ? '700' : '400' }}">Services</a> ·
           <a href="{{ route('front.users.services', ['type' => 'product']) }}" class="user-table-action{{ request('type') === 'product' ? ' active' : '' }}" style="font-weight:{{ request('type') === 'product' ? '700' : '400' }}">Products</a>
         </span>
-        <a href="{{ route('front.users.service-add') }}" class="user-btn user-btn-primary">+ Add Service / Product</a>
+        @include('front.partials.users.plan-limit-add', [
+          'href' => route('front.users.service-add'),
+          'label' => '+ Add Service / Product',
+          'quota' => $planQuota ?? [],
+        ])
       </div>
       <div class="user-table-wrap">
         <table class="user-table">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Front\Concerns\GuardsPlanLimits;
 use App\Http\Requests\Front\ServiceRequest;
 use App\Models\Service;
 use App\Services\Front\ServiceService;
@@ -10,6 +11,8 @@ use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
+    use GuardsPlanLimits;
+
     public function __construct(private ServiceService $serviceService)
     {
     }
@@ -22,16 +25,25 @@ class ServiceController extends Controller
         return view('front.users.services', [
             'services' => $this->serviceService->listForUser($user, $type),
             'stats' => $this->serviceService->statsForUser($user),
+            'planQuota' => $this->planQuota($user, 'services'),
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        if ($denied = $this->denyIfPlanLimitClosed($request->user(), 'services')) {
+            return $denied;
+        }
+
         return view('front.users.service-add');
     }
 
     public function store(ServiceRequest $request)
     {
+        if ($denied = $this->denyIfPlanLimitClosed($request->user(), 'services')) {
+            return $denied;
+        }
+
         $this->serviceService->store($request->user(), $request->validated());
 
         return redirect()

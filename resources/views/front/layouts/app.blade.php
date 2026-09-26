@@ -21,9 +21,17 @@
   @include($footerPartial ?? 'front.partials.footer')
 
   @stack('scripts')
-  @if(session('success') || session('error') || session('info'))
+  @php
+    $jgFlash = array_filter([
+        'success' => session('success'),
+        'error' => session('error'),
+        'info' => session('info'),
+        'warning' => session('warning'),
+    ]);
+  @endphp
+  @if($jgFlash !== [])
     <script>
-      window.JG_FLASH = @json(['success' => session('success'), 'error' => session('error'), 'info' => session('info')]);
+      window.JG_FLASH = @json($jgFlash);
     </script>
   @endif
   <script src="{{ asset('front/assets/js/main.js') }}"></script>

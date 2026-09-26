@@ -30,9 +30,7 @@
                                     <option value="0" @selected(request('status') === '0')>Inactive</option>
                                 </select>
                             </div>
-                            <div class="col-md-3 admin-listing-filter-actions">
-                                <button type="reset" class="btn btn-outline-secondary">Reset</button>
-                            </div>
+                            @include('admin.partials.listing-filter-actions')
                         </div>
                     </form>
 

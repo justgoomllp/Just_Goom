@@ -203,9 +203,7 @@
                                     <option value="2" @selected((string) ($filterStatus ?? request('status')) === '2')>Suspended</option>
                                 </select>
                             </div>
-                            <div class="col-12 col-md-auto admin-listing-filter-actions">
-                                <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary">Reset</a>
-                            </div>
+                            @include('admin.partials.listing-filter-actions', ['col' => 'col-12 col-md-auto'])
                         </div>
                     </form>
                     <div class="table-responsive">
@@ -372,14 +370,56 @@
     }
 
     if (form) {
-        form.querySelectorAll('select').forEach(function (select) {
-            select.addEventListener('change', applyDashboardFilters);
+        function dashboardFormIsActive() {
+            return Array.prototype.some.call(form.elements, function (field) {
+                if (!field.name || field.type === 'submit' || field.type === 'reset' || field.type === 'button') {
+                    return false;
+                }
+
+                return String(field.value || '').trim() !== '';
+            });
+        }
+
+        var lastAppliedHadValues = dashboardFormIsActive();
+
+        function syncDashboardFilterButtons() {
+            var formActive = dashboardFormIsActive();
+            var resetBtn = form.querySelector('button[type="reset"]');
+            var filterBtn = form.querySelector('button[type="submit"]');
+
+            if (resetBtn) {
+                resetBtn.disabled = !(formActive || lastAppliedHadValues);
+                resetBtn.title = resetBtn.disabled ? 'Select a filter to enable Reset' : 'Clear filters';
+            }
+
+            if (filterBtn) {
+                filterBtn.disabled = !formActive;
+                filterBtn.title = formActive ? 'Apply filters' : 'Select a filter to enable Filter';
+            }
+        }
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            if (!dashboardFormIsActive()) {
+                return;
+            }
+            applyDashboardFilters();
         });
 
-        var reset = form.querySelector('a.btn');
-        if (reset) {
-            reset.addEventListener('click', showDashboardLoader);
-        }
+        form.addEventListener('reset', function (event) {
+            if (lastAppliedHadValues) {
+                event.preventDefault();
+                showDashboardLoader();
+                window.location.assign(form.getAttribute('action') || window.location.pathname);
+                return;
+            }
+
+            window.setTimeout(syncDashboardFilterButtons, 0);
+        });
+
+        form.addEventListener('change', syncDashboardFilterButtons);
+        form.addEventListener('input', syncDashboardFilterButtons);
+        syncDashboardFilterButtons();
     }
 })();
 </script>

@@ -61,9 +61,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-12 col-md-auto admin-listing-filter-actions">
-                                <button type="reset" class="btn btn-outline-secondary">Reset</button>
-                            </div>
+                            @include('admin.partials.listing-filter-actions', ['col' => 'col-12 col-md-auto'])
                         </div>
                     </form>
 

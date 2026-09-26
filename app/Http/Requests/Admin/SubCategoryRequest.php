@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Support\SafeText;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -16,6 +17,7 @@ class SubCategoryRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
+            'name' => trim((string) $this->input('name', '')),
             'slug' => $this->slug ?: Str::slug((string) $this->name),
             'status' => $this->boolean('status'),
         ]);
@@ -31,7 +33,7 @@ class SubCategoryRequest extends FormRequest
                 'required',
                 Rule::exists('categories', 'id')->whereNull('deleted_at'),
             ],
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255', SafeText::titleRule()],
             'slug' => [
                 'required',
                 'string',
@@ -48,6 +50,7 @@ class SubCategoryRequest extends FormRequest
         return [
             'category_id.required' => 'Please select a category.',
             'name.required' => 'Name is required.',
+            'name.regex' => SafeText::titleMessage('Name'),
             'slug.required' => 'Slug is required.',
             'slug.unique' => 'This slug is already in use.',
             'icon.image' => 'Upload a valid image file.',

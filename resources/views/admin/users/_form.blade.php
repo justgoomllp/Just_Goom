@@ -2,7 +2,7 @@
     <div class="col-md-6">
         <div class="form-group">
             <label for="fname">First Name <span class="req">*</span></label>
-            <input type="text" name="fname" id="fname" value="{{ old('fname', $user->fname ?? '') }}" class="form-control @error('fname') is-invalid @enderror" placeholder="First name" required minlength="2" maxlength="100" data-required-message="First name is required." data-min-message="First name must be at least 2 characters.">
+            <input type="text" name="fname" id="fname" value="{{ old('fname', $user->fname ?? '') }}" class="form-control @error('fname') is-invalid @enderror" placeholder="First name" required minlength="2" maxlength="100" data-required-message="First name is required." data-min-message="First name must be at least 2 characters." pattern="{{ \App\Support\SafeText::PERSON_HTML }}" data-pattern-message="{{ \App\Support\SafeText::personMessage('First name') }}">
             @error('fname')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -11,7 +11,7 @@
     <div class="col-md-6">
         <div class="form-group">
             <label for="lname">Last Name <span class="req">*</span></label>
-            <input type="text" name="lname" id="lname" value="{{ old('lname', $user->lname ?? '') }}" class="form-control @error('lname') is-invalid @enderror" placeholder="Last name" required minlength="2" maxlength="100" data-required-message="Last name is required." data-min-message="Last name must be at least 2 characters.">
+            <input type="text" name="lname" id="lname" value="{{ old('lname', $user->lname ?? '') }}" class="form-control @error('lname') is-invalid @enderror" placeholder="Last name" required minlength="2" maxlength="100" data-required-message="Last name is required." data-min-message="Last name must be at least 2 characters." pattern="{{ \App\Support\SafeText::PERSON_HTML }}" data-pattern-message="{{ \App\Support\SafeText::personMessage('Last name') }}">
             @error('lname')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -197,7 +197,7 @@
 </div>
 
 <div class="d-flex">
-    <button type="submit" class="btn btn-primary me-2">{{ $buttonText }}</button>
+    <button type="submit" class="btn btn-primary me-2" @if (!empty($user)) disabled title="Change a field to enable Update" @endif>{{ $buttonText }}</button>
     <a href="{{ route('admin.users.index') }}" class="btn btn-light">Cancel</a>
 </div>
 
@@ -211,6 +211,13 @@
             var citySelect = document.getElementById('city');
             var locationWrap = document.getElementById('adminLocationFields');
             var apiBase = locationWrap ? (locationWrap.getAttribute('data-api-base') || '/api') : '/api';
+
+            function notifyHydrated() {
+                var form = (countrySelect && countrySelect.form) || (categorySelect && categorySelect.form);
+                if (form) {
+                    form.dispatchEvent(new CustomEvent('admin:form-hydrated', { bubbles: true }));
+                }
+            }
 
             if (categorySelect && subCategorySelect) {
                 function filterSubCategories() {
@@ -233,6 +240,7 @@
 
                 categorySelect.addEventListener('change', filterSubCategories);
                 filterSubCategories();
+                notifyHydrated();
             }
 
             if (!countrySelect || !stateSelect || !citySelect) {
@@ -284,6 +292,7 @@
                 resetSelect(stateSelect, 'Select state');
                 resetSelect(citySelect, 'Select city');
                 if (!countryId) {
+                    notifyHydrated();
                     return;
                 }
 
@@ -292,6 +301,8 @@
                     var stateId = selectedDataId(stateSelect);
                     if (stateId) {
                         loadCities(stateId, selectedCity);
+                    } else {
+                        notifyHydrated();
                     }
                 });
             }
@@ -299,11 +310,13 @@
             function loadCities(stateId, selectedCity) {
                 resetSelect(citySelect, 'Select city');
                 if (!stateId) {
+                    notifyHydrated();
                     return;
                 }
 
                 fetchJSON(apiBase + '/cities/' + stateId, function (cities) {
                     fillSelect(citySelect, cities, 'Select city', selectedCity || '');
+                    notifyHydrated();
                 });
             }
 
@@ -324,6 +337,8 @@
                         stateSelect.getAttribute('data-selected') || '',
                         citySelect.getAttribute('data-selected') || ''
                     );
+                } else {
+                    notifyHydrated();
                 }
             });
         })();

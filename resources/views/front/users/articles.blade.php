@@ -13,7 +13,11 @@
       </div>
       <div class="user-toolbar">
         <span class="user-text-muted">Publish articles to promote your expertise globally</span>
-        <a href="{{ route('front.users.article-form') }}" class="user-btn user-btn-primary">+ Write Article</a>
+        @include('front.partials.users.plan-limit-add', [
+          'href' => route('front.users.article-form'),
+          'label' => '+ Write Article',
+          'quota' => $planQuota ?? [],
+        ])
       </div>
       <div class="user-table-wrap">
         <table class="user-table">

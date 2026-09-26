@@ -10,6 +10,7 @@
   $formatUsd = [\App\Support\PricingCatalog::class, 'formatUsd'];
   $plans = \App\Support\PricingCatalog::plans();
   $comparisonRows = \App\Support\PricingCatalog::comparisonRows();
+  $uploadLimitRows = \App\Support\PricingCatalog::uploadLimitRows();
   $addons = \App\Support\PricingCatalog::addons();
 @endphp
 
@@ -66,7 +67,37 @@
       </div>
     </section>
 
-    <section class="section section-alt">
+    <!-- <section class="section section-alt">
+      <div class="container">
+        <div class="plans-comparison">
+          <h3>Upload limits by plan</h3>
+          <p class="pricing-limits-note">Content and file-size limits for Silver, Gold, and Platinum listings.</p>
+          <div class="comparison-table-wrap">
+            <table class="comparison-table pricing-comparison-table pricing-limits-table">
+              <thead>
+                <tr>
+                  <th>Limit</th>
+                  @foreach($plans as $plan)
+                    <th>{{ $plan['name'] }} Plan</th>
+                  @endforeach
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($uploadLimitRows as $row)
+                  <tr>
+                    @foreach($row as $index => $cell)
+                      <td{{ $index === 0 ? '' : ' class="pricing-limit-value"' }}>{{ $cell }}</td>
+                    @endforeach
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
       <div class="container">
         <div class="plans-comparison">
           <h3>Compare plans at a glance</h3>
@@ -125,7 +156,7 @@
           <a href="{{ route('front.contact') }}" class="btn btn-outline-primary">Ask about add-ons</a>
         </div>
       </div>
-    </section>
+    </section> -->
 
     <section class="section section-alt">
       <div class="container">

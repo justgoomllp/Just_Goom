@@ -14,6 +14,11 @@ class SafeText
     /** Letters, numbers, and spaces only (titles, company-like names). */
     public const TITLE = '/^[a-zA-Z0-9]+(?:\s[a-zA-Z0-9]+)*$/';
 
+    /** HTML pattern attribute (no anchors). Admin JS wraps this with ^(?:...)$. */
+    public const PERSON_HTML = '[a-zA-Z]+(?: [a-zA-Z]+)*';
+
+    public const TITLE_HTML = '[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*';
+
     public static function personRule(): string
     {
         return 'regex:'.self::PERSON;

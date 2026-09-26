@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-use App\Models\UserPlan;
+use App\Http\Controllers\Front\Concerns\GuardsPlanLimits;
+use App\Services\Front\PlanLimitService;
 use App\Support\SafeText;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,8 @@ use Illuminate\Support\Str;
 
 class VideoController extends Controller
 {
+    use GuardsPlanLimits;
+
     public function index(Request $request)
     {
         $user = $request->user();
@@ -32,12 +35,18 @@ class VideoController extends Controller
             'max_size_mb' => $planLimits['max_video_size_mb'],
         ];
 
-        return view('front.users.videos', compact('videos', 'stats'));
+        $planQuota = $this->planQuota($user, 'videos');
+
+        return view('front.users.videos', compact('videos', 'stats', 'planQuota'));
     }
 
     public function create(Request $request)
     {
         $planLimits = $this->getPlanLimits($request->user());
+
+        if ($denied = $this->denyIfPlanLimitClosed($request->user(), 'videos')) {
+            return $denied;
+        }
 
         return view('front.users.video-form', [
             'video' => null,
@@ -48,16 +57,12 @@ class VideoController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-        $planLimits = $this->getPlanLimits($user);
 
-        $currentCount = DB::table('videos')
-            ->where('user_id', $user->id)
-            ->whereNull('deleted_at')
-            ->count();
-
-        if ($planLimits['max_video_count'] > 0 && $currentCount >= $planLimits['max_video_count']) {
-            return back()->with('error', "You have reached your video upload limit ({$planLimits['max_video_count']} videos). Please upgrade your plan.");
+        if ($denied = $this->denyIfPlanLimitClosed($user, 'videos')) {
+            return $denied;
         }
+
+        $planLimits = $this->getPlanLimits($user);
 
         $maxSize = $planLimits['max_video_size_mb'] > 0
             ? $planLimits['max_video_size_mb'] * 1024
@@ -161,21 +166,11 @@ class VideoController extends Controller
 
     private function getPlanLimits($user): array
     {
-        $activePlan = UserPlan::where('user_id', $user->id)
-            ->where('next_purchase_date', '>=', now()->toDateString())
-            ->orderByDesc('next_purchase_date')
-            ->first();
-
-        if ($activePlan && $activePlan->plan) {
-            return [
-                'max_video_count' => $activePlan->plan->max_video_count ?? 0,
-                'max_video_size_mb' => $activePlan->plan->max_video_size_mb ?? 0,
-            ];
-        }
+        $limits = app(PlanLimitService::class);
 
         return [
-            'max_video_count' => 0,
-            'max_video_size_mb' => 0,
+            'max_video_count' => $limits->limitFor($user, 'videos'),
+            'max_video_size_mb' => (int) ($user->activeUserPlan()?->plan?->max_video_size_mb ?? 0),
         ];
     }
 

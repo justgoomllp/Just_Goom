@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Front\Concerns\GuardsPlanLimits;
 use App\Models\Project;
 use App\Support\ProjectSection;
 use App\Support\SafeText;
@@ -13,6 +14,8 @@ use Illuminate\Validation\Rule;
 
 class ProjectController extends Controller
 {
+    use GuardsPlanLimits;
+
     public function index(Request $request)
     {
         $user = $request->user()->loadMissing('category');
@@ -26,13 +29,19 @@ class ProjectController extends Controller
             ->withQueryString();
 
         $stats = $this->buildStats($user, $sectionType);
+        $planQuota = $this->planQuota($user, 'projects');
 
-        return view('front.users.projects', compact('projects', 'stats', 'sectionType', 'copy'));
+        return view('front.users.projects', compact('projects', 'stats', 'sectionType', 'copy', 'planQuota'));
     }
 
     public function create(Request $request)
     {
         $user = $request->user()->loadMissing('category');
+
+        if ($denied = $this->denyIfPlanLimitClosed($user, 'projects')) {
+            return $denied;
+        }
+
         $sectionType = ProjectSection::forUser($user);
         $copy = ProjectSection::copy($sectionType);
 
@@ -42,6 +51,11 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $user = $request->user()->loadMissing('category');
+
+        if ($denied = $this->denyIfPlanLimitClosed($user, 'projects')) {
+            return $denied;
+        }
+
         $sectionType = ProjectSection::forUser($user);
         $validated = $this->validateProject($request, $sectionType, false);
 

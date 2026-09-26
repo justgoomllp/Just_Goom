@@ -8076,6 +8076,7 @@ body {
 }
 .jg-toast-success { background: #15803d; border: 1px solid #166534; }
 .jg-toast-error { background: #b91c1c; border: 1px solid #991b1b; }
+.jg-toast-warning { background: #b45309; border: 1px solid #92400e; }
 .jg-toast-info { background: #1d4ed8; border: 1px solid #1e40af; }
 .jg-toast-message { flex: 1; }
 .jg-toast-close {
@@ -8735,6 +8736,15 @@ body {
   font-size: 13px;
   font-weight: 600;
   color: var(--primary);
+}
+.pricing-limits-note {
+  margin: -8px 0 20px;
+  color: var(--text-light);
+  font-size: 14px;
+}
+.pricing-limits-table td.pricing-limit-value {
+  font-weight: 700;
+  color: var(--primary-dark);
 }
 .pricing-cell-empty { color: var(--text-light); }
 .pricing-cell-yes {

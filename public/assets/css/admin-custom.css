@@ -567,6 +567,14 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
   border-radius: 0.25rem;
 }
 
+.admin-app .btn-outline-secondary:disabled,
+.admin-app .btn-outline-secondary.disabled,
+.admin-app .btn-outline-secondary:disabled:hover,
+.admin-app .btn-outline-secondary.disabled:hover {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .admin-app .admin-listing-filters .row > [class*="col-"] {
   margin-bottom: 0.75rem;
 }
@@ -980,6 +988,17 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
 .admin-app .btn-primary:focus {
   background: var(--admin-primary-dark);
   color: #fff;
+}
+
+.admin-app .btn-primary:disabled,
+.admin-app .btn-primary.disabled,
+.admin-app .btn-primary:disabled:hover,
+.admin-app .btn-primary.disabled:hover {
+  background: var(--admin-primary);
+  color: #fff;
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .admin-app .btn-light {

@@ -13,7 +13,11 @@
       </div>
       <div class="user-toolbar">
         <span class="user-text-muted">Manage documents shown on your public profile</span>
-        <a href="{{ route('front.users.document-add') }}" class="user-btn user-btn-primary">+ Upload Document</a>
+        @include('front.partials.users.plan-limit-add', [
+          'href' => route('front.users.document-add'),
+          'label' => '+ Upload Document',
+          'quota' => $planQuota ?? [],
+        ])
       </div>
       <div class="user-table-wrap">
         <table class="user-table">

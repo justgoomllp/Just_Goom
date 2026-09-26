@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Front\Concerns\GuardsPlanLimits;
 use App\Http\Requests\Front\DocumentRequest;
 use App\Models\Document;
 use App\Services\Front\DocumentService;
@@ -10,6 +11,8 @@ use Illuminate\Http\Request;
 
 class DocumentController extends Controller
 {
+    use GuardsPlanLimits;
+
     public function __construct(private DocumentService $documentService)
     {
     }
@@ -22,16 +25,25 @@ class DocumentController extends Controller
         return view('front.users.documents', [
             'documents' => $this->documentService->listForUser($user, $perPage),
             'stats' => $this->documentService->statsForUser($user),
+            'planQuota' => $this->planQuota($user, 'documents'),
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        if ($denied = $this->denyIfPlanLimitClosed($request->user(), 'documents')) {
+            return $denied;
+        }
+
         return view('front.users.document-add');
     }
 
     public function store(DocumentRequest $request)
     {
+        if ($denied = $this->denyIfPlanLimitClosed($request->user(), 'documents')) {
+            return $denied;
+        }
+
         $this->documentService->store($request->user(), $request->validated());
 
         return redirect()

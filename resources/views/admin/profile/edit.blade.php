@@ -24,7 +24,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="fname">First name <span class="req">*</span></label>
-                                    <input type="text" name="fname" id="fname" class="form-control @error('fname') is-invalid @enderror" value="{{ old('fname', $user->fname) }}" placeholder="First name" required minlength="2" maxlength="100" data-required-message="First name is required." data-min-message="First name must be at least 2 characters.">
+                                    <input type="text" name="fname" id="fname" class="form-control @error('fname') is-invalid @enderror" value="{{ old('fname', $user->fname) }}" placeholder="First name" required minlength="2" maxlength="100" data-required-message="First name is required." data-min-message="First name must be at least 2 characters." pattern="{{ \App\Support\SafeText::PERSON_HTML }}" data-pattern-message="{{ \App\Support\SafeText::personMessage('First name') }}">
                                     @error('fname')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -33,7 +33,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="lname">Last name <span class="req">*</span></label>
-                                    <input type="text" name="lname" id="lname" class="form-control @error('lname') is-invalid @enderror" value="{{ old('lname', $user->lname) }}" placeholder="Last name" required minlength="2" maxlength="100" data-required-message="Last name is required." data-min-message="Last name must be at least 2 characters.">
+                                    <input type="text" name="lname" id="lname" class="form-control @error('lname') is-invalid @enderror" value="{{ old('lname', $user->lname) }}" placeholder="Last name" required minlength="2" maxlength="100" data-required-message="Last name is required." data-min-message="Last name must be at least 2 characters." pattern="{{ \App\Support\SafeText::PERSON_HTML }}" data-pattern-message="{{ \App\Support\SafeText::personMessage('Last name') }}">
                                     @error('lname')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

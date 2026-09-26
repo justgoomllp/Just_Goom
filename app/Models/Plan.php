@@ -19,6 +19,11 @@ class Plan extends Model
         'max_video_count',
         'max_project_count',
         'max_article_count',
+        'max_team_count',
+        'max_service_count',
+        'max_document_count',
+        'max_document_size_mb',
+        'max_offer_count',
     ];
 
     protected $casts = [
@@ -28,6 +33,11 @@ class Plan extends Model
         'max_video_count' => 'integer',
         'max_project_count' => 'integer',
         'max_article_count' => 'integer',
+        'max_team_count' => 'integer',
+        'max_service_count' => 'integer',
+        'max_document_count' => 'integer',
+        'max_document_size_mb' => 'integer',
+        'max_offer_count' => 'integer',
     ];
 
     public function userPlans(): HasMany

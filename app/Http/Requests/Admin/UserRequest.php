@@ -6,6 +6,7 @@ use App\Models\City;
 use App\Models\Country;
 use App\Models\State;
 use App\Models\User;
+use App\Support\SafeText;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -48,8 +49,8 @@ class UserRequest extends FormRequest
 
         $rules = [
             'type' => ['required', Rule::in(['user', 'agent', 'admin'])],
-            'fname' => ['required', 'string', 'min:2', 'max:100'],
-            'lname' => ['required', 'string', 'min:2', 'max:100'],
+            'fname' => ['required', 'string', 'min:2', 'max:100', SafeText::personRule()],
+            'lname' => ['required', 'string', 'min:2', 'max:100', SafeText::personRule()],
             'password' => [$isUpdate ? 'nullable' : 'required', 'string', 'min:6', 'max:255'],
             'phone' => ['required', 'digits:10'],
             'country' => ['required', 'string', 'max:100', Rule::exists('countries', 'name')],
@@ -95,8 +96,10 @@ class UserRequest extends FormRequest
             'status.required' => 'Please select a status.',
             'fname.required' => 'First name is required.',
             'fname.min' => 'First name must be at least 2 characters.',
+            'fname.regex' => SafeText::personMessage('First name'),
             'lname.required' => 'Last name is required.',
             'lname.min' => 'Last name must be at least 2 characters.',
+            'lname.regex' => SafeText::personMessage('Last name'),
             'email.required' => 'Email is required.',
             'email.email' => 'Enter a valid email address.',
             'email.unique' => 'This email is already registered.',

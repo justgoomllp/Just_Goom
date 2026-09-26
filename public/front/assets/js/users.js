@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   initUserUpload();
   initUserTabs();
   initUserFlashToast();
+  initPlanLimitClosed();
 });
 
 function initUserModals() {
@@ -303,11 +304,22 @@ function showUserToast(message, type) {
   setTimeout(removeToast, 6000);
 }
 
+function initPlanLimitClosed() {
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-jg-limit-closed]');
+    if (!btn) return;
+    e.preventDefault();
+    showUserToast(btn.getAttribute('data-jg-limit-closed'), 'warning');
+  });
+}
+
 function initUserFlashToast() {
   if (!window.JG_FLASH) return;
 
   if (window.JG_FLASH.success) {
     showUserToast(window.JG_FLASH.success, 'success');
+  } else if (window.JG_FLASH.warning) {
+    showUserToast(window.JG_FLASH.warning, 'warning');
   } else if (window.JG_FLASH.error) {
     showUserToast(window.JG_FLASH.error, 'error');
   } else if (window.JG_FLASH.info) {

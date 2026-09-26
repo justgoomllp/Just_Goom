@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Front\Concerns\GuardsPlanLimits;
 use App\Models\Offer;
 use App\Support\SafeText;
 use Illuminate\Http\Request;
@@ -12,6 +13,8 @@ use Illuminate\Support\Str;
 
 class OfferController extends Controller
 {
+    use GuardsPlanLimits;
+
     public function index(Request $request)
     {
         $user = $request->user();
@@ -27,17 +30,26 @@ class OfferController extends Controller
             'active' => $user->offers()->active()->count(),
             'expired' => $user->offers()->where('end_date', '<', now()->toDateString())->count(),
         ];
+        $planQuota = $this->planQuota($user, 'offers');
 
-        return view('front.users.offers', compact('offers', 'stats'));
+        return view('front.users.offers', compact('offers', 'stats', 'planQuota'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        if ($denied = $this->denyIfPlanLimitClosed($request->user(), 'offers')) {
+            return $denied;
+        }
+
         return view('front.users.offer-form', ['offer' => null]);
     }
 
     public function store(Request $request)
     {
+        if ($denied = $this->denyIfPlanLimitClosed($request->user(), 'offers')) {
+            return $denied;
+        }
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:200', SafeText::titleRule()],
             'description' => 'nullable|string|max:2000',

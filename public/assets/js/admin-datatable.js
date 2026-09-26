@@ -127,20 +127,84 @@
         }, options.dt || {}));
 
         if (filterForm) {
+            function isFilterField(field) {
+                if (!field || !field.name || field.disabled) {
+                    return false;
+                }
+
+                if (field.type === 'submit' || field.type === 'reset' || field.type === 'button') {
+                    return false;
+                }
+
+                return true;
+            }
+
+            function filterFormIsActive(form) {
+                return Array.prototype.some.call(form.elements, function (field) {
+                    if (!isFilterField(field)) {
+                        return false;
+                    }
+
+                    if (field.type === 'checkbox' || field.type === 'radio') {
+                        return field.checked;
+                    }
+
+                    return String(field.value || '').trim() !== '';
+                });
+            }
+
+            var hasFilterButton = !!filterForm.querySelector('button[type="submit"]');
+            var lastAppliedHadValues = filterFormIsActive(filterForm);
+
+            function syncFilterButtons(form) {
+                var formActive = filterFormIsActive(form);
+                var resetBtn = form.querySelector('button[type="reset"]');
+                var filterBtn = form.querySelector('button[type="submit"]');
+
+                if (resetBtn) {
+                    resetBtn.disabled = !(formActive || lastAppliedHadValues);
+                    resetBtn.title = resetBtn.disabled ? 'Select a filter to enable Reset' : 'Clear filters';
+                }
+
+                if (filterBtn) {
+                    filterBtn.disabled = !formActive;
+                    filterBtn.title = formActive ? 'Apply filters' : 'Select a filter to enable Filter';
+                }
+            }
+
+            syncFilterButtons(filterForm);
+
             filterForm.addEventListener('submit', function (event) {
                 event.preventDefault();
+                if (!filterFormIsActive(filterForm)) {
+                    return;
+                }
+                lastAppliedHadValues = true;
+                syncFilterButtons(filterForm);
                 table.ajax.reload(null, true);
             });
 
             filterForm.addEventListener('reset', function () {
                 window.setTimeout(function () {
+                    lastAppliedHadValues = false;
+                    syncFilterButtons(filterForm);
                     table.ajax.reload(null, true);
                 }, 0);
             });
 
+            filterForm.addEventListener('input', function () {
+                syncFilterButtons(filterForm);
+            });
+
+            filterForm.addEventListener('change', function () {
+                syncFilterButtons(filterForm);
+            });
+
             Array.prototype.forEach.call(filterForm.querySelectorAll('select'), function (select) {
                 select.addEventListener('change', function () {
-                    table.ajax.reload(null, true);
+                    if (!hasFilterButton) {
+                        table.ajax.reload(null, true);
+                    }
                 });
             });
 
@@ -148,6 +212,9 @@
             if (searchInput) {
                 searchInput.addEventListener('input', function () {
                     window.clearTimeout(searchTimer);
+                    if (hasFilterButton) {
+                        return;
+                    }
                     searchTimer = window.setTimeout(function () {
                         table.ajax.reload(null, true);
                     }, 400);

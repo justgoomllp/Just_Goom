@@ -13,7 +13,11 @@
       </div>
       <div class="user-toolbar">
         <span class="user-text-muted">Manage staff shown on your public profile</span>
-        <a href="{{ route('front.users.team-add') }}" class="user-btn user-btn-primary">+ Add Team Member</a>
+        @include('front.partials.users.plan-limit-add', [
+          'href' => route('front.users.team-add'),
+          'label' => '+ Add Team Member',
+          'quota' => $planQuota ?? [],
+        ])
       </div>
       <div class="user-table-wrap">
         <table class="user-table">

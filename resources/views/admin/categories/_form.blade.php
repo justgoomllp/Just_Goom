@@ -1,6 +1,6 @@
 <div class="form-group">
     <label for="name">Name <span class="req">*</span></label>
-    <input type="text" name="name" id="name" value="{{ old('name', $category->name ?? '') }}" class="form-control @error('name') is-invalid @enderror" placeholder="Category name" required maxlength="255" data-required-message="Name is required.">
+    <input type="text" name="name" id="name" value="{{ old('name', $category->name ?? '') }}" class="form-control @error('name') is-invalid @enderror" placeholder="Category name" required maxlength="255" data-required-message="Name is required." pattern="{{ \App\Support\SafeText::TITLE_HTML }}" data-pattern-message="{{ \App\Support\SafeText::titleMessage('Name') }}">
     @error('name')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror
@@ -41,7 +41,7 @@
 </div>
 
 <div class="d-flex">
-    <button type="submit" class="btn btn-primary me-2">{{ $buttonText }}</button>
+    <button type="submit" class="btn btn-primary me-2" @if (!empty($category)) disabled title="Change a field to enable Update" @endif>{{ $buttonText }}</button>
     <a href="{{ route('admin.categories.index') }}" class="btn btn-light">Cancel</a>
 </div>
 

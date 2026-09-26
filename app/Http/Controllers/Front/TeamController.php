@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Http\Controllers\Front\Concerns\GuardsPlanLimits;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\TeamMemberRequest;
 use App\Models\Team;
@@ -10,6 +11,8 @@ use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
+    use GuardsPlanLimits;
+
     public function __construct(private TeamService $teamService)
     {
     }
@@ -19,17 +22,26 @@ class TeamController extends Controller
         $user = $request->user();
         $members = $this->teamService->listForUser($user);
         $stats = $this->teamService->statsForUser($user);
+        $planQuota = $this->planQuota($user, 'team');
 
-        return view('front.users.team', compact('members', 'stats'));
+        return view('front.users.team', compact('members', 'stats', 'planQuota'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        if ($denied = $this->denyIfPlanLimitClosed($request->user(), 'team')) {
+            return $denied;
+        }
+
         return view('front.users.team-add');
     }
 
     public function store(TeamMemberRequest $request)
     {
+        if ($denied = $this->denyIfPlanLimitClosed($request->user(), 'team')) {
+            return $denied;
+        }
+
         $this->teamService->store($request->user(), $request->validated());
 
         return redirect()

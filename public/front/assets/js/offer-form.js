@@ -136,6 +136,17 @@
         e.preventDefault();
         var firstInvalid = form.querySelector('.is-invalid');
         if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      if (submitBtn && form.getAttribute('data-submitting') === '1') {
+        e.preventDefault();
+        return;
+      }
+
+      if (submitBtn) {
+        form.setAttribute('data-submitting', '1');
+        submitBtn.disabled = true;
       }
     });
   });

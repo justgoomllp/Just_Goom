@@ -19,7 +19,11 @@
             Upgrade your plan to upload videos
           @endif
         </span>
-        <a href="{{ route('front.users.video-form') }}" class="user-btn user-btn-primary">+ Upload Video</a>
+        @include('front.partials.users.plan-limit-add', [
+          'href' => route('front.users.video-form'),
+          'label' => '+ Upload Video',
+          'quota' => $planQuota ?? [],
+        ])
       </div>
       <div class="user-table-wrap">
         <table class="user-table">

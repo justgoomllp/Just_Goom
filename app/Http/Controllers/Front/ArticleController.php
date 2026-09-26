@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Front\Concerns\GuardsPlanLimits;
 use App\Models\Article;
 use App\Support\SafeText;
 use Illuminate\Http\Request;
@@ -12,6 +13,8 @@ use Illuminate\Support\Str;
 
 class ArticleController extends Controller
 {
+    use GuardsPlanLimits;
+
     public function listing()
     {
         $articles = Article::published()
@@ -38,8 +41,9 @@ class ArticleController extends Controller
             'published' => $user->articles()->where('status', 'published')->count(),
             'drafts' => $user->articles()->where('status', 'draft')->count(),
         ];
+        $planQuota = $this->planQuota($user, 'articles');
 
-        return view('front.users.articles', compact('articles', 'stats'));
+        return view('front.users.articles', compact('articles', 'stats', 'planQuota'));
     }
 
     public function show(string $slug)
@@ -74,13 +78,21 @@ class ArticleController extends Controller
         ));
     }
 
-    public function create()
+    public function create(Request $request)
     {
+        if ($denied = $this->denyIfPlanLimitClosed($request->user(), 'articles')) {
+            return $denied;
+        }
+
         return view('front.users.article-form', ['article' => null]);
     }
 
     public function store(Request $request)
     {
+        if ($denied = $this->denyIfPlanLimitClosed($request->user(), 'articles')) {
+            return $denied;
+        }
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:300', SafeText::titleRule()],
             'body' => 'required|string',

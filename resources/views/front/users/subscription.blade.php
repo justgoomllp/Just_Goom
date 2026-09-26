@@ -110,6 +110,33 @@
       @endif
 
       <div class="user-panel">
+        <div class="user-panel-head">Upload limits by plan</div>
+        <div class="user-panel-body" style="padding:0">
+          <div class="user-comparison-wrap">
+            <table class="user-table user-pricing-table" style="border:none">
+              <thead>
+                <tr>
+                  <th>Limit</th>
+                  @foreach($plans as $plan)
+                    <th>{{ $plan->name }} Plan</th>
+                  @endforeach
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($uploadLimitRows as $row)
+                  <tr>
+                    @foreach($row as $cell)
+                      <td>{{ $cell }}</td>
+                    @endforeach
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="user-panel">
         <div class="user-panel-head">Compare plans at a glance</div>
         <div class="user-panel-body" style="padding:0">
           <div class="user-comparison-wrap">
@@ -170,7 +197,7 @@
               <thead><tr><th>Feature</th><th>Used</th><th>Limit</th></tr></thead>
               <tbody>
                 <tr>
-                  <td>Services</td>
+                  <td>Products and services</td>
                   <td>{{ $usage['services'] }}</td>
                   <td>{{ $limits['services'] ?? '—' }}</td>
                 </tr>
@@ -198,6 +225,21 @@
                   <td>Articles</td>
                   <td>{{ $usage['articles'] }}</td>
                   <td>{{ $limits['articles'] ?? '—' }}</td>
+                </tr>
+                <tr>
+                  <td>Offers</td>
+                  <td>{{ $usage['offers'] ?? 0 }}</td>
+                  <td>{{ $limits['offers'] ?? '—' }}</td>
+                </tr>
+                <tr>
+                  <td>Document max size (PDF)</td>
+                  <td>—</td>
+                  <td>{{ $limits['document_size'] ?? '5 MB' }}</td>
+                </tr>
+                <tr>
+                  <td>Video upload max size</td>
+                  <td>—</td>
+                  <td>{{ $limits['video_size'] ?? '5 MB' }}</td>
                 </tr>
               </tbody>
             </table>
