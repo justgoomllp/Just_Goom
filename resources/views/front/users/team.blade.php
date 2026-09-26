@@ -6,9 +6,8 @@
 
 @section('content')
 <div class="user-content">
-      <div class="user-stat-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px">
+      <div class="user-stat-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:20px">
         <div class="user-stat-card green"><span class="user-stat-icon">👥</span><div class="user-stat-info"><h3>{{ $stats['total'] }}</h3><span>Team Members</span></div></div>
-        <div class="user-stat-card yellow"><span class="user-stat-icon">✅</span><div class="user-stat-info"><h3>{{ $stats['active'] }}</h3><span>Active</span></div></div>
         <div class="user-stat-card grey"><span class="user-stat-icon">⭐</span><div class="user-stat-info"><h3>{{ $stats['primary'] }}</h3><span>Primary Contact</span></div></div>
       </div>
       <div class="user-toolbar">
@@ -21,7 +20,7 @@
       </div>
       <div class="user-table-wrap">
         <table class="user-table">
-          <thead><tr><th>Name</th><th>Role</th><th>Department</th><th>Email</th><th>Phone</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Name</th><th>Role</th><th>Department</th><th>Email</th><th>Phone</th><th>Action</th></tr></thead>
           <tbody>
             @forelse($members as $member)
             <tr>
@@ -36,14 +35,6 @@
               <td>{{ $member->email }}</td>
               <td>{{ $member->phone }}</td>
               <td>
-                @include('front.partials.users.status-toggle', [
-                  'action' => route('front.users.team.status', $member),
-                  'active' => $member->isActive(),
-                  'label' => $member->isActive() ? 'Active' : 'Inactive',
-                  'statusValue' => $member->isActive() ? '0' : '1',
-                ])
-              </td>
-              <td>
                 <a href="{{ route('front.users.team.edit', $member) }}" class="user-table-action">Edit</a>
                 ·
                 <form method="POST" action="{{ route('front.users.team.destroy', $member) }}" style="display:inline" onsubmit="return confirm('Remove this team member?');">
@@ -55,7 +46,7 @@
             </tr>
             @empty
             <tr>
-              <td colspan="7" class="user-text-muted" style="text-align:center;padding:24px;">No team members yet. Add your first team member to show them on your public profile.</td>
+              <td colspan="6" class="user-text-muted" style="text-align:center;padding:24px;">No team members yet. Add your first team member to show them on your public profile.</td>
             </tr>
             @endforelse
           </tbody>

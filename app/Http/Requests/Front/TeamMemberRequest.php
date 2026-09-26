@@ -28,7 +28,6 @@ class TeamMemberRequest extends FormRequest
             'short_info' => $this->filled('short_info') ? trim((string) $this->input('short_info')) : null,
             'department_other' => $departmentOther !== '' ? $departmentOther : null,
             'is_primary' => $this->boolean('is_primary'),
-            'status' => (string) $this->input('status', $this->isMethod('post') ? '0' : '1'),
             'department' => $department !== '' ? $department : null,
         ]);
     }
@@ -43,7 +42,6 @@ class TeamMemberRequest extends FormRequest
             'department_select' => ['nullable', 'string'],
             'department_other' => ['nullable', 'required_if:department_select,__other__', 'string', 'max:100', SafeText::titleRule()],
             'department' => ['nullable', 'string', 'max:100', SafeText::titleRule()],
-            'status' => ['required', 'in:0,1'],
             'short_info' => ['nullable', 'string', 'max:5000'],
             'is_primary' => ['nullable', 'boolean'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:2048'],

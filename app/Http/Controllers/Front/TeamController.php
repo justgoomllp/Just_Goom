@@ -77,17 +77,4 @@ class TeamController extends Controller
             ->route('front.users.team')
             ->with('success', 'Team member removed successfully.');
     }
-
-    public function updateStatus(Request $request, Team $team)
-    {
-        abort_unless($this->teamService->belongsToUser($team, $request->user()), 404);
-
-        $validated = $request->validate([
-            'status' => ['required', 'in:0,1'],
-        ]);
-
-        $this->teamService->updateStatus($team, (int) $validated['status']);
-
-        return back()->with('success', 'Team member status updated.');
-    }
 }

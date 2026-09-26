@@ -22,18 +22,16 @@ class TeamService
     public function listForPublicProfile(User $user): Collection
     {
         return $user->teams()
-            ->where('status', 1)
             ->latest()
             ->get();
     }
 
     public function statsForUser(User $user): array
     {
-        $members = $user->teams()->get(['status', 'is_primary']);
+        $members = $user->teams()->get(['is_primary']);
 
         return [
             'total' => $members->count(),
-            'active' => $members->where('status', 1)->count(),
             'primary' => $members->where('is_primary', true)->count(),
         ];
     }
@@ -51,7 +49,7 @@ class TeamService
                 'email' => $data['email'],
                 'phone' => $data['phone'],
                 'department' => $data['department'] ?? null,
-                'status' => (int) $data['status'],
+                'status' => 1,
                 'is_primary' => ! empty($data['is_primary']),
                 'short_info' => $data['short_info'] ?? null,
                 'image' => $this->uploadImage($data['image'] ?? null),
@@ -72,7 +70,7 @@ class TeamService
                 'email' => $data['email'],
                 'phone' => $data['phone'],
                 'department' => $data['department'] ?? null,
-                'status' => (int) $data['status'],
+                'status' => 1,
                 'is_primary' => ! empty($data['is_primary']),
                 'short_info' => $data['short_info'] ?? null,
             ];
@@ -99,13 +97,6 @@ class TeamService
     public function belongsToUser(Team $team, User $user): bool
     {
         return (int) $team->user_id === (int) $user->id;
-    }
-
-    public function updateStatus(Team $team, int $status): Team
-    {
-        $team->update(['status' => $status ? 1 : 0]);
-
-        return $team->fresh();
     }
 
     private function clearPrimaryContact(User $user, ?int $exceptId = null): void

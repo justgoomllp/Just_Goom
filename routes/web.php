@@ -182,7 +182,6 @@ Route::prefix('users')->name('front.users.')->middleware(['auth', 'front.user', 
     Route::post('/team', [TeamController::class, 'store'])->name('team.store');
     Route::get('/team/{team}/edit', [TeamController::class, 'edit'])->name('team.edit');
     Route::put('/team/{team}', [TeamController::class, 'update'])->name('team.update');
-    Route::patch('/team/{team}/status', [TeamController::class, 'updateStatus'])->name('team.status');
     Route::delete('/team/{team}', [TeamController::class, 'destroy'])->name('team.destroy');
     Route::redirect('/team-edit', '/users/team')->name('team-edit');
     Route::redirect('/team-form', '/users/team')->name('team-form');

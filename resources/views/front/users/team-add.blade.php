@@ -47,14 +47,6 @@
           </div>
           <div class="user-form-row">
             @include('front.partials.users.team-department-fields', ['currentDepartment' => old('department')])
-            <div class="user-form-group">
-              <label>Status</label>
-              <select name="status" class="user-form-control @error('status') is-invalid @enderror">
-                <option value="0" @selected((string) old('status', '0') === '0')>Inactive</option>
-                <option value="1" @selected((string) old('status', '0') === '1')>Active</option>
-              </select>
-              @error('status')<small class="user-field-error">{{ $message }}</small>@enderror
-            </div>
           </div>
           <div class="user-form-group" data-field="image">
             <label>Profile Photo</label>
