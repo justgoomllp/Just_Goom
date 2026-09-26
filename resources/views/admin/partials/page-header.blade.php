@@ -5,7 +5,7 @@
             <li><a href="{{ route('admin.dashboard') }}">Admin</a></li>
             <li>
                 @if (request()->routeIs('admin.dashboard'))
-                    <a href="{{ route('admin.dashboard') }}">CRM</a>
+                    Dashboard
                 @else
                     @yield('page-title', 'Dashboard')
                 @endif

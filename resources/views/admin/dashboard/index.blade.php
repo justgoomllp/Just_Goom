@@ -14,6 +14,13 @@
 @endphp
 
 @section('content')
+    <div class="admin-dashboard" id="adminDashboard">
+        <div class="admin-dashboard-loader" id="dashboardLoader" role="status" aria-live="polite" aria-label="Loading">
+            <div class="jg-loader">
+                <span class="jg-loader-ring"></span>
+                <span class="jg-loader-core">JG</span>
+            </div>
+        </div>
     <div class="row">
         <div class="col-sm-6 col-xl grid-margin stretch-card">
             <div class="card admin-kpi">
@@ -182,22 +189,21 @@
                                 <label for="dashboard_type">Type</label>
                                 <select name="type" id="dashboard_type" class="form-control">
                                     <option value="">All types</option>
-                                    <option value="user" @selected(request('type') === 'user')>User</option>
-                                    <option value="agent" @selected(request('type') === 'agent')>Agent</option>
-                                    <option value="admin" @selected(request('type') === 'admin')>Admin</option>
+                                    <option value="user" @selected(($filterType ?? request('type')) === 'user')>User</option>
+                                    <option value="agent" @selected(($filterType ?? request('type')) === 'agent')>Agent</option>
+                                    <option value="admin" @selected(($filterType ?? request('type')) === 'admin')>Admin</option>
                                 </select>
                             </div>
                             <div class="col-md-3">
                                 <label for="dashboard_status">Status</label>
                                 <select name="status" id="dashboard_status" class="form-control">
-                                    <option value="">All statuses</option>
-                                    <option value="1" @selected(request('status') === '1')>Active</option>
-                                    <option value="0" @selected(request('status') === '0')>Inactive</option>
-                                    <option value="2" @selected(request('status') === '2')>Suspended</option>
+                                    <option value="">All Status</option>
+                                    <option value="1" @selected((string) ($filterStatus ?? request('status')) === '1')>Active</option>
+                                    <option value="0" @selected((string) ($filterStatus ?? request('status')) === '0')>Inactive</option>
+                                    <option value="2" @selected((string) ($filterStatus ?? request('status')) === '2')>Suspended</option>
                                 </select>
                             </div>
-                            <div class="col-md-3 admin-listing-filter-actions">
-                                <button type="submit" class="btn btn-primary">Filter</button>
+                            <div class="col-12 col-md-auto admin-listing-filter-actions">
                                 <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-secondary">Reset</a>
                             </div>
                         </div>
@@ -251,7 +257,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="4" class="text-center text-muted">
-                                            {{ request()->hasAny(['type', 'status']) ? 'No users match the selected filters.' : 'No users yet.' }}
+                                            {{ ($filterType ?? '') !== '' || ($filterStatus ?? '') !== '' || request()->hasAny(['type', 'status']) ? 'No users match the selected filters.' : 'No users yet.' }}
                                         </td>
                                     </tr>
                                 @endforelse
@@ -307,4 +313,74 @@
             </div>
         </div>
     </div>
+    </div>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    var wrap = document.getElementById('adminDashboard');
+    var loader = document.getElementById('dashboardLoader');
+    var form = document.getElementById('dashboardFilters');
+
+    function showDashboardLoader() {
+        if (!loader) {
+            return;
+        }
+        loader.classList.remove('is-hidden');
+        if (wrap) {
+            wrap.setAttribute('aria-busy', 'true');
+        }
+    }
+
+    function hideDashboardLoader() {
+        if (!loader) {
+            return;
+        }
+        loader.classList.add('is-hidden');
+        if (wrap) {
+            wrap.removeAttribute('aria-busy');
+        }
+    }
+
+    function applyDashboardFilters() {
+        if (!form) {
+            return;
+        }
+
+        showDashboardLoader();
+
+        var params = new URLSearchParams();
+        var type = document.getElementById('dashboard_type');
+        var status = document.getElementById('dashboard_status');
+
+        if (type && type.value) {
+            params.set('type', type.value);
+        }
+        if (status && status.value !== '') {
+            params.set('status', status.value);
+        }
+
+        var base = form.getAttribute('action') || window.location.pathname;
+        window.location.assign(params.toString() ? (base + '?' + params.toString()) : base);
+    }
+
+    if (document.readyState === 'complete') {
+        hideDashboardLoader();
+    } else {
+        window.addEventListener('load', hideDashboardLoader);
+    }
+
+    if (form) {
+        form.querySelectorAll('select').forEach(function (select) {
+            select.addEventListener('change', applyDashboardFilters);
+        });
+
+        var reset = form.querySelector('a.btn');
+        if (reset) {
+            reset.addEventListener('click', showDashboardLoader);
+        }
+    }
+})();
+</script>
+@endpush

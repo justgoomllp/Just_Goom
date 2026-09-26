@@ -38,7 +38,7 @@
                             <div class="col-md-2">
                                 <label for="filter_status">Status</label>
                                 <select name="status" id="filter_status" class="form-control">
-                                    <option value="">All statuses</option>
+                                    <option value="">All Status</option>
                                     <option value="1" @selected(request('status') === '1')>Active</option>
                                     <option value="0" @selected(request('status') === '0')>Inactive</option>
                                     <option value="2" @selected(request('status') === '2')>Suspended</option>
@@ -62,7 +62,6 @@
                                 </select>
                             </div>
                             <div class="col-12 col-md-auto admin-listing-filter-actions">
-                                <button type="submit" class="btn btn-primary">Filter</button>
                                 <button type="reset" class="btn btn-outline-secondary">Reset</button>
                             </div>
                         </div>

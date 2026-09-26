@@ -20,7 +20,10 @@ class LoginController extends Controller
             return redirect()->route('login')->withErrors(['email' => 'Unauthorized access. You do not have permission to view this page.']);
         }
 
-        return view('admin.auth.login');
+        return response()
+            ->view('admin.auth.login')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache');
     }
 
     public function login(LoginRequest $request)
@@ -59,6 +62,9 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()
+            ->route('login')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->header('Pragma', 'no-cache');
     }
 }

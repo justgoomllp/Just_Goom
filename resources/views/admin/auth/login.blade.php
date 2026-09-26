@@ -7,18 +7,18 @@
         <div class="brand-logo d-lg-none">JUST GOOM</div>
         <h4>Welcome Back !</h4>
         <h6 class="fw-light">Sign in to continue to Just Goom.</h6>
-        <form class="pt-2 js-admin-validate" method="POST" action="{{ route('login.submit') }}" novalidate>
+        <form class="pt-2 js-admin-validate" method="POST" action="{{ route('login.submit') }}" novalidate autocomplete="on">
             @csrf
             <div class="form-group">
                 <label for="email">Email <span class="req">*</span></label>
-                <input id="email" type="email" name="email" value="{{ old('email') }}" class="form-control form-control-lg @error('email') is-invalid @enderror" placeholder="Enter email" autofocus required data-required-message="Email is required." data-type-message="Enter a valid email address.">
+                <input id="email" type="email" name="email" value="{{ old('email') }}" class="form-control form-control-lg @error('email') is-invalid @enderror" placeholder="Enter email" autofocus required autocomplete="username" data-required-message="Email is required." data-type-message="Enter a valid email address.">
                 @error('email')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>
             <div class="form-group">
                 <label for="password">Password <span class="req">*</span></label>
-                <input id="password" type="password" name="password" class="form-control form-control-lg @error('password') is-invalid @enderror" placeholder="Enter password" required data-required-message="Password is required.">
+                <input id="password" type="password" name="password" class="form-control form-control-lg @error('password') is-invalid @enderror" placeholder="Enter password" required autocomplete="current-password" data-required-message="Password is required.">
                 @error('password')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror

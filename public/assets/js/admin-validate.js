@@ -314,25 +314,49 @@
         return valid;
     }
 
+    function nativeSubmit(form) {
+        HTMLFormElement.prototype.submit.call(form);
+    }
+
     function bindForm(form) {
         form.setAttribute('novalidate', 'novalidate');
 
         form.addEventListener('submit', function (event) {
-            if (form.getAttribute('data-client-ok') === '1') {
-                form.removeAttribute('data-client-ok');
+            if (form.getAttribute('data-submitting') === '1') {
+                return;
+            }
+
+            if (!validateForm(form)) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                if (form.getAttribute('data-autofill-retry') === '1') {
+                    return;
+                }
+
+                form.setAttribute('data-autofill-retry', '1');
+                window.setTimeout(function () {
+                    form.removeAttribute('data-autofill-retry');
+                    if (!validateForm(form) || uniqueFields(form).length) {
+                        return;
+                    }
+
+                    form.setAttribute('data-submitting', '1');
+                    nativeSubmit(form);
+                }, 50);
+                return;
+            }
+
+            var pending = uniqueFields(form);
+            if (!pending.length) {
+                form.setAttribute('data-submitting', '1');
                 return;
             }
 
             event.preventDefault();
             event.stopImmediatePropagation();
 
-            if (!validateForm(form)) {
-                return;
-            }
-
-            var pending = uniqueFields(form).map(uniqueUrl);
-
-            Promise.all(pending).then(function (messages) {
+            Promise.all(pending.map(uniqueUrl)).then(function (messages) {
                 var firstInvalid = null;
                 var valid = true;
 
@@ -352,12 +376,8 @@
                     return;
                 }
 
-                form.setAttribute('data-client-ok', '1');
-                if (typeof form.requestSubmit === 'function') {
-                    form.requestSubmit();
-                } else {
-                    form.submit();
-                }
+                form.setAttribute('data-submitting', '1');
+                nativeSubmit(form);
             });
         }, true);
 

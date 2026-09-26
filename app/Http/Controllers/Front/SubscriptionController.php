@@ -45,6 +45,7 @@ class SubscriptionController extends Controller
             'usage' => $usage,
             'catalogPlans' => PricingCatalog::plans(),
             'comparisonRows' => PricingCatalog::comparisonRows(),
+            'uploadLimitRows' => PricingCatalog::uploadLimitRows(),
             'addons' => PricingCatalog::addons(),
             'inrToUsd' => PricingCatalog::USD_RATE,
             'razorpayTestMode' => str_starts_with((string) config('services.razorpay.key'), 'rzp_test_'),

@@ -22,11 +22,6 @@
 
         <ul class="navbar-nav navbar-nav-right ms-auto d-flex align-items-center">
             <li class="nav-item d-none d-lg-block">
-                <a class="admin-icon-btn" href="{{ route('admin.dashboard') }}" title="CRM / Dashboard">
-                    <i class="mdi mdi-view-dashboard-outline"></i>
-                </a>
-            </li>
-            <li class="nav-item d-none d-lg-block">
                 <a class="admin-icon-btn" href="{{ route('front.home') }}" target="_blank" rel="noopener" title="View website">
                     <i class="mdi mdi-apps"></i>
                 </a>
