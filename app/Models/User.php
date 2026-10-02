@@ -47,6 +47,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'profile',
         'status',
         'referral_code',
+        'referred_by_id',
         'email_verified_at',
     ];
 
@@ -119,6 +120,35 @@ class User extends Authenticatable implements MustVerifyEmail
     public function companyProfile(): HasOne
     {
         return $this->hasOne(CompanyProfile::class);
+    }
+
+    public function referredBy(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'referred_by_id');
+    }
+
+    public function referrals(): HasMany
+    {
+        return $this->hasMany(self::class, 'referred_by_id');
+    }
+
+    public function commissionRates(): HasMany
+    {
+        return $this->hasMany(AgentCommissionRate::class, 'agent_id');
+    }
+
+    public function agentCommissions(): HasMany
+    {
+        return $this->hasMany(AgentCommission::class, 'agent_id');
+    }
+
+    public function frontHomeRouteName(): string
+    {
+        if ($this->isAgent()) {
+            return 'front.agent.dashboard';
+        }
+
+        return $this->hasActivePlan() ? 'front.users.dashboard' : 'front.users.profile';
     }
 
     public function userPlans(): HasMany

@@ -14,7 +14,9 @@
   <div class="user-page-header-end">
     <div class="user-page-header-actions">
       <button type="button" class="user-theme-btn" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+      @unless(!empty($isAgentPortal) || request()->routeIs('front.agent.*'))
       <span class="user-plan-chip">{{ !empty($hasActivePlan) ? ($activeUserPlan?->plan?->name ?? 'Active') : 'No Plan' }}</span>
+      @endunless
       <div class="user-header-dropdown">
         <button type="button" class="user-header-dropdown-toggle" aria-label="Account menu" aria-expanded="false" aria-haspopup="true">
           <span class="user-topbar-avatar">{{ $initials }}</span>
@@ -25,9 +27,9 @@
             <strong data-user-name>{{ $displayName }}</strong>
             <span>{{ $user?->email }}</span>
           </div>
-          <a href="{{ route('front.users.profile') }}" class="user-header-dropdown-item" role="menuitem">
+          <a href="{{ request()->routeIs('front.agent.*') ? route('front.agent.change-password') : route('front.users.profile') }}" class="user-header-dropdown-item" role="menuitem">
             <span class="user-header-dropdown-icon" aria-hidden="true">👤</span>
-            My Profile
+            {{ request()->routeIs('front.agent.*') ? 'Change Password' : 'My Profile' }}
           </a>
           <div class="user-header-dropdown-divider" role="separator"></div>
           <form method="POST" action="{{ route('front.logout') }}" class="user-header-dropdown-form">

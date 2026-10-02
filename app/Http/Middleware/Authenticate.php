@@ -13,7 +13,7 @@ class Authenticate extends Middleware
             return null;
         }
 
-        if ($request->is('users', 'users/*', 'login', 'register')) {
+        if ($request->is('users', 'users/*', 'agent', 'agent/*', 'login', 'register')) {
             return route('front.login');
         }
 

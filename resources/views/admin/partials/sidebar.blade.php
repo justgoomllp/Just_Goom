@@ -46,7 +46,7 @@
         </li>
         @endif
 
-        @if (!empty($adminModules['users']) || !empty($adminModules['notifications']) || !empty($adminModules['settings']))
+        @if (!empty($adminModules['users']) || !empty($adminModules['commission']) || !empty($adminModules['notifications']) || !empty($adminModules['settings']))
         <li class="nav-item sidebar-category">
             <p>Components</p>
         </li>
@@ -56,6 +56,14 @@
             <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                 <i class="mdi mdi-account-circle-outline menu-icon"></i>
                 <span class="menu-title">Users</span>
+            </a>
+        </li>
+        @endif
+        @if (!empty($adminModules['commission']))
+        <li class="nav-item {{ request()->routeIs('admin.commission.*') ? 'active' : '' }}">
+            <a class="nav-link {{ request()->routeIs('admin.commission.*') ? 'active' : '' }}" href="{{ route('admin.commission.index') }}">
+                <i class="mdi mdi-percent menu-icon"></i>
+                <span class="menu-title">Commission</span>
             </a>
         </li>
         @endif

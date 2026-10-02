@@ -14,6 +14,17 @@ class RegisterService
     public function register(array $data): User
     {
         return DB::transaction(function () use ($data) {
+            $referredById = null;
+            $referralInput = strtoupper(trim((string) ($data['referral_code'] ?? '')));
+            if ($referralInput !== '') {
+                $agent = User::query()
+                    ->where('type', 'agent')
+                    ->where('status', 1)
+                    ->whereRaw('UPPER(referral_code) = ?', [$referralInput])
+                    ->first();
+                $referredById = $agent?->id;
+            }
+
             $user = User::create([
                 'type' => 'user',
                 'fname' => $data['fname'],
@@ -27,7 +38,8 @@ class RegisterService
                     : ($data['sub_category_id'] ?? null),
                 'status' => 1,
                 'email_verified_at' => null,
-                'referral_code' => $data['referral_code'] ?? $this->uniqueReferralCode(),
+                'referral_code' => $this->uniqueReferralCode(),
+                'referred_by_id' => $referredById,
             ]);
 
             CompanyProfile::create([

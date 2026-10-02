@@ -24,7 +24,20 @@
 
         <div class="auth-form-header auth-form-header-center">
           <h1>Login</h1>
+          <p class="text-muted" style="margin:8px 0 0;font-size:14px;">Customers and agents sign in here with email and password.</p>
         </div>
+        @if (session('info') || session('success'))
+          <div class="auth-alert-error" style="background:#e8f6ef;color:#1e7a46;border-color:#b7e0c8;">
+            <p>{{ session('info') ?: session('success') }}</p>
+          </div>
+        @endif
+        @if ($errors->any() && ! $errors->has('email') && ! $errors->has('password'))
+          <div class="auth-alert-error">
+            @foreach ($errors->all() as $error)
+              <p>{{ $error }}</p>
+            @endforeach
+          </div>
+        @endif
         <form class="auth-form auth-form-compact" method="POST" action="{{ route('front.login.submit') }}">
           @csrf
           <div class="form-group" data-field="email">

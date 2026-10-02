@@ -40,6 +40,12 @@ class LoginController extends Controller
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
 
+                if ($user->isAgent()) {
+                    return redirect()
+                        ->route('front.login')
+                        ->with('info', 'Agent accounts sign in on the customer login page with the same email and password.');
+                }
+
                 return back()
                     ->withErrors(['email' => 'Unauthorized access. You do not have permission to view this page.'])
                     ->onlyInput('email');

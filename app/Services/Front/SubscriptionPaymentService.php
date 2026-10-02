@@ -9,6 +9,7 @@ use App\Models\Plan;
 use App\Models\User;
 use App\Models\UserNotification;
 use App\Models\UserPlan;
+use App\Services\Commission\CommissionCalculator;
 use App\Support\PricingCatalog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,8 +20,10 @@ use Throwable;
 
 class SubscriptionPaymentService
 {
-    public function __construct(private RazorpayService $razorpay)
-    {
+    public function __construct(
+        private RazorpayService $razorpay,
+        private CommissionCalculator $commissions
+    ) {
     }
 
     public function assertPurchasable(Plan $plan): void
@@ -349,6 +352,7 @@ class SubscriptionPaymentService
 
         $this->notifyAndEmail($user, $plan, $userPlan, $log->fresh());
         $log->refresh();
+        $this->commissions->creditPayment($user, $plan, $log);
 
         $invoiceNote = $log->invoice_sent_at
             ? " An invoice has been sent to {$user->email}."

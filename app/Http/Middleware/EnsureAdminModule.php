@@ -25,6 +25,7 @@ class EnsureAdminModule
             'admin.sub-categories' => 'sub-categories',
             'admin.advertisements' => 'advertisements',
             'admin.users' => 'users',
+            'admin.commission' => 'commission',
             'admin.notifications' => 'notifications',
         ];
 

@@ -40,6 +40,11 @@ class SettingService
                 'description' => 'Admin, agent, and platform accounts.',
                 'locked' => false,
             ],
+            'commission' => [
+                'label' => 'Commission',
+                'description' => 'Plan-wise India and Global agent commission rates.',
+                'locked' => false,
+            ],
             'notifications' => [
                 'label' => 'Notifications',
                 'description' => 'Send in-app messages to front users.',

@@ -4,7 +4,9 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdvertisementController;
 use App\Http\Controllers\Auth\LoginController as AdminLoginController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommissionController;
 use App\Http\Controllers\CompanyProfileDocumentController;
+use App\Http\Controllers\Front\AgentPortalController;
 use App\Http\Controllers\Front\ArticleController;
 use App\Http\Controllers\Front\AuditLogController;
 use App\Http\Controllers\Front\Auth\LoginController as FrontLoginController;
@@ -58,6 +60,15 @@ Route::get('/email/verify/{id}/{hash}', VerifyEmailController::class)
     ->name('front.verification.verify');
 
 Route::post('/logout', [FrontLoginController::class, 'logout'])->name('front.logout');
+
+Route::prefix('agent')->name('front.agent.')->middleware(['auth', 'agent'])->group(function () {
+    Route::get('/', [AgentPortalController::class, 'dashboard'])->name('dashboard');
+    Route::get('/customers', [AgentPortalController::class, 'customers'])->name('customers');
+    Route::get('/customers/{user}', [AgentPortalController::class, 'showCustomer'])->name('customers.show')->whereNumber('user');
+    Route::get('/earnings', [AgentPortalController::class, 'earnings'])->name('earnings');
+    Route::get('/change-password', [AgentPortalController::class, 'changePassword'])->name('change-password');
+    Route::put('/change-password', [AgentPortalController::class, 'updatePassword'])->name('change-password.update');
+});
 
 Route::post('/razorpay/webhook', RazorpayWebhookController::class)->name('front.razorpay.webhook');
 
@@ -228,6 +239,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin.module'])->gr
     Route::patch('/users/{user}/status', [UserController::class, 'updateStatus'])->name('users.status');
     Route::patch('/users/{user}/documents/{document}/approval', [CompanyProfileDocumentController::class, 'updateApproval'])->name('users.documents.approval');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    Route::get('/commission', [CommissionController::class, 'index'])->name('commission.index');
+    Route::get('/commission/datatable', [CommissionController::class, 'datatable'])->name('commission.datatable');
+    Route::get('/commission/{user}/rates', [CommissionController::class, 'showRates'])->name('commission.rates.show');
+    Route::put('/commission/{user}/rates', [CommissionController::class, 'updateRates'])->name('commission.rates.update');
 
     Route::get('/advertisements', [AdvertisementController::class, 'index'])->name('advertisements.index');
     Route::get('/advertisements/datatable', [AdvertisementController::class, 'datatable'])->name('advertisements.datatable');

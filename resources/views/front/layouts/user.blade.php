@@ -15,7 +15,7 @@
   <div class="user-sidebar-overlay"></div>
   <div class="user-wrap">
     <aside class="user-sidebar" id="userSidebar">
-      @include('front.partials.users.sidebar')
+      @include(request()->routeIs('front.agent.*') ? 'front.partials.agent.sidebar' : 'front.partials.users.sidebar')
     </aside>
     <div class="user-main">
       @include('front.partials.users.header')
@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  @if(empty($hasActivePlan))
+  @if(empty($hasActivePlan) && empty($isAgentPortal))
     @include('front.partials.users.plan-required-modal')
   @endif
 

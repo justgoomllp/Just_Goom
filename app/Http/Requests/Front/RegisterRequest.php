@@ -37,7 +37,7 @@ class RegisterRequest extends FormRequest
             'email' => strtolower(trim((string) $this->input('email', ''))),
             'mobile' => preg_replace('/\D+/', '', (string) $this->input('mobile', '')),
             'referral_code' => $this->filled('referral_code')
-                ? trim((string) $this->input('referral_code'))
+                ? strtoupper(trim((string) $this->input('referral_code')))
                 : null,
         ]);
     }
@@ -67,7 +67,7 @@ class RegisterRequest extends FormRequest
             'mobile' => ['required', 'digits:10'],
             'email' => ['required', 'email', 'max:191', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6', 'max:255', 'confirmed'],
-            'referral_code' => ['nullable', 'string', 'max:20'],
+            'referral_code' => ['nullable', 'string', 'max:20', 'regex:/^[A-Za-z0-9]+$/'],
             'terms' => ['accepted'],
         ];
     }
@@ -101,6 +101,7 @@ class RegisterRequest extends FormRequest
             'password.min' => 'Password must be at least 6 characters.',
             'password.confirmed' => 'Password confirmation does not match.',
             'terms.accepted' => 'You must agree to the Terms and Privacy Policy.',
+            'referral_code.regex' => 'Referral code may only contain letters and numbers.',
         ];
     }
 
@@ -134,6 +135,21 @@ class RegisterRequest extends FormRequest
 
             if (! $category) {
                 $validator->errors()->add('category_id', 'Selected category is not available.');
+            }
+
+            $code = strtoupper(trim((string) $this->input('referral_code', '')));
+            if ($code === '') {
+                return;
+            }
+
+            $agentExists = \App\Models\User::query()
+                ->where('type', 'agent')
+                ->where('status', 1)
+                ->whereRaw('UPPER(referral_code) = ?', [$code])
+                ->exists();
+
+            if (! $agentExists) {
+                $validator->errors()->add('referral_code', 'Enter a valid agent referral code.');
             }
         });
     }

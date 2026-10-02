@@ -11,7 +11,7 @@ class LoginController extends Controller
     public function show()
     {
         if (Auth::check() && ! Auth::user()->isAdmin()) {
-            return redirect()->route(Auth::user()->hasActivePlan() ? 'front.users.dashboard' : 'front.users.profile');
+            return redirect()->route(Auth::user()->frontHomeRouteName());
         }
 
         return view('front.auth.login');
@@ -23,6 +23,7 @@ class LoginController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
+        $credentials['email'] = strtolower(trim($credentials['email']));
 
         $remember = $request->boolean('remember');
 
@@ -65,6 +66,10 @@ class LoginController extends Controller
         }
 
         $request->session()->regenerate();
+
+        if ($user->isAgent()) {
+            return redirect()->intended(route('front.agent.dashboard'));
+        }
 
         if (! $user->hasActivePlan()) {
             return redirect()

@@ -6,20 +6,19 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureFrontUser
+/**
+ * @author KP PATEL
+ */
+class EnsureAgent
 {
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();
 
-        if (! $user || $user->isAdmin()) {
+        if (! $user || ! $user->isAgent()) {
             return redirect()
                 ->route('front.login')
-                ->withErrors(['email' => 'Please sign in to access your dashboard.']);
-        }
-
-        if ($user->isAgent()) {
-            return redirect()->route('front.agent.dashboard');
+                ->withErrors(['email' => 'Please sign in with an agent account.']);
         }
 
         if ((int) $user->status !== 1) {
@@ -39,12 +38,11 @@ class EnsureFrontUser
 
             return redirect()
                 ->route('front.login')
-                ->withErrors(['email' => 'Please verify your email address before accessing your dashboard.']);
+                ->withErrors(['email' => 'Please verify your email address before accessing the agent portal.']);
         }
 
-        $activeUserPlan = $user->activeUserPlan();
-        view()->share('activeUserPlan', $activeUserPlan);
-        view()->share('hasActivePlan', $activeUserPlan !== null);
+        view()->share('hasActivePlan', true);
+        view()->share('isAgentPortal', true);
 
         return $next($request);
     }

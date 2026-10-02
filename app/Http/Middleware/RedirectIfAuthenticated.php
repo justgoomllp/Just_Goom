@@ -25,9 +25,7 @@ class RedirectIfAuthenticated
                     return $next($request);
                 }
 
-                return redirect()->route(
-                    $user->hasActivePlan() ? 'front.users.dashboard' : 'front.users.profile'
-                );
+                return redirect()->route($user->frontHomeRouteName());
             }
 
             if ($request->is('admin/login*')) {
@@ -38,9 +36,7 @@ class RedirectIfAuthenticated
                 return redirect()->route('admin.dashboard');
             }
 
-            return redirect()->route(
-                $user->hasActivePlan() ? 'front.users.dashboard' : 'front.users.profile'
-            );
+            return redirect()->route($user->frontHomeRouteName());
         }
 
         return $next($request);
