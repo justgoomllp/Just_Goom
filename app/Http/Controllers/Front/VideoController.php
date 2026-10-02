@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Front\Concerns\GuardsPlanLimits;
+use App\Models\Video;
 use App\Services\Front\PlanLimitService;
 use App\Support\SafeText;
 use Illuminate\Http\Request;
@@ -94,14 +95,12 @@ class VideoController extends Controller
             $thumbnail = $this->uploadFile($request->file('thumbnail'), 'videos/thumbnails');
         }
 
-        DB::table('videos')->insert([
+        Video::query()->create([
             'user_id' => $user->id,
             'title' => $validated['title'],
             'link' => $link,
             'thumbnail' => $thumbnail,
             'status' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
 
         return redirect()->route('front.users.videos')
@@ -110,14 +109,14 @@ class VideoController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $video = DB::table('videos')
+        $video = Video::query()
             ->where('id', $id)
             ->where('user_id', $request->user()->id)
             ->first();
 
         abort_unless($video, 404);
 
-        if ($video->link && ! str_starts_with($video->link, 'http')) {
+        if ($video->link && ! str_starts_with((string) $video->link, 'http')) {
             $this->deleteFile($video->link);
         }
 
@@ -125,9 +124,7 @@ class VideoController extends Controller
             $this->deleteFile($video->thumbnail);
         }
 
-        DB::table('videos')
-            ->where('id', $id)
-            ->update(['deleted_at' => now()]);
+        $video->delete();
 
         return redirect()->route('front.users.videos')
             ->with('success', 'Video deleted successfully.');

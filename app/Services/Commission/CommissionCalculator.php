@@ -192,29 +192,23 @@ class CommissionCalculator
             return;
         }
 
-        $exists = AgentCommission::query()
-            ->where('payment_log_id', $log->id)
-            ->where('type', $type)
-            ->lockForUpdate()
-            ->exists();
-
-        if ($exists) {
-            return;
-        }
-
-        AgentCommission::create([
-            'agent_id' => $agent->id,
-            'customer_id' => $customer->id,
-            'payment_log_id' => $log->id,
-            'plan_id' => $plan->id,
-            'region' => $region,
-            'type' => $type,
-            'payment_amount' => round($amount, 2),
-            'profile_percent' => $profilePercent,
-            'rate_percent' => $slicePercent,
-            'commission_amount' => round($amount * $slicePercent / 100, 2),
-            'status' => AgentCommission::STATUS_EARNED,
-        ]);
+        AgentCommission::query()->firstOrCreate(
+            [
+                'payment_log_id' => $log->id,
+                'type' => $type,
+            ],
+            [
+                'agent_id' => $agent->id,
+                'customer_id' => $customer->id,
+                'plan_id' => $plan->id,
+                'region' => $region,
+                'payment_amount' => round($amount, 2),
+                'profile_percent' => $profilePercent,
+                'rate_percent' => $slicePercent,
+                'commission_amount' => round($amount * $slicePercent / 100, 2),
+                'status' => AgentCommission::STATUS_EARNED,
+            ]
+        );
     }
 
     public function referringAgent(User $customer): ?User

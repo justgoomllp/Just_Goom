@@ -4,9 +4,11 @@ namespace App\Observers;
 
 use App\Models\User;
 use App\Services\Commission\CommissionCalculator;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Rechecks profile-based commission slices when About-section content changes.
+ * Credits Profile 50% / Profile 70% rows into agent_commissions after commit.
  *
  * @author KP PATEL
  */
@@ -17,6 +19,11 @@ class ProfileCompletionObserver
     }
 
     public function created(object $model): void
+    {
+        $this->credit($model);
+    }
+
+    public function updated(object $model): void
     {
         $this->credit($model);
     }
@@ -43,11 +50,21 @@ class ProfileCompletionObserver
             return;
         }
 
-        $user = User::query()->find($userId);
-        if (! $user || ! $user->referred_by_id) {
+        $run = function () use ($userId) {
+            $user = User::query()->find($userId);
+            if (! $user || ! $user->referred_by_id) {
+                return;
+            }
+
+            $this->calculator->creditProfileMilestones($user);
+        };
+
+        if (DB::transactionLevel() > 0) {
+            DB::afterCommit($run);
+
             return;
         }
 
-        $this->calculator->creditProfileMilestones($user);
+        $run();
     }
 }

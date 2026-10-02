@@ -6,6 +6,7 @@ use App\Models\CompanyProfile;
 use App\Models\CompanyProfileDocument;
 use App\Models\SubCategory;
 use App\Models\User;
+use App\Services\Commission\CommissionCalculator;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -30,7 +31,7 @@ class ProfileService
             ]);
         }
 
-        return DB::transaction(function () use ($user, $data, $subCategoryIds) {
+        $fresh = DB::transaction(function () use ($user, $data, $subCategoryIds) {
             $user->update([
                 'category_id' => $data['category_id'],
                 'sub_category_id' => implode(',', $subCategoryIds),
@@ -78,6 +79,19 @@ class ProfileService
 
             return $user->fresh(['companyProfile.profileDocuments', 'category', 'userPlans.plan']);
         });
+
+        $this->creditAgentProfileCommission($fresh);
+
+        return $fresh;
+    }
+
+    private function creditAgentProfileCommission(User $user): void
+    {
+        if (! $user->referred_by_id) {
+            return;
+        }
+
+        app(CommissionCalculator::class)->creditProfileMilestones($user);
     }
 
     /**
