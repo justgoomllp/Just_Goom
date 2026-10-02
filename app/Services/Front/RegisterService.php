@@ -38,7 +38,7 @@ class RegisterService
                     : ($data['sub_category_id'] ?? null),
                 'status' => 1,
                 'email_verified_at' => null,
-                'referral_code' => $this->uniqueReferralCode(),
+                'referral_code' => NULL,
                 'referred_by_id' => $referredById,
             ]);
 

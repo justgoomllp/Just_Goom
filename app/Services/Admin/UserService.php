@@ -114,8 +114,12 @@ class UserService
         $data['profile'] = $this->uploadProfile($data['profile'] ?? null);
         $data['email_verified_at'] = ! empty($data['email_verified']) ? now() : null;
 
-        if (empty($data['referral_code'])) {
-            $data['referral_code'] = $this->uniqueReferralCode();
+        if (($data['type'] ?? '') === 'agent') {
+            if (empty($data['referral_code'])) {
+                $data['referral_code'] = $this->uniqueReferralCode();
+            }
+        } else {
+            $data['referral_code'] = null;
         }
 
         if (empty($data['email_verified_at'])) {
