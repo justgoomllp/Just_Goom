@@ -42,7 +42,7 @@ class SettingService
             ],
             'commission' => [
                 'label' => 'Commission',
-                'description' => 'Plan-wise India and Global agent commission rates.',
+                'description' => 'Plan-wise India and Global registration and profile commission rates.',
                 'locked' => false,
             ],
             'notifications' => [

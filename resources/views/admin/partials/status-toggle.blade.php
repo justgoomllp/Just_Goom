@@ -7,7 +7,7 @@
     $suspended = (bool) ($suspended ?? false);
     $labelOn = $labelOn ?? 'Active';
     $labelOff = $labelOff ?? 'Inactive';
-    $label = $active ? $labelOn : ($suspended ? 'Suspended' : $labelOff);
+    $label = $active ? $labelOn : ($suspended ? 'Blocked' : $labelOff);
     $title = $disabled
         ? ($disabledTitle ?? 'Status cannot be changed')
         : 'Toggle status';

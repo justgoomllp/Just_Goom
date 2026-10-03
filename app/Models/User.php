@@ -17,6 +17,12 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
+    public const STATUS_INACTIVE = 0;
+
+    public const STATUS_ACTIVE = 1;
+
+    public const STATUS_BLOCKED = 2;
+
     public function isAdmin(): bool
     {
         return $this->type === 'admin';
@@ -25,6 +31,32 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isAgent(): bool
     {
         return $this->type === 'agent';
+    }
+
+    public function isActiveAccount(): bool
+    {
+        return (int) $this->status === self::STATUS_ACTIVE;
+    }
+
+    public function isBlocked(): bool
+    {
+        return (int) $this->status === self::STATUS_BLOCKED;
+    }
+
+    public function statusLabel(): string
+    {
+        return match ((int) $this->status) {
+            self::STATUS_ACTIVE => 'Active',
+            self::STATUS_BLOCKED => 'Blocked',
+            default => 'Inactive',
+        };
+    }
+
+    public function inactiveLoginMessage(): string
+    {
+        return $this->isBlocked()
+            ? 'Your account has been blocked. Contact the administrator to unblock it.'
+            : 'Your account is inactive. Please contact the administrator.';
     }
 
     /**
@@ -125,6 +157,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function referredBy(): BelongsTo
     {
         return $this->belongsTo(self::class, 'referred_by_id');
+    }
+
+    public function profileTask(): HasOne
+    {
+        return $this->hasOne(AgentProfileTask::class, 'customer_id');
     }
 
     public function referrals(): HasMany

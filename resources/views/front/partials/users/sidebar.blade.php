@@ -82,6 +82,12 @@
 </nav>
 <div class="user-sidebar-footer">
   <a href="{{ route('front.home') }}">🌐 View Public Site</a>
+  @if(session()->has(\App\Services\Front\AgentPortalService::IMPERSONATOR_ID_KEY))
+  <form method="POST" action="{{ route('front.agent.leave-customer') }}" style="display:block;">
+    @csrf
+    <button type="submit" class="user-logout-btn" style="color: #fff;">↩ Back to agent</button>
+  </form>
+  @endif
   <form method="POST" action="{{ route('front.logout') }}" id="frontLogoutForm" style="display:block;">
     @csrf
     <button type="submit" class="user-logout-btn" style="color: #fff;">🚪 Logout</button>

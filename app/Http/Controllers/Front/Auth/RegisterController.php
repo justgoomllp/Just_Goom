@@ -19,7 +19,7 @@ class RegisterController extends Controller
     {
     }
 
-    public function show()
+    public function show(Request $request)
     {
         $categories = Category::query()
             ->where('status', 1)
@@ -31,7 +31,12 @@ class RegisterController extends Controller
             'sub_category_id' => old('sub_category_id', []),
         ];
 
-        return view('front.auth.register', compact('categories', 'registerOld'));
+        $prefillReferral = strtoupper(trim((string) $request->query('ref', '')));
+        if (! preg_match('/^[A-Z0-9]{8}$/', $prefillReferral)) {
+            $prefillReferral = '';
+        }
+
+        return view('front.auth.register', compact('categories', 'registerOld', 'prefillReferral'));
     }
 
     public function subCategories(Category $category): JsonResponse

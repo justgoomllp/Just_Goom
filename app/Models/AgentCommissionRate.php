@@ -14,12 +14,16 @@ class AgentCommissionRate extends Model
         'agent_id',
         'plan_id',
         'india_percent',
+        'india_profile_percent',
         'global_percent',
+        'global_profile_percent',
     ];
 
     protected $casts = [
         'india_percent' => 'decimal:2',
+        'india_profile_percent' => 'decimal:2',
         'global_percent' => 'decimal:2',
+        'global_profile_percent' => 'decimal:2',
     ];
 
     public function agent(): BelongsTo
@@ -37,5 +41,12 @@ class AgentCommissionRate extends Model
         return $region === AgentCommission::REGION_GLOBAL
             ? (float) $this->global_percent
             : (float) $this->india_percent;
+    }
+
+    public function profilePercentForRegion(string $region): float
+    {
+        return $region === AgentCommission::REGION_GLOBAL
+            ? (float) $this->global_profile_percent
+            : (float) $this->india_profile_percent;
     }
 }

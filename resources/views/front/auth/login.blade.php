@@ -24,14 +24,14 @@
 
         <div class="auth-form-header auth-form-header-center">
           <h1>Login</h1>
-          <p class="text-muted" style="margin:8px 0 0;font-size:14px;">Customers and agents sign in here with email and password.</p>
+          <p class="text-muted" style="margin:8px 0 0;font-size:14px;">Customers sign in with email. Agents can use email or Agent ID.</p>
         </div>
         @if (session('info') || session('success'))
           <div class="auth-alert-error" style="background:#e8f6ef;color:#1e7a46;border-color:#b7e0c8;">
             <p>{{ session('info') ?: session('success') }}</p>
           </div>
         @endif
-        @if ($errors->any() && ! $errors->has('email') && ! $errors->has('password'))
+        @if ($errors->any() && ! $errors->has('login') && ! $errors->has('email') && ! $errors->has('password'))
           <div class="auth-alert-error">
             @foreach ($errors->all() as $error)
               <p>{{ $error }}</p>
@@ -40,10 +40,10 @@
         @endif
         <form class="auth-form auth-form-compact" method="POST" action="{{ route('front.login.submit') }}">
           @csrf
-          <div class="form-group" data-field="email">
-            <label for="loginEmail">Email Address <span class="req">*</span></label>
-            <input type="email" id="loginEmail" name="email" class="form-input @error('email') is-invalid @enderror" placeholder="you@example.com" value="{{ old('email') }}">
-            <span class="field-error">@error('email'){{ $message }}@enderror</span>
+          <div class="form-group" data-field="login">
+            <label for="loginEmail">Email or Agent ID <span class="req">*</span></label>
+            <input type="text" id="loginEmail" name="login" class="form-input @error('login') is-invalid @enderror" placeholder="you@example.com or Agent ID" value="{{ old('login') }}" autocomplete="username" maxlength="191">
+            <span class="field-error">@error('login'){{ $message }}@enderror</span>
           </div>
           <div class="form-group" data-field="password">
             <label for="loginPassword">Password <span class="req">*</span></label>

@@ -8,7 +8,24 @@
 <div class="user-content">
   <div class="user-toolbar">
     <span class="user-text-muted">{{ $customer->companyProfile?->company_name ?: $customer->fullName() }}</span>
-    <a href="{{ route('front.agent.customers') }}" class="user-btn user-btn-default">Back to customers</a>
+    <div class="user-table-actions">
+      @if($customer->can_switch)
+        @include('front.partials.agent.switch-login-form', ['customer' => $customer])
+      @endif
+      @if($customer->can_decline)
+        <form method="POST" action="{{ route('front.agent.customers.decline', $customer) }}" data-confirm="Release this profile as Open for other agents?" data-confirm-title="Release profile" data-confirm-action="Release" data-confirm-class="user-btn-default">
+          @csrf
+          <button type="submit" class="user-btn user-btn-default">No</button>
+        </form>
+      @endif
+      @if($customer->can_approve)
+        <form method="POST" action="{{ route('front.agent.open-profiles.approve', $customer) }}" data-confirm="Lock this Open profile to your account? It will disappear for other agents." data-confirm-title="Approve profile" data-confirm-action="Approve">
+          @csrf
+          <button type="submit" class="user-btn user-btn-primary">Approve</button>
+        </form>
+      @endif
+      <a href="{{ route('front.agent.customers') }}" class="user-btn user-btn-default">Back to customers</a>
+    </div>
   </div>
 
   <div class="user-stat-row">
@@ -42,6 +59,24 @@
       <div class="user-list-item"><div><strong>Email</strong><span>{{ $customer->email }}</span></div></div>
       <div class="user-list-item"><div><strong>Company</strong><span>{{ $customer->companyProfile?->company_name ?: '—' }}</span></div></div>
       <div class="user-list-item"><div><strong>Phone</strong><span>{{ $customer->phone ?: $customer->companyProfile?->phone ?: '—' }}</span></div></div>
+      <div class="user-list-item">
+        <div>
+          <strong>Profile task</strong>
+          <span>
+            @if($customer->profileTask)
+              {{ $customer->profileTask->statusLabel() }}
+              @if($customer->profileTask->exclusiveRemainingLabel())
+                · {{ $customer->profileTask->exclusiveRemainingLabel() }}
+              @endif
+              @if($customer->profileTask->assignedAgent)
+                · {{ $customer->profileTask->assignedAgent->fullName() }}
+              @endif
+            @else
+              —
+            @endif
+          </span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -76,6 +111,36 @@
         @endforelse
       </tbody>
     </table>
+  </div>
+
+  <div class="user-panel" style="margin-top:16px;">
+    <div class="user-panel-head">Switch login activity</div>
+    <div class="user-table-wrap">
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Action</th>
+            <th>Details</th>
+            <th>IP</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse($switchLogs as $log)
+            <tr>
+              <td>{{ $log->created_at?->format('M j, Y g:i A') }}</td>
+              <td><span class="user-badge {{ $log->actionBadgeClass() }}">{{ $log->actionLabel() }}</span></td>
+              <td>{{ $log->message ?: '—' }}</td>
+              <td class="user-text-muted">{{ $log->ip_address ?: '—' }}</td>
+            </tr>
+          @empty
+            <tr>
+              <td colspan="4" class="user-text-muted" style="text-align:center;padding:24px;">No switch login yet. Use Switch login to open this customer profile.</td>
+            </tr>
+          @endforelse
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 @endsection

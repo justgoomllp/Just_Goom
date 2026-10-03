@@ -60,12 +60,23 @@ Route::get('/email/verify/{id}/{hash}', VerifyEmailController::class)
     ->name('front.verification.verify');
 
 Route::post('/logout', [FrontLoginController::class, 'logout'])->name('front.logout');
+Route::post('/back-to-agent', [AgentPortalController::class, 'leaveCustomer'])
+    ->middleware('auth')
+    ->name('front.agent.leave-customer');
 
 Route::prefix('agent')->name('front.agent.')->middleware(['auth', 'agent'])->group(function () {
     Route::get('/', [AgentPortalController::class, 'dashboard'])->name('dashboard');
     Route::get('/customers', [AgentPortalController::class, 'customers'])->name('customers');
     Route::get('/customers/{user}', [AgentPortalController::class, 'showCustomer'])->name('customers.show')->whereNumber('user');
+    Route::post('/customers/{user}/switch-login', [AgentPortalController::class, 'switchLogin'])->name('customers.switch')->whereNumber('user');
+    Route::post('/customers/{user}/decline-profile', [AgentPortalController::class, 'declineProfile'])->name('customers.decline')->whereNumber('user');
+    Route::get('/open-profiles', [AgentPortalController::class, 'openProfiles'])->name('open-profiles');
+    Route::post('/open-profiles/{user}/approve', [AgentPortalController::class, 'approveProfile'])->name('open-profiles.approve')->whereNumber('user');
     Route::get('/earnings', [AgentPortalController::class, 'earnings'])->name('earnings');
+    Route::get('/tracking/{region}/{plan}/{event}', [AgentPortalController::class, 'tracking'])->name('tracking.show')
+        ->where('region', 'india|global')
+        ->where('plan', 'silver|gold|platinum')
+        ->where('event', 'registration|profile');
     Route::get('/change-password', [AgentPortalController::class, 'changePassword'])->name('change-password');
     Route::put('/change-password', [AgentPortalController::class, 'updatePassword'])->name('change-password.update');
 });

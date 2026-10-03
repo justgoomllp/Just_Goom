@@ -60,7 +60,7 @@
             <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required data-required-message="Please select a status.">
                 <option value="1" {{ (string) old('status', $user->status ?? 1) === '1' ? 'selected' : '' }}>Active</option>
                 <option value="0" {{ (string) old('status', $user->status ?? '') === '0' ? 'selected' : '' }}>Inactive</option>
-                <option value="2" {{ (string) old('status', $user->status ?? '') === '2' ? 'selected' : '' }}>Suspended</option>
+                <option value="2" {{ (string) old('status', $user->status ?? '') === '2' ? 'selected' : '' }}>Blocked</option>
             </select>
             @error('status')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -174,7 +174,7 @@
     <div class="col-md-6">
         <div class="form-group">
             <label for="referral_code">Referral Code</label>
-            <input type="text" name="referral_code" id="referral_code" value="{{ old('referral_code', $user->referral_code ?? '') }}" class="form-control @error('referral_code') is-invalid @enderror" placeholder="{{ empty($user) ? 'Auto-generated if empty' : '' }}" maxlength="20" autocomplete="off" pattern="[A-Za-z0-9]+" data-uppercase="1" data-pattern-message="Referral code may only contain letters and numbers." data-unique-url="{{ route('admin.users.check-unique') }}" data-unique-param="referral_code" data-unique-message="This referral code is already in use." @disabled(! empty($user))>
+            <input type="text" name="referral_code" id="referral_code" value="{{ old('referral_code', $user->referral_code ?? '') }}" class="form-control @error('referral_code') is-invalid @enderror" placeholder="{{ empty($user) ? '8 characters, auto-generated if empty' : '' }}" maxlength="8" minlength="8" autocomplete="off" pattern="[A-Za-z0-9]{8}" data-uppercase="1" data-min-message="Referral code must be exactly 8 characters." data-pattern-message="Referral code must be exactly 8 letters or numbers." data-unique-url="{{ route('admin.users.check-unique') }}" data-unique-param="referral_code" data-unique-message="This referral code is already in use." @disabled(! empty($user))>
             @error('referral_code')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror

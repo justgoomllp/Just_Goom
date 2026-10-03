@@ -86,14 +86,27 @@
 
     document.addEventListener('change', function (event) {
         var input = event.target;
-        if (!input.classList.contains('admin-status-toggle-input')) {
+        if (input.classList.contains('admin-status-toggle-input')) {
+            if (input.disabled || !input.form) {
+                return;
+            }
+            if (input.form.closest('table.admin-datatable')) {
+                return;
+            }
+            input.form.submit();
+            return;
+        }
+
+        if (!input.classList.contains('admin-status-select')) {
             return;
         }
         if (input.disabled || !input.form) {
             return;
         }
-
         if (input.form.closest('table.admin-datatable')) {
+            return;
+        }
+        if (String(input.value) === String(input.getAttribute('data-current'))) {
             return;
         }
 

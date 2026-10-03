@@ -241,7 +241,7 @@
           </div>
           <div class="form-group" data-field="referral_code">
             <label for="regReferral">Referral Code</label>
-            <input type="text" id="regReferral" name="referral_code" class="form-input @error('referral_code') is-invalid @enderror" placeholder="Enter agent referral code (optional)" value="{{ old('referral_code') }}">
+            <input type="text" id="regReferral" name="referral_code" class="form-input @error('referral_code') is-invalid @enderror" placeholder="8-character agent code (optional)" value="{{ old('referral_code', $prefillReferral ?? '') }}" maxlength="8" minlength="8" autocomplete="off" pattern="[A-Za-z0-9]{8}">
             <span class="field-error">@error('referral_code'){{ $message }}@enderror</span>
           </div>
           <div class="form-group" data-field="terms">

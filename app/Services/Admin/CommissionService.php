@@ -49,7 +49,7 @@ class CommissionService
     }
 
     /**
-     * @return list<array{id: int, name: string, india_percent: float, global_percent: float}>
+     * @return list<array{id: int, name: string, india_percent: float, india_profile_percent: float, global_percent: float, global_profile_percent: float}>
      */
     public function ratesForAgent(User $agent): array
     {
@@ -66,7 +66,9 @@ class CommissionService
                 'id' => $plan->id,
                 'name' => $plan->name,
                 'india_percent' => (float) ($rate?->india_percent ?? 0),
+                'india_profile_percent' => (float) ($rate?->india_profile_percent ?? 0),
                 'global_percent' => (float) ($rate?->global_percent ?? 0),
+                'global_profile_percent' => (float) ($rate?->global_profile_percent ?? 0),
             ];
         }
 
@@ -74,7 +76,7 @@ class CommissionService
     }
 
     /**
-     * @param  list<array{plan_id: int, india_percent: float|int|string, global_percent: float|int|string}>  $rates
+     * @param  list<array{plan_id: int, india_percent: float|int|string, india_profile_percent: float|int|string, global_percent: float|int|string, global_profile_percent: float|int|string}>  $rates
      */
     public function saveRates(User $agent, array $rates): void
     {
@@ -93,7 +95,9 @@ class CommissionService
                 ],
                 [
                     'india_percent' => round((float) ($row['india_percent'] ?? 0), 2),
+                    'india_profile_percent' => round((float) ($row['india_profile_percent'] ?? 0), 2),
                     'global_percent' => round((float) ($row['global_percent'] ?? 0), 2),
+                    'global_profile_percent' => round((float) ($row['global_profile_percent'] ?? 0), 2),
                 ]
             );
         }

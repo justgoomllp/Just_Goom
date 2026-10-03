@@ -9,7 +9,7 @@
   <span class="user-sidebar-plan-icon">🤝</span>
   <div>
     <strong>Agent portal</strong>
-    <span>{{ $sidebarUser?->referral_code ? 'Code '.$sidebarUser->referral_code : 'Commission partner' }}</span>
+    <span>{{ $sidebarUser?->referral_code ? 'ID '.$sidebarUser->referral_code : 'Commission partner' }}</span>
   </div>
 </div>
 <nav>
@@ -17,7 +17,8 @@
     <div class="user-nav-heading">Overview</div>
     <a href="{{ route('front.agent.dashboard') }}" class="user-nav-link{{ request()->routeIs('front.agent.dashboard') ? ' active' : '' }}"><span class="nav-icon">📊</span>Dashboard</a>
     <a href="{{ route('front.agent.customers') }}" class="user-nav-link{{ request()->routeIs('front.agent.customers', 'front.agent.customers.show') ? ' active' : '' }}"><span class="nav-icon">👥</span>Customers</a>
-    <a href="{{ route('front.agent.earnings') }}" class="user-nav-link{{ request()->routeIs('front.agent.earnings') ? ' active' : '' }}"><span class="nav-icon">💰</span>Earnings</a>
+    <a href="{{ route('front.agent.open-profiles') }}" class="user-nav-link{{ request()->routeIs('front.agent.open-profiles') ? ' active' : '' }}"><span class="nav-icon">🔓</span>Open profiles</a>
+    <a href="{{ route('front.agent.earnings') }}" class="user-nav-link{{ request()->routeIs('front.agent.earnings', 'front.agent.tracking.show') ? ' active' : '' }}"><span class="nav-icon">💰</span>Earnings</a>
   </div>
   <div class="user-nav-section">
     <div class="user-nav-heading">Account</div>

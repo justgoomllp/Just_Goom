@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\Front\AgentPortalService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,17 +23,22 @@ class EnsureFrontUser
             return redirect()->route('front.agent.dashboard');
         }
 
-        if ((int) $user->status !== 1) {
+        $impersonating = (int) $request->session()->get(AgentPortalService::IMPERSONATOR_ID_KEY, 0) > 0;
+        view()->share('isImpersonating', $impersonating);
+        view()->share('impersonatorName', (string) $request->session()->get(AgentPortalService::IMPERSONATOR_NAME_KEY, ''));
+
+        if (! $impersonating && (int) $user->status !== 1) {
+            $message = $user->inactiveLoginMessage();
             auth()->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
             return redirect()
                 ->route('front.login')
-                ->withErrors(['email' => 'Your account is not active. Please contact support.']);
+                ->withErrors(['email' => $message]);
         }
 
-        if (! $user->hasVerifiedEmail()) {
+        if (! $impersonating && ! $user->hasVerifiedEmail()) {
             auth()->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();

@@ -22,13 +22,14 @@ class EnsureAgent
         }
 
         if ((int) $user->status !== 1) {
+            $message = $user->inactiveLoginMessage();
             auth()->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
             return redirect()
                 ->route('front.login')
-                ->withErrors(['email' => 'Your account is not active. Please contact support.']);
+                ->withErrors(['email' => $message]);
         }
 
         if (! $user->hasVerifiedEmail()) {

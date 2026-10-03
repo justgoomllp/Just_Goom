@@ -22,7 +22,9 @@ class CommissionRateRequest extends FormRequest
             'rates' => ['required', 'array', 'min:1'],
             'rates.*.plan_id' => ['required', 'integer', Rule::exists('plans', 'id')],
             'rates.*.india_percent' => ['required', 'numeric', 'min:0', 'max:100'],
+            'rates.*.india_profile_percent' => ['required', 'numeric', 'min:0', 'max:100'],
             'rates.*.global_percent' => ['required', 'numeric', 'min:0', 'max:100'],
+            'rates.*.global_profile_percent' => ['required', 'numeric', 'min:0', 'max:100'],
         ];
     }
 
@@ -30,8 +32,10 @@ class CommissionRateRequest extends FormRequest
     {
         return [
             'rates.required' => 'Please set commission rates for each plan.',
-            'rates.*.india_percent.max' => 'India commission cannot exceed 100%.',
-            'rates.*.global_percent.max' => 'Global commission cannot exceed 100%.',
+            'rates.*.india_percent.max' => 'India registration commission cannot exceed 100%.',
+            'rates.*.india_profile_percent.max' => 'India profile commission cannot exceed 100%.',
+            'rates.*.global_percent.max' => 'Global registration commission cannot exceed 100%.',
+            'rates.*.global_profile_percent.max' => 'Global profile commission cannot exceed 100%.',
         ];
     }
 

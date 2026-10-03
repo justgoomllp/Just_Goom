@@ -1,22 +1,22 @@
 @extends('front.layouts.user')
 
-@section('title', 'Earnings — Agent Portal')
-@section('page_title', 'Earnings')
-@section('body_attrs', 'class="user-panel-body" data-page="agent-earnings" data-title="Earnings"')
+@section('title', $region_label.' '.$plan.' '.$event_label.' — Agent Portal')
+@section('page_title', $region_label.' · '.$plan.' · '.$event_label)
+@section('body_attrs', 'class="user-panel-body" data-page="agent-tracking" data-title="Commission details"')
 
 @section('content')
 <div class="user-content">
   <div class="user-toolbar">
-    <span class="user-text-muted">Commission is credited only after the profile reaches Green (complete).</span>
+    <a href="{{ route('front.agent.dashboard') }}" class="user-btn user-btn-default">Back to dashboard</a>
     <strong>Total ₹{{ number_format($total, 2) }}</strong>
   </div>
+  <p class="user-text-muted" style="margin:0 0 16px;">Customer-wise commission for this region, plan, and event.</p>
   <div class="user-table-wrap">
     <table class="user-table">
       <thead>
         <tr>
           <th>Date</th>
           <th>Customer</th>
-          <th>Plan</th>
           <th>Type</th>
           <th>Paid</th>
           <th>Profile %</th>
@@ -28,8 +28,11 @@
         @forelse($earnings as $row)
           <tr>
             <td>{{ $row->created_at?->format('M j, Y g:i A') }}</td>
-            <td>{{ $row->customer?->companyProfile?->company_name ?: $row->customer?->fullName() }}</td>
-            <td>{{ $row->plan?->name ?? '—' }}</td>
+            <td>
+              <a href="{{ route('front.agent.customers.show', $row->customer_id) }}">
+                {{ $row->customer?->companyProfile?->company_name ?: $row->customer?->fullName() ?: 'Customer' }}
+              </a>
+            </td>
             <td>{{ $row->typeLabel() }}</td>
             <td>{{ $row->formattedPaymentAmount() }}</td>
             <td>{{ (int) $row->profile_percent }}%</td>
@@ -38,7 +41,7 @@
           </tr>
         @empty
           <tr>
-            <td colspan="8" class="user-text-muted" style="text-align:center;padding:24px;">No commission earned yet.</td>
+            <td colspan="7" class="user-text-muted" style="text-align:center;padding:24px;">No commission in this slice yet.</td>
           </tr>
         @endforelse
       </tbody>

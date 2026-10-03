@@ -227,7 +227,9 @@
 
     document.addEventListener('change', function (event) {
         var input = event.target;
-        if (!input.classList.contains('admin-status-toggle-input')) {
+        var isToggle = input.classList.contains('admin-status-toggle-input');
+        var isSelect = input.classList.contains('admin-status-select');
+        if (!isToggle && !isSelect) {
             return;
         }
         if (input.disabled || !input.form) {
@@ -241,11 +243,22 @@
             return;
         }
 
-        var previous = !input.checked;
+        if (isSelect && String(input.value) === String(input.getAttribute('data-current'))) {
+            return;
+        }
+
+        var previousChecked = isToggle ? !input.checked : null;
+        var previousValue = isSelect ? input.getAttribute('data-current') : null;
+
         submitAjaxForm(form, function () {
             reloadTable(dt);
         }).catch(function () {
-            input.checked = previous;
+            if (isToggle) {
+                input.checked = previousChecked;
+            }
+            if (isSelect && previousValue !== null) {
+                input.value = previousValue;
+            }
         });
     });
 

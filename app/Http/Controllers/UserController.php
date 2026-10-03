@@ -92,20 +92,29 @@ class UserController extends Controller
     public function updateStatus(Request $request, User $user)
     {
         $validated = $request->validate([
-            'status' => ['required', Rule::in([0, 1])],
+            'status' => ['required', Rule::in([User::STATUS_INACTIVE, User::STATUS_ACTIVE, User::STATUS_BLOCKED])],
         ]);
 
         $status = (int) $validated['status'];
 
-        if (Auth::id() === $user->id && $status !== 1) {
+        if (Auth::id() === $user->id && $status !== User::STATUS_ACTIVE) {
             return $this->adminResponse($request, 'You cannot deactivate your own account.', true);
         }
 
         $this->userService->updateStatus($user, $status);
 
-        $labels = [1 => 'Active', 0 => 'Inactive'];
+        $labels = [
+            User::STATUS_ACTIVE => 'Active',
+            User::STATUS_INACTIVE => 'Inactive',
+            User::STATUS_BLOCKED => 'Blocked',
+        ];
 
-        return $this->adminResponse($request, 'User status updated to '.$labels[$status].'.');
+        $message = 'User status updated to '.$labels[$status].'.';
+        if ($status === User::STATUS_BLOCKED) {
+            $message = ($user->isAgent() ? 'Agent' : 'User').' blocked and logged out immediately.';
+        }
+
+        return $this->adminResponse($request, $message);
     }
 
     public function destroy(Request $request, User $user)

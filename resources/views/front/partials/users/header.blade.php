@@ -31,6 +31,15 @@
             <span class="user-header-dropdown-icon" aria-hidden="true">👤</span>
             {{ request()->routeIs('front.agent.*') ? 'Change Password' : 'My Profile' }}
           </a>
+          @if(session()->has(\App\Services\Front\AgentPortalService::IMPERSONATOR_ID_KEY))
+          <form method="POST" action="{{ route('front.agent.leave-customer') }}" class="user-header-dropdown-form">
+            @csrf
+            <button type="submit" class="user-header-dropdown-item" role="menuitem">
+              <span class="user-header-dropdown-icon" aria-hidden="true">↩</span>
+              Back to agent
+            </button>
+          </form>
+          @endif
           <div class="user-header-dropdown-divider" role="separator"></div>
           <form method="POST" action="{{ route('front.logout') }}" class="user-header-dropdown-form">
             @csrf

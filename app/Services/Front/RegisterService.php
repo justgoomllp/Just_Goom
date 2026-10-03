@@ -55,6 +55,10 @@ class RegisterService
 
             $this->createUserUploadFolders($data['email']);
 
+            if ($referredById) {
+                app(AgentProfileTaskService::class)->ensureForCustomer($user);
+            }
+
             return $user;
         });
     }

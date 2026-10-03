@@ -23,9 +23,16 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.module' => \App\Http\Middleware\EnsureAdminModule::class,
         ]);
 
+        $middleware->web(append: [
+            \App\Http\Middleware\LogImpersonatedActions::class,
+        ]);
+
         $middleware->validateCsrfTokens(except: [
             'razorpay/webhook',
         ]);
+    })
+    ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule) {
+        $schedule->command('agent:open-expired-profiles')->everyFifteenMinutes();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

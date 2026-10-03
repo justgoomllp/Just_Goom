@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   initUserHeaderDropdown();
   initUserSession();
   initUserModals();
+  initUserConfirmModal();
   initPlanRequiredModal();
   initPricingRegion();
   initUserUpload();
@@ -41,6 +42,68 @@ function initUserModals() {
       var overlay = btn.closest('.user-modal-overlay');
       if (overlay) overlay.classList.remove('open');
     });
+  });
+}
+
+function initUserConfirmModal() {
+  var overlay = document.getElementById('userConfirmModal');
+  if (!overlay) return;
+
+  var titleEl = document.getElementById('userConfirmTitle');
+  var messageEl = document.getElementById('userConfirmMessage');
+  var submitBtn = document.getElementById('userConfirmSubmit');
+  var pendingForm = null;
+
+  function closeConfirm() {
+    overlay.classList.remove('open');
+    pendingForm = null;
+  }
+
+  function openConfirm(form) {
+    pendingForm = form;
+    titleEl.textContent = form.getAttribute('data-confirm-title') || 'Please confirm';
+    messageEl.textContent = form.getAttribute('data-confirm') || '';
+    submitBtn.textContent = form.getAttribute('data-confirm-action') || 'Confirm';
+    submitBtn.className = 'user-btn ' + (form.getAttribute('data-confirm-class') || 'user-btn-primary');
+    overlay.classList.add('open');
+  }
+
+  document.addEventListener('submit', function (event) {
+    var form = event.target.closest('form[data-confirm]');
+    if (!form || form.getAttribute('data-confirm-ready') === '1') {
+      return;
+    }
+    event.preventDefault();
+    openConfirm(form);
+  });
+
+  submitBtn.addEventListener('click', function () {
+    if (!pendingForm) {
+      return;
+    }
+    var form = pendingForm;
+    form.setAttribute('data-confirm-ready', '1');
+    overlay.classList.remove('open');
+    pendingForm = null;
+    if (typeof form.requestSubmit === 'function') {
+      form.requestSubmit();
+      return;
+    }
+    form.submit();
+  });
+
+  overlay.querySelectorAll('[data-modal-close]').forEach(function (btn) {
+    btn.addEventListener('click', closeConfirm);
+  });
+  overlay.addEventListener('click', function (event) {
+    if (event.target === overlay) {
+      closeConfirm();
+    }
+  });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && overlay.classList.contains('open')) {
+      closeConfirm();
+    }
   });
 }
 

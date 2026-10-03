@@ -80,8 +80,8 @@ class UserRequest extends FormRequest
             $rules['referral_code'] = [
                 'nullable',
                 'string',
-                'max:20',
-                'regex:/^[A-Z0-9]+$/',
+                'size:8',
+                'regex:/^[A-Z0-9]{8}$/',
                 Rule::unique('users', 'referral_code'),
             ];
         }
@@ -104,7 +104,8 @@ class UserRequest extends FormRequest
             'email.email' => 'Enter a valid email address.',
             'email.unique' => 'This email is already registered.',
             'referral_code.unique' => 'This referral code is already in use.',
-            'referral_code.regex' => 'Referral code may only contain letters and numbers.',
+            'referral_code.size' => 'Referral code must be exactly 8 characters.',
+            'referral_code.regex' => 'Referral code must be exactly 8 letters or numbers.',
             'password.required' => 'Password is required.',
             'password.min' => 'Password must be at least 6 characters.',
             'phone.required' => 'Phone number is required.',

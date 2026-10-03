@@ -200,7 +200,7 @@
                                     <option value="">All Status</option>
                                     <option value="1" @selected((string) ($filterStatus ?? request('status')) === '1')>Active</option>
                                     <option value="0" @selected((string) ($filterStatus ?? request('status')) === '0')>Inactive</option>
-                                    <option value="2" @selected((string) ($filterStatus ?? request('status')) === '2')>Suspended</option>
+                                    <option value="2" @selected((string) ($filterStatus ?? request('status')) === '2')>Blocked</option>
                                 </select>
                             </div>
                             @include('admin.partials.listing-filter-actions', ['col' => 'col-12 col-md-auto'])
@@ -242,10 +242,9 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @include('admin.partials.status-toggle', [
+                                            @include('admin.partials.user-status-choices', [
                                                 'action' => route('admin.users.status', $user),
-                                                'active' => (int) $user->status === 1,
-                                                'suspended' => (int) $user->status === 2,
+                                                'status' => (int) $user->status,
                                                 'disabled' => auth()->id() === $user->id,
                                                 'disabledTitle' => 'You cannot change your own status',
                                             ])

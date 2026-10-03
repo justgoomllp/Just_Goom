@@ -188,8 +188,10 @@ class AgentReferralCommissionSeeder extends Seeder
                     'plan_id' => $plan->id,
                 ],
                 [
-                    'india_percent' => 10,
-                    'global_percent' => 10,
+                    'india_percent' => 5,
+                    'india_profile_percent' => 5,
+                    'global_percent' => 5,
+                    'global_profile_percent' => 5,
                 ]
             );
         }

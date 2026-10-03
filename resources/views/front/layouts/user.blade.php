@@ -18,6 +18,7 @@
       @include(request()->routeIs('front.agent.*') ? 'front.partials.agent.sidebar' : 'front.partials.users.sidebar')
     </aside>
     <div class="user-main">
+      @include('front.partials.agent.impersonation-bar')
       @include('front.partials.users.header')
       @yield('content')
       @include('front.partials.users.footer')
@@ -27,6 +28,7 @@
   @if(empty($hasActivePlan) && empty($isAgentPortal))
     @include('front.partials.users.plan-required-modal')
   @endif
+  @include('front.partials.users.confirm-modal')
 
   @stack('scripts')
   @php

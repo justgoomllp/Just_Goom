@@ -890,6 +890,79 @@ body.sidebar-icon-only.admin-app .page-body-wrapper {
   color: #cc9a2e;
 }
 
+.admin-app .admin-status-select-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.admin-app .admin-status-select-wrap.is-disabled {
+  opacity: 0.7;
+}
+
+.admin-app .admin-status-select-arrow {
+  position: absolute;
+  right: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  line-height: 1;
+  pointer-events: none;
+  color: currentColor;
+}
+
+.admin-app select.form-control.admin-status-select {
+  min-width: 92px;
+  width: 92px;
+  min-height: 24px;
+  height: 24px;
+  padding: 0 18px 0 6px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 22px;
+  border-radius: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: none;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.admin-app select.form-control.admin-status-select.is-active {
+  color: #198754;
+  border-color: #9fd3b3;
+  background-color: #e8f6ee;
+}
+
+.admin-app select.form-control.admin-status-select.is-inactive {
+  color: #495057;
+  border-color: #ced4da;
+  background-color: #f1f3f5;
+}
+
+.admin-app select.form-control.admin-status-select.is-blocked {
+  color: #dc3545;
+  border-color: #f1b0b7;
+  background-color: #fdecec;
+}
+
+.admin-app .admin-status-select-wrap.is-active {
+  color: #198754;
+}
+
+.admin-app .admin-status-select-wrap.is-inactive {
+  color: #6c757d;
+}
+
+.admin-app .admin-status-select-wrap.is-blocked {
+  color: #dc3545;
+}
+
+.admin-app select.form-control.admin-status-select:disabled {
+  cursor: not-allowed;
+}
+
 .admin-app .form-group label .req,
 .admin-auth .form-group label .req {
   color: var(--admin-danger);

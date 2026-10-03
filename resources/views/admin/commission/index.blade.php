@@ -9,7 +9,7 @@
         <div class="col-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <p class="text-muted mb-3">Set Silver, Gold, and Platinum commission percent per agent for India and Global. First payment credits 50% of that rate; the rest unlocks as the customer profile fills (50% / 70%).</p>
+                    <p class="text-muted mb-3">Set Silver, Gold, and Platinum registration and profile commission percent per agent for India and Global. Registration % is credited when the customer pays; profile % unlocks as the profile reaches 50% then 70%.</p>
 
                     @if (session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
@@ -59,15 +59,21 @@
                 <form id="commissionRatesForm">
                     @csrf
                     <div class="modal-body">
-                        <p class="text-muted mb-4" id="commissionRatesAgent">Set commission percent per plan for India and Global. Example: Silver India 10% means this agent earns 10% of that plan amount.</p>
+                        <p class="text-muted mb-4" id="commissionRatesAgent">Set registration and profile percent per plan. India Silver registration is credited on plan payment; India Silver profile is credited when that customer’s profile fills (50% then 70%).</p>
                         <div id="commissionRatesAlert" class="alert d-none" role="alert"></div>
                         <div class="table-responsive">
-                            <table class="table table-bordered mb-0">
+                            <table class="table table-bordered mb-0 commission-rates-table">
                                 <thead>
                                     <tr>
-                                        <th>Plan</th>
-                                        <th>India %</th>
-                                        <th>Global %</th>
+                                        <th rowspan="2">Plan</th>
+                                        <th colspan="2">India</th>
+                                        <th colspan="2">Global</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Registration %</th>
+                                        <th>Profile %</th>
+                                        <th>Registration %</th>
+                                        <th>Profile %</th>
                                     </tr>
                                 </thead>
                                 <tbody id="commissionRatesBody"></tbody>
@@ -87,7 +93,7 @@
 @push('styles')
 <style>
     #commissionRatesModal .commission-rates-dialog {
-        max-width: 760px;
+        max-width: 1080px;
         width: calc(100% - 2rem);
         margin: 1.5rem auto;
     }
@@ -117,17 +123,27 @@
     }
     #commissionRatesModal .table th,
     #commissionRatesModal .table td {
-        padding: 1rem 1.1rem;
+        padding: 0.85rem 0.9rem;
         vertical-align: middle;
     }
-    #commissionRatesModal .table th:first-child,
-    #commissionRatesModal .table td:first-child {
-        width: 34%;
+    #commissionRatesModal .commission-rates-table thead th {
+        text-align: center;
+        white-space: nowrap;
+        background: #f8f9fa;
+        font-weight: 600;
+    }
+    #commissionRatesModal .commission-rates-table thead th:first-child {
+        text-align: left;
+        width: 18%;
+    }
+    #commissionRatesModal .commission-rates-table td:not(:first-child) {
+        text-align: center;
     }
     #commissionRatesModal .form-control {
         height: 44px;
-        max-width: 160px;
+        max-width: 140px;
         font-size: 0.95rem;
+        margin: 0 auto;
     }
     #commissionRatesModal .btn {
         min-width: 110px;
@@ -237,7 +253,7 @@
                 hideAlert();
                 saveUrl = btn.getAttribute('data-save-url');
                 title.textContent = 'Plan-wise commission';
-                body.innerHTML = '<tr><td colspan="3" class="text-muted">Loading…</td></tr>';
+                body.innerHTML = '<tr><td colspan="5" class="text-muted">Loading…</td></tr>';
 
                 showModal();
 
@@ -248,12 +264,14 @@
                     body.innerHTML = rows.map(function (plan) {
                         return '<tr>'
                             + '<td><strong>' + plan.name + '</strong><input type="hidden" name="plan_id" value="' + plan.id + '"></td>'
-                            + '<td><input type="number" class="form-control js-india" min="0" max="100" step="0.01" value="' + plan.india_percent + '" required placeholder="0"></td>'
-                            + '<td><input type="number" class="form-control js-global" min="0" max="100" step="0.01" value="' + plan.global_percent + '" required placeholder="0"></td>'
+                            + '<td><input type="number" class="form-control js-india" min="0" max="100" step="0.01" value="' + Number(plan.india_percent || 0) + '" required placeholder="0"></td>'
+                            + '<td><input type="number" class="form-control js-india-profile" min="0" max="100" step="0.01" value="' + Number(plan.india_profile_percent || 0) + '" required placeholder="0"></td>'
+                            + '<td><input type="number" class="form-control js-global" min="0" max="100" step="0.01" value="' + Number(plan.global_percent || 0) + '" required placeholder="0"></td>'
+                            + '<td><input type="number" class="form-control js-global-profile" min="0" max="100" step="0.01" value="' + Number(plan.global_profile_percent || 0) + '" required placeholder="0"></td>'
                             + '</tr>';
-                    }).join('') || '<tr><td colspan="3">No purchasable plans found.</td></tr>';
+                    }).join('') || '<tr><td colspan="5">No purchasable plans found.</td></tr>';
                 }).catch(function () {
-                    body.innerHTML = '<tr><td colspan="3" class="text-danger">Could not load rates.</td></tr>';
+                    body.innerHTML = '<tr><td colspan="5" class="text-danger">Could not load rates.</td></tr>';
                 });
             });
 
@@ -269,7 +287,9 @@
                     rates.push({
                         plan_id: parseInt(planInput.value, 10),
                         india_percent: tr.querySelector('.js-india').value,
-                        global_percent: tr.querySelector('.js-global').value
+                        india_profile_percent: tr.querySelector('.js-india-profile').value,
+                        global_percent: tr.querySelector('.js-global').value,
+                        global_profile_percent: tr.querySelector('.js-global-profile').value
                     });
                 });
 

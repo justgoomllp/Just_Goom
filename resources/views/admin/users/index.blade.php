@@ -41,7 +41,7 @@
                                     <option value="">All Status</option>
                                     <option value="1" @selected(request('status') === '1')>Active</option>
                                     <option value="0" @selected(request('status') === '0')>Inactive</option>
-                                    <option value="2" @selected(request('status') === '2')>Suspended</option>
+                                    <option value="2" @selected(request('status') === '2')>Blocked</option>
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -103,7 +103,7 @@
                 { data: 'type' },
                 { data: 'referral_code' },
                 { data: 'category', orderable: false },
-                { data: 'status', orderable: false, searchable: false },
+                { data: 'status', orderable: false, searchable: false, width: '110px' },
                 { data: 'email_verified', orderable: false, searchable: false },
                 { data: 'notifications', orderable: false, searchable: false },
                 { data: 'action', orderable: false, searchable: false }

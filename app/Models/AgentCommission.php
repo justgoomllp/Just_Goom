@@ -73,7 +73,7 @@ class AgentCommission extends Model
     public function typeLabel(): string
     {
         return match ($this->type) {
-            self::TYPE_PAYMENT_BASE => 'Payment (50% of rate)',
+            self::TYPE_PAYMENT_BASE => 'Registration',
             self::TYPE_PROFILE_50 => 'Profile 50%',
             self::TYPE_PROFILE_70 => 'Profile 70%',
             default => ucfirst(str_replace('_', ' ', (string) $this->type)),

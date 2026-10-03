@@ -9,8 +9,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class UserService
@@ -86,8 +88,7 @@ class UserService
                     'type' => '<label class="badge '.$typeClass.'">'.$typeLabel.'</label>',
                     'referral_code' => e($user->referral_code ?: '-'),
                     'category' => e($user->category->name ?? '-'),
-                    'status' => AdminDataTable::statusToggle(route('admin.users.status', $user), (int) $user->status === 1, [
-                        'suspended' => (int) $user->status === 2,
+                    'status' => AdminDataTable::userStatusChoices(route('admin.users.status', $user), (int) $user->status, [
                         'disabled' => Auth::id() === $user->id,
                         'disabledTitle' => 'You cannot change your own status',
                     ]),
@@ -161,6 +162,10 @@ class UserService
 
         $user->update($data);
 
+        if (array_key_exists('status', $data) && (int) $data['status'] !== User::STATUS_ACTIVE) {
+            $this->forceLogoutUser($user->fresh());
+        }
+
         if (in_array($user->type, ['user', 'agent'], true)) {
             $this->ensureCompanyProfile($user->fresh());
         }
@@ -192,7 +197,27 @@ class UserService
     {
         $user->update(['status' => $status]);
 
+        if ($status !== User::STATUS_ACTIVE) {
+            $this->forceLogoutUser($user);
+        }
+
         return $user;
+    }
+
+    public function forceLogoutUser(User $user): void
+    {
+        $user->forceFill([
+            'remember_token' => Str::random(60),
+        ])->save();
+
+        if (method_exists($user, 'tokens')) {
+            $user->tokens()->delete();
+        }
+
+        $table = config('session.table', 'sessions');
+        if (config('session.driver') === 'database' && Schema::hasTable($table)) {
+            DB::table($table)->where('user_id', $user->id)->delete();
+        }
     }
 
     public function delete(User $user): void
@@ -204,10 +229,35 @@ class UserService
     private function uniqueReferralCode(): string
     {
         do {
-            $code = strtoupper(Str::random(8));
+            $code = $this->mixedReferralCode();
         } while (User::where('referral_code', $code)->exists());
 
         return $code;
+    }
+
+    private function mixedReferralCode(): string
+    {
+        $letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+        $digits = '23456789';
+        $chars = [];
+
+        $letterCount = random_int(3, 5);
+        $digitCount = 8 - $letterCount;
+
+        for ($i = 0; $i < $letterCount; $i++) {
+            $chars[] = $letters[random_int(0, strlen($letters) - 1)];
+        }
+
+        for ($i = 0; $i < $digitCount; $i++) {
+            $chars[] = $digits[random_int(0, strlen($digits) - 1)];
+        }
+
+        for ($i = count($chars) - 1; $i > 0; $i--) {
+            $j = random_int(0, $i);
+            [$chars[$i], $chars[$j]] = [$chars[$j], $chars[$i]];
+        }
+
+        return implode('', $chars);
     }
 
     private function uploadProfile($file): ?string

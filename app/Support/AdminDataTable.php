@@ -100,6 +100,14 @@ class AdminDataTable
         ]);
     }
 
+    public static function userStatusChoices(string $action, int $status, array $extra = []): string
+    {
+        return view('admin.partials.user-status-choices', array_merge([
+            'action' => $action,
+            'status' => $status,
+        ], $extra))->render();
+    }
+
     public static function statusToggle(string $action, bool $active, array $extra = []): string
     {
         return view('admin.partials.status-toggle', array_merge([
