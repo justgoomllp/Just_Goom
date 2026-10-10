@@ -31,7 +31,7 @@ class PageController extends Controller
             'categorySectors' => $this->categoryCatalogService->sectorsForFrontend(),
             'companyProfiles' => $this->publicProfileListingService->listForFrontend(),
             'majorCountries' => $this->majorCountriesForHome(),
-            'runningOffers' => Offer::with('user.companyProfile')
+            'runningOffers' => Offer::with(['user.companyProfile', 'user.userPlans.plan'])
                 ->active()
                 ->orderByDesc('is_featured')
                 ->orderByDesc('created_at')
@@ -53,7 +53,7 @@ class PageController extends Controller
 
     public function offers()
     {
-        $offers = Offer::with(['user.companyProfile'])
+        $offers = Offer::with(['user.companyProfile', 'user.userPlans.plan'])
             ->active()
             ->whereHas('user', function ($query) {
                 $query->where('type', 'user')->where('status', 1);

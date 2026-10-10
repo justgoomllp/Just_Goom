@@ -56,16 +56,22 @@
             ? asset($offer->banner_image)
             : $fallbackOfferImages[$index % count($fallbackOfferImages)];
           $logo = $company?->logo ? asset($company->logo) : $defaultLogo;
+          $today = now()->startOfDay();
+          $activePlan = $offer->user?->userPlans
+            ? $offer->user->userPlans
+                ->filter(fn ($plan) => $plan->next_purchase_date && $plan->next_purchase_date->gte($today))
+                ->sortByDesc(fn ($plan) => $plan->next_purchase_date?->timestamp)
+                ->first()
+            : null;
+          $planName = $activePlan?->plan?->name ?: 'Free';
+          $planSlug = strtolower(preg_replace('/[^a-z0-9]+/i', '', $planName)) ?: 'free';
         @endphp
         <a href="{{ $offerUrl }}" class="offer-promo-card">
           <div class="offer-promo-media">
             <img class="offer-promo-bg" src="{{ $image }}" alt="" loading="lazy" aria-hidden="true">
             <div class="offer-promo-overlay" aria-hidden="true"></div>
-            @if($offer->is_featured)
-              <span class="offer-promo-ad">Featured</span>
-            @else
-              <span class="offer-promo-ad">Offer</span>
-            @endif
+            @include('front.partials.offer-festive', ['title' => $offer->title])
+            <span class="offer-promo-ad offer-promo-plan is-{{ $planSlug }}">{{ $planName }}</span>
           </div>
           <div class="offer-promo-content">
             <div class="offer-promo-brand">
@@ -74,9 +80,20 @@
               </div>
               <span class="offer-promo-company" title="{{ $companyName }}">{{ \Illuminate\Support\Str::limit($companyName, 28) }}</span>
             </div>
-            <h3 class="offer-promo-title" title="{{ $offer->title }}">{{ \Illuminate\Support\Str::limit($offer->title, 55) }}</h3>
+            @php
+              $titleWords = preg_split('/\s+/', trim($offer->title)) ?: [];
+              $titleLast = count($titleWords) > 1 ? array_pop($titleWords) : '';
+              $titleLead = trim(implode(' ', $titleWords));
+            @endphp
+            <h3 class="offer-promo-title" title="{{ $offer->title }}">
+              @if($titleLead !== '')<span>{{ \Illuminate\Support\Str::limit($titleLead, 32) }}</span>@endif
+              @if($titleLast !== '')<em>{{ $titleLast }}</em>@else{{ \Illuminate\Support\Str::limit($offer->title, 55) }}@endif
+            </h3>
             <p class="offer-promo-tagline" title="{{ $companyTagLine }}">{{ \Illuminate\Support\Str::limit(strip_tags($offer->description ?: $companyTagLine), 80) }}</p>
-            <span class="offer-promo-cta">View offer <span aria-hidden="true">→</span></span>
+            <div class="offer-promo-actions">
+              <span class="offer-promo-cta">View Offer <span aria-hidden="true">→</span></span>
+              <span class="offer-promo-btn">VIEW OFFER</span>
+            </div>
           </div>
         </a>
       @endforeach

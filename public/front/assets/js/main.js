@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   var inits = [
     initActiveNav, initMobileNav, initTabs, initProfileTabs,
     initTeamFilter, initGallery, initHealthCalculator,
-    initContactForm, initAuthRegister, initAuthForms, initFlashToast,
-    initProfileDropdown, initPricingRegion
+    initContactForm, initContactPage, initAuthRegister, initAuthForms, initFlashToast,
+    initProfileDropdown, initPricingRegion, initOfferCelebration
   ];
   inits.forEach(function(fn) {
     try { fn(); } catch (e) { console.error(e); }
@@ -239,10 +239,62 @@ function initContactForm() {
   const form = document.getElementById('contactForm');
   if (!form) return;
 
+  var message = document.getElementById('contactMessage');
+  var counter = document.getElementById('contactChar');
+  var resetBtn = document.getElementById('contactFormReset');
+
+  function updateCount() {
+    if (!message || !counter) return;
+    counter.textContent = (message.value || '').length + ' / 1200';
+  }
+
+  if (message) {
+    message.addEventListener('input', updateCount);
+    updateCount();
+  }
+
+  var success = form.querySelector('.contact-form-success');
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    alert('Thank you! Your message has been sent. We will contact you soon.');
-    form.reset();
+    form.classList.add('is-sent');
+    if (success) success.removeAttribute('hidden');
+  });
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function() {
+      form.classList.remove('is-sent');
+      if (success) success.setAttribute('hidden', '');
+      form.reset();
+      updateCount();
+    });
+  }
+}
+
+function initContactPage() {
+  if (!document.body.classList.contains('contact-page')) return;
+
+  var live = document.getElementById('contactLive');
+  if (live) {
+    try {
+      var now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+      var day = now.getDay();
+      var mins = now.getHours() * 60 + now.getMinutes();
+      var open = (day >= 1 && day <= 5 && mins >= 540 && mins < 1080) || (day === 6 && mins >= 600 && mins < 960);
+      live.textContent = open ? 'Open now' : 'Closed now';
+      live.classList.add(open ? 'is-open' : 'is-closed');
+    } catch (err) {
+      live.textContent = 'Mon–Sat desk';
+    }
+  }
+
+  document.querySelectorAll('.contact-faq-item').forEach(function(item) {
+    item.addEventListener('toggle', function() {
+      if (!item.open) return;
+      document.querySelectorAll('.contact-faq-item').forEach(function(other) {
+        if (other !== item) other.removeAttribute('open');
+      });
+    });
   });
 }
 
@@ -689,4 +741,65 @@ function initProfileDropdown() {
       dropdown.classList.remove('open');
     }
   });
+}
+
+function initOfferCelebration() {
+  var body = document.body;
+  var hash = (window.location.hash || '').toLowerCase();
+  var onAllOffers = body.classList.contains('offers-page');
+  var onViewOffer = body.classList.contains('profile-page') && hash === '#offers';
+
+  if (!onAllOffers && !onViewOffer) return;
+
+  function start() {
+    setTimeout(playOfferCelebration, 520);
+  }
+
+  if (document.readyState === 'complete') {
+    start();
+  } else {
+    window.addEventListener('load', start, { once: true });
+  }
+}
+
+function playOfferCelebration() {
+  if (document.querySelector('.jg-celebrate')) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var overlay = document.createElement('div');
+  overlay.className = 'jg-celebrate';
+  overlay.setAttribute('aria-hidden', 'true');
+
+  var colors = ['#F7941D', '#1A428A', '#ef4444', '#fbbf24', '#ffffff', '#22c55e'];
+  var bits = '';
+  var i;
+  for (i = 0; i < 28; i++) {
+    var left = 8 + Math.round(Math.random() * 84);
+    var delay = (0.05 + Math.random() * 0.45).toFixed(2);
+    var duration = (1.35 + Math.random() * 0.7).toFixed(2);
+    var size = 8 + Math.round(Math.random() * 10);
+    var color = colors[i % colors.length];
+    bits += '<span class="jg-celebrate-piece" style="left:' + left + '%;width:' + size + 'px;height:' + size + 'px;background:' + color + ';animation-delay:' + delay + 's;animation-duration:' + duration + 's"></span>';
+  }
+
+  var springs = '';
+  var springLeft = [18, 32, 50, 68, 82];
+  for (i = 0; i < springLeft.length; i++) {
+    springs += '<span class="jg-celebrate-spring" style="left:' + springLeft[i] + '%;animation-delay:' + (0.08 * i).toFixed(2) + 's"></span>';
+  }
+
+  overlay.innerHTML =
+    springs +
+    bits +
+    '<div class="jg-celebrate-msg"><strong>' +
+    (document.body.classList.contains('offers-page') ? 'All Offers' : 'Special Offer') +
+    '</strong><span>' +
+    (document.body.classList.contains('offers-page') ? 'Spring deals are live' : 'Festive deals unlocked') +
+    '</span></div>';
+
+  document.body.appendChild(overlay);
+  requestAnimationFrame(function() { overlay.classList.add('is-on'); });
+
+  setTimeout(function() { overlay.classList.add('is-out'); }, 2200);
+  setTimeout(function() { overlay.remove(); }, 2800);
 }

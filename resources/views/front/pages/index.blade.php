@@ -259,7 +259,7 @@
     <div class="container">
       <div class="section-header">
         <div>
-          <h2 class="section-title">Running Offers & Promotions</h2>
+          <h2 class="section-title">Running Offers & <span class="offers-title-accent">Promotions</span></h2>
           <p class="section-subtitle">Exclusive deals and promotions from registered businesses</p>
         </div>
         <a href="{{ route('front.offers') }}" class="view-all-link">Browse All →</a>
@@ -274,7 +274,8 @@
         ];
         $defaultLogo = asset('front/assets/images/justgoom-logo.png');
 
-        $offerCards = collect($runningOffers ?? [])->map(function ($offer, $index) use ($fallbackOfferImages, $defaultLogo) {
+        $today = now()->startOfDay();
+        $offerCards = collect($runningOffers ?? [])->map(function ($offer, $index) use ($fallbackOfferImages, $defaultLogo, $today) {
           $company = $offer->user?->companyProfile;
           $companyName = $company?->company_name
             ?: trim(($offer->user?->fname ?? '') . ' ' . ($offer->user?->lname ?? ''))
@@ -283,6 +284,13 @@
           $offerUrl = $company?->slug
             ? route('front.profile.show', $company->slug) . '#offers'
             : route('front.all-profiles');
+          $activePlan = $offer->user?->userPlans
+            ? $offer->user->userPlans
+                ->filter(fn ($plan) => $plan->next_purchase_date && $plan->next_purchase_date->gte($today))
+                ->sortByDesc(fn ($plan) => $plan->next_purchase_date?->timestamp)
+                ->first()
+            : null;
+          $planName = $activePlan?->plan?->name ?: 'Free';
 
           return [
             'title' => $offer->title,
@@ -294,6 +302,8 @@
               ? asset($offer->banner_image)
               : $fallbackOfferImages[$index % count($fallbackOfferImages)],
             'company' => $companyName,
+            'plan' => $planName,
+            'plan_slug' => strtolower(preg_replace('/[^a-z0-9]+/i', '', $planName)) ?: 'free',
           ];
         })->values();
       @endphp
@@ -309,7 +319,8 @@
             <div class="offer-promo-media">
               <img class="offer-promo-bg" src="{{ $offer['image'] }}" alt="" loading="lazy" aria-hidden="true">
               <div class="offer-promo-overlay" aria-hidden="true"></div>
-              <span class="offer-promo-ad">Sponsored</span>
+              @include('front.partials.offer-festive', ['title' => $offer['title']])
+              <span class="offer-promo-ad offer-promo-plan is-{{ $offer['plan_slug'] }}">{{ $offer['plan'] }}</span>
             </div>
             <div class="offer-promo-content">
               <div class="offer-promo-brand">
@@ -318,9 +329,20 @@
                 </div>
                 <span class="offer-promo-company" title="{{ $offer['company'] }}">{{ \Illuminate\Support\Str::limit($offer['company'], 28) }}</span>
               </div>
-              <h3 class="offer-promo-title" title="{{ $offer['title'] }}">{{ \Illuminate\Support\Str::limit($offer['title'], 55) }}</h3>
+              @php
+                $titleWords = preg_split('/\s+/', trim($offer['title'])) ?: [];
+                $titleLast = count($titleWords) > 1 ? array_pop($titleWords) : '';
+                $titleLead = trim(implode(' ', $titleWords));
+              @endphp
+              <h3 class="offer-promo-title" title="{{ $offer['title'] }}">
+                @if($titleLead !== '')<span>{{ \Illuminate\Support\Str::limit($titleLead, 32) }}</span>@endif
+                @if($titleLast !== '')<em>{{ $titleLast }}</em>@else{{ \Illuminate\Support\Str::limit($offer['title'], 55) }}@endif
+              </h3>
               <p class="offer-promo-tagline" title="{{ $offer['tagline'] }}">{{ \Illuminate\Support\Str::limit($offer['tagline'], 80) }}</p>
-              <span class="offer-promo-cta">View offer <span aria-hidden="true">→</span></span>
+              <div class="offer-promo-actions">
+                <span class="offer-promo-cta">View Offer <span aria-hidden="true">→</span></span>
+                <span class="offer-promo-btn">VIEW OFFER</span>
+              </div>
             </div>
           </a>
           @endforeach
