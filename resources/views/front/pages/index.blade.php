@@ -282,7 +282,7 @@
             ?: 'JustGoom Member';
           $companyTagLine = $company?->tagline ?: $companyName;
           $offerUrl = $company?->slug
-            ? route('front.profile.show', $company->slug) . '#offers'
+            ? route('front.profile.show', $company->slug) . '?celebrate=1#offers'
             : route('front.all-profiles');
           $activePlan = $offer->user?->userPlans
             ? $offer->user->userPlans
@@ -315,7 +315,7 @@
         </button>
         <div class="offers-promo-track" id="offersTrack">
           @foreach($offerCards as $offer)
-          <a href="{{ $offer['offer_url'] }}" class="offer-promo-card" @if(\Illuminate\Support\Str::startsWith($offer['offer_url'], ['http://', 'https://'])) target="_blank" rel="noopener" @endif>
+          <a href="{{ $offer['offer_url'] }}" class="offer-promo-card">
             <div class="offer-promo-media">
               <img class="offer-promo-bg" src="{{ $offer['image'] }}" alt="" loading="lazy" aria-hidden="true">
               <div class="offer-promo-overlay" aria-hidden="true"></div>
@@ -340,7 +340,6 @@
               </h3>
               <p class="offer-promo-tagline" title="{{ $offer['tagline'] }}">{{ \Illuminate\Support\Str::limit($offer['tagline'], 80) }}</p>
               <div class="offer-promo-actions">
-                <span class="offer-promo-cta">View Offer <span aria-hidden="true">→</span></span>
                 <span class="offer-promo-btn">VIEW OFFER</span>
               </div>
             </div>

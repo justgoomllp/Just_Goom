@@ -60,6 +60,7 @@ class LoginController extends Controller
 
         Auth::login($user, $remember);
         $request->session()->regenerate();
+        $request->session()->flash('celebrate', 'login');
 
         if ($user->isAgent()) {
             return redirect()->intended(route('front.agent.dashboard'));

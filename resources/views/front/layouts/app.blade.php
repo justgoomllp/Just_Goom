@@ -34,6 +34,13 @@
       window.JG_FLASH = @json($jgFlash);
     </script>
   @endif
-  <script src="{{ asset('front/assets/js/main.js') }}"></script>
+  @if(session('celebrate'))
+    <script>
+      window.JG_CELEBRATE = @json(session('celebrate'));
+    </script>
+  @endif
+  <script src="{{ asset('front/assets/js/celebrate.js') }}?v=3"></script>
+  <script>if (typeof JGCelebrateBoot === 'function') JGCelebrateBoot();</script>
+  <script src="{{ asset('front/assets/js/main.js') }}?v=3"></script>
 </body>
 </html>

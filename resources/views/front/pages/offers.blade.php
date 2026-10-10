@@ -2,7 +2,7 @@
 
 @section('title', 'All Offers & Promotions — Just Goom LLP')
 @section('meta_description', 'Browse live offers and promotions from verified JustGoom businesses.')
-@section('body_attrs', 'class="offers-page" data-page="offers"')
+@section('body_attrs', 'class="offers-page" data-page="offers" data-celebrate="offer"')
 
 @push('styles')
   <link rel="stylesheet" href="https://unpkg.com/galaxyjs@3/galaxy.css">
@@ -50,7 +50,7 @@
             ?: 'JustGoom Member';
           $companyTagLine = $company?->tagline ?: $companyName;
           $offerUrl = $company?->slug
-            ? route('front.profile.show', $company->slug) . '#offers'
+            ? route('front.profile.show', $company->slug) . '?celebrate=1#offers'
             : route('front.all-profiles');
           $image = $offer->banner_image
             ? asset($offer->banner_image)
@@ -91,7 +91,6 @@
             </h3>
             <p class="offer-promo-tagline" title="{{ $companyTagLine }}">{{ \Illuminate\Support\Str::limit(strip_tags($offer->description ?: $companyTagLine), 80) }}</p>
             <div class="offer-promo-actions">
-              <span class="offer-promo-cta">View Offer <span aria-hidden="true">→</span></span>
               <span class="offer-promo-btn">VIEW OFFER</span>
             </div>
           </div>

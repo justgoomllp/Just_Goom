@@ -744,62 +744,15 @@ function initProfileDropdown() {
 }
 
 function initOfferCelebration() {
+  if (typeof window.JGCelebrate !== 'function') return;
   var body = document.body;
   var hash = (window.location.hash || '').toLowerCase();
-  var onAllOffers = body.classList.contains('offers-page');
-  var onViewOffer = body.classList.contains('profile-page') && hash === '#offers';
-
-  if (!onAllOffers && !onViewOffer) return;
-
-  function start() {
-    setTimeout(playOfferCelebration, 520);
+  if (body.classList.contains('offers-page')) {
+    window.JGCelebrate('offer', 'All Offers', 'Festive deals are live');
+    return;
   }
-
-  if (document.readyState === 'complete') {
-    start();
-  } else {
-    window.addEventListener('load', start, { once: true });
+  if (body.classList.contains('profile-page') && hash === '#offers') {
+    window.JGCelebrate('offer', 'Special Offer', 'Festive deals unlocked');
   }
 }
 
-function playOfferCelebration() {
-  if (document.querySelector('.jg-celebrate')) return;
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  var overlay = document.createElement('div');
-  overlay.className = 'jg-celebrate';
-  overlay.setAttribute('aria-hidden', 'true');
-
-  var colors = ['#F7941D', '#1A428A', '#ef4444', '#fbbf24', '#ffffff', '#22c55e'];
-  var bits = '';
-  var i;
-  for (i = 0; i < 28; i++) {
-    var left = 8 + Math.round(Math.random() * 84);
-    var delay = (0.05 + Math.random() * 0.45).toFixed(2);
-    var duration = (1.35 + Math.random() * 0.7).toFixed(2);
-    var size = 8 + Math.round(Math.random() * 10);
-    var color = colors[i % colors.length];
-    bits += '<span class="jg-celebrate-piece" style="left:' + left + '%;width:' + size + 'px;height:' + size + 'px;background:' + color + ';animation-delay:' + delay + 's;animation-duration:' + duration + 's"></span>';
-  }
-
-  var springs = '';
-  var springLeft = [18, 32, 50, 68, 82];
-  for (i = 0; i < springLeft.length; i++) {
-    springs += '<span class="jg-celebrate-spring" style="left:' + springLeft[i] + '%;animation-delay:' + (0.08 * i).toFixed(2) + 's"></span>';
-  }
-
-  overlay.innerHTML =
-    springs +
-    bits +
-    '<div class="jg-celebrate-msg"><strong>' +
-    (document.body.classList.contains('offers-page') ? 'All Offers' : 'Special Offer') +
-    '</strong><span>' +
-    (document.body.classList.contains('offers-page') ? 'Spring deals are live' : 'Festive deals unlocked') +
-    '</span></div>';
-
-  document.body.appendChild(overlay);
-  requestAnimationFrame(function() { overlay.classList.add('is-on'); });
-
-  setTimeout(function() { overlay.classList.add('is-out'); }, 2200);
-  setTimeout(function() { overlay.remove(); }, 2800);
-}

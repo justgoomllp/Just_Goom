@@ -8675,7 +8675,7 @@ body {
 .offer-promo-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 12px;
   margin-top: auto;
   padding-top: 8px;
@@ -9626,6 +9626,11 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .jg-celebrate { display: none !important; }
+}
+.jg-burst,
+.jg-burst i,
+.jg-burst-msg {
+  animation-play-state: running !important;
 }
 
 /* â”€â”€ Contact page advanced â”€â”€ */

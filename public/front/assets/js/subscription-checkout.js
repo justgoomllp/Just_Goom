@@ -59,6 +59,11 @@ function initRazorpayCheckout() {
         return;
       }
       toast(data.message || 'Payment successful.', 'success');
+      if (typeof window.JGCelebrate === 'function') {
+        window.JGCelebrate('payment', 'Payment successful', 'Your plan is now active');
+        setTimeout(function () { window.location.href = data.redirect; }, 1600);
+        return;
+      }
       window.location.href = data.redirect;
     } catch (err) {
       toast('Payment verification failed. If money was deducted, contact support with your payment ID.', 'error');

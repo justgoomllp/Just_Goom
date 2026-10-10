@@ -79,9 +79,12 @@ class SubscriptionController extends Controller
     {
         try {
             $result = $this->payments->verifyAndActivate($request->user(), $request);
+            $request->session()->flash('celebrate', 'payment');
+            $request->session()->flash('success', $result['message']);
 
             return response()->json([
                 'ok' => true,
+                'celebrate' => 'payment',
                 'redirect' => $result['redirect'],
                 'message' => $result['message'],
             ]);

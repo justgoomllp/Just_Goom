@@ -44,6 +44,13 @@
       window.JG_FLASH = @json($jgFlash);
     </script>
   @endif
+  @if(session('celebrate'))
+    <script>
+      window.JG_CELEBRATE = @json(session('celebrate'));
+    </script>
+  @endif
+  <script src="{{ asset('front/assets/js/celebrate.js') }}?v=3"></script>
+  <script>if (typeof JGCelebrateBoot === 'function') JGCelebrateBoot();</script>
   <script>
     window.JG_USER = @json(['name' => auth()->user()?->companyProfile?->company_name ?? auth()->user()?->fullName() ?? 'User', 'email' => auth()->user()?->email]);
   </script>
