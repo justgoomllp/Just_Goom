@@ -260,7 +260,7 @@
           <h2 class="section-title">Running Offers & Promotions</h2>
           <p class="section-subtitle">Exclusive deals and promotions from registered businesses</p>
         </div>
-        <a href="{{ route('front.all-profiles') }}" class="view-all-link">Browse All →</a>
+        <a href="{{ route('front.offers') }}" class="view-all-link">Browse All →</a>
       </div>
 
       @php

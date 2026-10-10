@@ -92,6 +92,7 @@ Route::get('/calculators', fn () => app(PageController::class)->publicPage('calc
 Route::get('/categories', [FrontCategoryController::class, 'index'])->name('front.categories');
 Route::get('/category-details', fn () => app(PageController::class)->publicPage('category-details'))->name('front.category-details');
 Route::get('/contact', fn () => app(PageController::class)->publicPage('contact'))->name('front.contact');
+Route::get('/offers', [PageController::class, 'offers'])->name('front.offers');
 Route::get('/pricing', fn () => app(PageController::class)->publicPage('pricing'))->name('front.pricing');
 Route::get('/all-profiles', [PublicProfileController::class, 'index'])->name('front.all-profiles');
 Route::get('/profile', [PublicProfileController::class, 'redirectLegacy'])->name('front.profile');

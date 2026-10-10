@@ -51,6 +51,23 @@ class PageController extends Controller
         ]);
     }
 
+    public function offers()
+    {
+        $offers = Offer::with(['user.companyProfile'])
+            ->active()
+            ->whereHas('user', function ($query) {
+                $query->where('type', 'user')->where('status', 1);
+            })
+            ->orderByDesc('is_featured')
+            ->orderByDesc('created_at')
+            ->paginate(12)
+            ->withQueryString();
+
+        return view('front.pages.offers', [
+            'offers' => $offers,
+        ]);
+    }
+
     private function majorCountriesForHome(): array
     {
         return [

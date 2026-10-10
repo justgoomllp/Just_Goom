@@ -20,6 +20,7 @@
           <li><a href="{{ route('front.about') }}">About Us</a></li>
           <li><a href="{{ route('front.categories') }}">Categories</a></li>
           <li><a href="{{ route('front.all-profiles') }}">All Profiles</a></li>
+          <li><a href="{{ route('front.offers') }}">All Offers</a></li>
           <!-- <li><a href="{{ route('front.articles') }}">Articles</a></li> -->
           <li><a href="{{ route('front.pricing') }}">Pricing</a></li>
           <li><a href="{{ route('front.contact') }}">Contact Us</a></li>
