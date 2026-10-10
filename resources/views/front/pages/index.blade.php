@@ -5,8 +5,10 @@
 @section('body_attrs', 'class="home-b2b" data-page="home"')
 
 @section('content')
+  <div class="jg-bubbles" id="jgBubbles" aria-hidden="true"></div>
+  <div class="jg-cursor" id="jgCursor" aria-hidden="true"></div>
 <!-- B2B Hero -->
-  <section class="hero b2b-hero">
+  <section class="hero b2b-hero" data-scroll="rise">
     <div class="container">
       <div class="b2b-hero-inner">
         <div class="b2b-hero-content">
@@ -65,7 +67,7 @@
   </section>
 
   <!-- All Categories — Globy-style sectors -->
-  <section class="globy-sectors-section home-sectors" id="categories">
+  <section class="globy-sectors-section home-sectors" id="categories" data-scroll="slide-left">
     <div class="container">
       <div class="globy-sectors-header">
         <div>
@@ -82,7 +84,7 @@
   </section>
 
   <!-- Company Profiles -->
-  <section class="company-profiles-section" id="companies">
+  <section class="company-profiles-section" id="companies" data-scroll="zoom">
     <div class="container">
       <div class="section-header">
         <div>
@@ -112,7 +114,7 @@
   </section>
 
   <!-- Profile Steps Flow -->
-  <section class="profile-flow-section">
+  <section class="profile-flow-section" data-scroll="slide-right">
     <div class="container">
       <div class="profile-flow-header">
         <div>
@@ -206,7 +208,7 @@
   </section>
 
   <!-- Location Selection -->
-  <section class="location-selector-section" id="location-selector">
+  <section class="location-selector-section" id="location-selector" data-scroll="flip">
     <div class="container">
       <div class="location-selector-header">
         <h2 class="section-title">Find Businesses by Location</h2>
@@ -253,7 +255,7 @@
   </section>
 
   <!-- Running Offers & Advertisements -->
-  <section class="offers-section" id="running-offers">
+  <section class="offers-section" id="running-offers" data-scroll="tilt">
     <div class="container">
       <div class="section-header">
         <div>
@@ -345,29 +347,29 @@
   </section>
 
   <!-- Stats Bar -->
-  <div class="stats-bar">
+  <div class="stats-bar" data-scroll="bounce">
     <div class="container stats-grid">
       <div class="stat-item">
-        <div class="stat-num">30+</div>
+        <div class="stat-num" data-count="30" data-suffix="+">0+</div>
         <div class="stat-label">Verified Businesses</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">24+</div>
+        <div class="stat-num" data-count="24" data-suffix="+">0+</div>
         <div class="stat-label">Business Sectors</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">50+</div>
+        <div class="stat-num" data-count="50" data-suffix="+">0+</div>
         <div class="stat-label">Cities Covered</div>
       </div>
       <div class="stat-item">
-        <div class="stat-num">10K+</div>
+        <div class="stat-num" data-count="10" data-suffix="K+">0K+</div>
         <div class="stat-label">Monthly Inquiries</div>
       </div>
     </div>
   </div>
 
   <!-- Blog / Articles -->
-  <section class="section home-blog-section" id="articles">
+  <section class="section home-blog-section" id="articles" data-scroll="fade">
     <div class="container">
       <div class="section-header">
         <div>
