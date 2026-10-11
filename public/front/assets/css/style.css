@@ -9732,7 +9732,7 @@ body {
 }
 .contact-orbit {
   position: relative;
-  width: min(340px, 100%);
+  width: min(420px, 100%);
   aspect-ratio: 1;
   margin: 0 auto;
 }
@@ -9742,51 +9742,64 @@ body {
   border-radius: 50%;
   border: 1px dashed rgba(255, 255, 255, 0.22);
 }
-.contact-orbit-ring.r1 { inset: 8%; animation: contactSpin 28s linear infinite; }
-.contact-orbit-ring.r2 { inset: 22%; border-style: solid; border-color: rgba(247, 148, 29, 0.28); animation: contactSpin 18s linear infinite reverse; }
-.contact-orbit-ring.r3 { inset: 36%; }
+.contact-orbit-ring.r1 { inset: 4%; animation: contactSpin 28s linear infinite; }
+.contact-orbit-ring.r2 { inset: 18%; border-style: solid; border-color: rgba(247, 148, 29, 0.28); animation: contactSpin 18s linear infinite reverse; }
+.contact-orbit-ring.r3 { inset: 32%; }
 .contact-orbit-core {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 86px;
-  height: 86px;
-  margin: -43px 0 0 -43px;
-  border-radius: 24px;
+  width: 210px;
+  height: 96px;
+  margin: -48px 0 0 -105px;
+  border-radius: 22px;
   display: grid;
   place-items: center;
-  background: linear-gradient(160deg, #fff 0%, #ffe7c2 100%);
-  color: var(--primary-dark);
-  font-weight: 800;
-  font-size: 22px;
-  letter-spacing: -0.04em;
+  padding: 10px 16px;
+  background: #fff;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25), 0 0 0 6px rgba(247, 148, 29, 0.28);
   animation: contactCore 3.6s ease-in-out infinite;
+  z-index: 2;
 }
+.contact-orbit-core img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.contact-orbit-spin {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  animation: contactSpin 16s linear infinite;
+}
+.contact-orbit-spin.spin-2 { animation-delay: -4s; }
+.contact-orbit-spin.spin-3 { animation-delay: -8s; }
+.contact-orbit-spin.spin-4 { animation-delay: -12s; }
 .contact-sat {
   position: absolute;
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
+  top: 0;
+  left: 50%;
+  width: 72px;
+  height: 72px;
+  margin-left: -36px;
+  border-radius: 22px;
   display: grid;
   place-items: center;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.96);
   color: var(--primary);
-  font-size: 18px;
-  box-shadow: 0 10px 24px rgba(11, 31, 69, 0.28);
+  font-size: 32px;
+  box-shadow: 0 12px 28px rgba(11, 31, 69, 0.3);
+  animation: contactSatFix 16s linear infinite;
 }
-.contact-sat.s1 { top: 6%; left: 42%; animation: contactSat 3.2s ease-in-out infinite; }
-.contact-sat.s2 { top: 42%; right: 2%; animation: contactSat 3.6s ease-in-out infinite 0.4s; }
-.contact-sat.s3 { bottom: 8%; left: 38%; animation: contactSat 3.1s ease-in-out infinite 0.8s; }
-.contact-sat.s4 { top: 40%; left: 2%; animation: contactSat 3.4s ease-in-out infinite 1.1s; }
+.contact-orbit-spin.spin-2 .contact-sat { animation-delay: -4s; }
+.contact-orbit-spin.spin-3 .contact-sat { animation-delay: -8s; }
+.contact-orbit-spin.spin-4 .contact-sat { animation-delay: -12s; }
 @keyframes contactSpin { to { transform: rotate(360deg); } }
+@keyframes contactSatFix { to { transform: rotate(-360deg); } }
 @keyframes contactCore {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.06); }
-}
-@keyframes contactSat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  50% { transform: scale(1.05); }
 }
 .contact-page .contact-reach-section {
   padding-top: 48px;
@@ -9871,8 +9884,11 @@ body {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.contact-form-steps li {
+.contact-form-steps span {
   padding: 5px 10px;
   border-radius: 999px;
   background: #fff;
@@ -9881,7 +9897,7 @@ body {
   font-weight: 700;
   color: var(--text-muted);
 }
-.contact-form-steps li.is-on {
+.contact-form-steps span.is-on {
   background: var(--primary);
   border-color: var(--primary);
   color: #fff;
@@ -10038,7 +10054,9 @@ body {
 @media (max-width: 1024px) {
   .contact-hero-grid,
   .contact-faq-wrap { grid-template-columns: 1fr; }
-  .contact-orbit { width: 280px; }
+  .contact-orbit { width: min(340px, 88vw); }
+  .contact-orbit-core { width: 168px; height: 80px; margin: -40px 0 0 -84px; padding: 8px 12px; }
+  .contact-sat { width: 60px; height: 60px; margin-left: -30px; font-size: 26px; }
 }
 @media (max-width: 640px) {
   .contact-form { padding: 18px 16px 22px; }
@@ -10050,6 +10068,7 @@ body {
   .contact-hero-orbs span,
   .contact-orbit-ring,
   .contact-orbit-core,
+  .contact-orbit-spin,
   .contact-sat { animation: none !important; }
 }
 

@@ -34,11 +34,13 @@
         <div class="contact-orbit-ring r1"></div>
         <div class="contact-orbit-ring r2"></div>
         <div class="contact-orbit-ring r3"></div>
-        <div class="contact-orbit-core">JG</div>
-        <span class="contact-sat s1">✉</span>
-        <span class="contact-sat s2">☎</span>
-        <span class="contact-sat s3">◎</span>
-        <span class="contact-sat s4">📍</span>
+        <div class="contact-orbit-spin spin-1"><span class="contact-sat">✉</span></div>
+        <div class="contact-orbit-spin spin-2"><span class="contact-sat">☎</span></div>
+        <div class="contact-orbit-spin spin-3"><span class="contact-sat">◎</span></div>
+        <div class="contact-orbit-spin spin-4"><span class="contact-sat">📍</span></div>
+        <div class="contact-orbit-core">
+          <img src="{{ asset('front/assets/images/justgoom-logo.png') }}" alt="Just Goom">
+        </div>
       </div>
     </div>
   </section>
@@ -99,11 +101,11 @@
           <span class="about-tag">Send a Message</span>
           <h2>How Can We Help?</h2>
           <p>Share your enquiry. A Just Goom specialist will follow up on the same thread.</p>
-          <ol class="contact-form-steps" aria-hidden="true">
-            <li class="is-on">Details</li>
-            <li>Topic</li>
-            <li>Message</li>
-          </ol>
+          <div class="contact-form-steps" aria-hidden="true">
+            <span class="is-on" data-step="details">Details</span>
+            <span data-step="topic">Topic</span>
+            <span data-step="message">Message</span>
+          </div>
         </div>
         <form class="contact-form" id="contactForm">
           <div class="contact-form-success" hidden>
@@ -159,10 +161,17 @@
       </div>
 
       <aside class="contact-sidebar">
+        @php
+          $ist = now('Asia/Kolkata');
+          $istMins = ((int) $ist->format('G')) * 60 + (int) $ist->format('i');
+          $istDay = (int) $ist->dayOfWeek;
+          $deskOpen = ($istDay >= 1 && $istDay <= 5 && $istMins >= 540 && $istMins < 1080)
+            || ($istDay === 6 && $istMins >= 600 && $istMins < 960);
+        @endphp
         <div class="contact-hours-card">
           <div class="contact-hours-top">
             <h4>Business Hours</h4>
-            <span class="contact-live" id="contactLive">Checking…</span>
+            <span class="contact-live {{ $deskOpen ? 'is-open' : 'is-closed' }}" id="contactLive">{{ $deskOpen ? 'Open now' : 'Closed now' }}</span>
           </div>
           <ul class="contact-hours-list">
             <li><span>Monday – Friday</span><strong>9:00 AM – 6:00 PM</strong></li>

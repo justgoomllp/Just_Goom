@@ -8,7 +8,7 @@
   @hasSection('meta_description')
     <meta name="description" content="@yield('meta_description')">
   @endif
-  <link rel="stylesheet" href="{{ asset('front/assets/css/style.css') }}">
+  <link rel="stylesheet" href="{{ asset('front/assets/css/style.css') }}?v=8">
   <link rel="stylesheet" href="{{ asset('assets/vendors/font-awesome/css/font-awesome.min.css') }}">
   @stack('styles')
 </head>
@@ -41,6 +41,6 @@
   @endif
   <script src="{{ asset('front/assets/js/celebrate.js') }}?v=3"></script>
   <script>if (typeof JGCelebrateBoot === 'function') JGCelebrateBoot();</script>
-  <script src="{{ asset('front/assets/js/main.js') }}?v=3"></script>
+  <script src="{{ asset('front/assets/js/main.js') }}?v=6"></script>
 </body>
 </html>

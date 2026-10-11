@@ -242,16 +242,40 @@ function initContactForm() {
   var message = document.getElementById('contactMessage');
   var counter = document.getElementById('contactChar');
   var resetBtn = document.getElementById('contactFormReset');
+  var name = document.getElementById('contactName');
+  var email = document.getElementById('contactEmail');
+  var subject = document.getElementById('contactSubject');
+  var steps = form.closest('.contact-form-card');
+  steps = steps ? steps.querySelectorAll('.contact-form-steps [data-step]') : [];
 
   function updateCount() {
     if (!message || !counter) return;
     counter.textContent = (message.value || '').length + ' / 1200';
   }
 
+  function updateSteps() {
+    var hasDetails = !!(name && name.value.trim()) || !!(email && email.value.trim());
+    var hasTopic = !!(subject && subject.value);
+    var hasMessage = !!(message && message.value.trim());
+    var current = hasMessage ? 'message' : (hasTopic ? 'topic' : 'details');
+    steps.forEach(function(step) {
+      step.classList.toggle('is-on', step.getAttribute('data-step') === current);
+    });
+  }
+
   if (message) {
-    message.addEventListener('input', updateCount);
+    message.addEventListener('input', function() {
+      updateCount();
+      updateSteps();
+    });
     updateCount();
   }
+  [name, email, subject].forEach(function(el) {
+    if (!el) return;
+    el.addEventListener('input', updateSteps);
+    el.addEventListener('change', updateSteps);
+  });
+  updateSteps();
 
   var success = form.querySelector('.contact-form-success');
 
@@ -267,24 +291,39 @@ function initContactForm() {
       if (success) success.setAttribute('hidden', '');
       form.reset();
       updateCount();
+      updateSteps();
     });
   }
 }
 
 function initContactPage() {
-  if (!document.body.classList.contains('contact-page')) return;
+  var page = (document.body.getAttribute('data-page') || '').replace(/["'\\]/g, '').trim();
+  if (!document.body.classList.contains('contact-page') && page !== 'contact') return;
 
   var live = document.getElementById('contactLive');
   if (live) {
     try {
-      var now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
-      var day = now.getDay();
-      var mins = now.getHours() * 60 + now.getMinutes();
+      var parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Kolkata',
+        weekday: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23'
+      }).formatToParts(new Date());
+      var map = {};
+      parts.forEach(function(part) { map[part.type] = part.value; });
+      var weekday = (map.weekday || '').slice(0, 3).toLowerCase();
+      var dayMap = { sun: 0, mon: 1, tue: 2, wed: 3, thu: 4, fri: 5, sat: 6 };
+      var day = dayMap[weekday];
+      var mins = (parseInt(map.hour, 10) || 0) * 60 + (parseInt(map.minute, 10) || 0);
       var open = (day >= 1 && day <= 5 && mins >= 540 && mins < 1080) || (day === 6 && mins >= 600 && mins < 960);
       live.textContent = open ? 'Open now' : 'Closed now';
+      live.classList.remove('is-open', 'is-closed');
       live.classList.add(open ? 'is-open' : 'is-closed');
     } catch (err) {
-      live.textContent = 'Mon–Sat desk';
+      if (!live.textContent || /check/i.test(live.textContent)) {
+        live.textContent = 'Mon–Sat desk';
+      }
     }
   }
 
