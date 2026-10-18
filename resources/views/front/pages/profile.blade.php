@@ -111,6 +111,7 @@
           <button type="button" data-tab="videos">Videos</button>
           <button type="button" data-tab="blog">My Blog</button>
           <button type="button" data-tab="offers">My Advertisement</button>
+          <button type="button" data-tab="contact">Contact Us</button>
         </nav>
       </div>
     </div>
@@ -1035,6 +1036,276 @@
           @endif
         </div>
       </div>
+
+      <div class="profile-tab-pane" data-pane="contact" id="contact">
+        @php
+          $contactBranches = $profile->branchesList();
+          $hasContactSocials = $profile->social_website || $profile->social_facebook || $profile->social_twitter || $profile->social_linkedin;
+        @endphp
+        <div class="profile-contact-grid">
+          <div class="profile-card profile-contact-form-card">
+            <h3>Contact Us</h3>
+            <p class="profile-contact-lead">Send a message to {{ $profile->company_name }}. They will receive your inquiry in their inbox.</p>
+
+            @if($isOwner)
+              <div class="profile-contact-banner profile-contact-banner-info" role="status">
+                This is your public Contact Us form. Visitors can use it to reach you.
+              </div>
+            @else
+              <div id="profileContactAlert" class="profile-contact-banner" hidden></div>
+              @if($errors->any())
+                <div class="profile-contact-banner profile-contact-banner-error" role="alert">
+                  Please correct the highlighted fields and try again.
+                </div>
+              @endif
+              @if(session('success'))
+                <div class="profile-contact-banner profile-contact-banner-success" role="status">{{ session('success') }}</div>
+              @endif
+              @if(session('error'))
+                <div class="profile-contact-banner profile-contact-banner-error" role="alert">{{ session('error') }}</div>
+              @endif
+
+              <form
+                id="profileContactForm"
+                class="profile-contact-form"
+                method="POST"
+                action="{{ route('front.profile.inquiries.store', $profile->slug) }}"
+                novalidate
+              >
+                @csrf
+                <div class="profile-contact-hp" aria-hidden="true">
+                  <label for="profileContactWebsite">Website</label>
+                  <input type="text" id="profileContactWebsite" name="website" tabindex="-1" autocomplete="off" value="">
+                </div>
+
+                <div class="profile-contact-row">
+                  <div class="form-group {{ $errors->first('name') ? 'has-error' : '' }}">
+                    <label for="profileContactName">Full Name <span class="req">*</span></label>
+                    <input
+                      type="text"
+                      id="profileContactName"
+                      name="name"
+                      class="form-input"
+                      value="{{ old('name') }}"
+                      maxlength="100"
+                      autocomplete="name"
+                      required
+                      aria-required="true"
+                      aria-invalid="{{ $errors->first('name') ? 'true' : 'false' }}"
+                      aria-describedby="profileContactNameError"
+                    >
+                    <span id="profileContactNameError" class="profile-contact-error">{{ $errors->first('name') }}</span>
+                  </div>
+                  <div class="form-group {{ $errors->first('company_name') ? 'has-error' : '' }}">
+                    <label for="profileContactCompany">Company Name <span class="req">*</span></label>
+                    <input
+                      type="text"
+                      id="profileContactCompany"
+                      name="company_name"
+                      class="form-input"
+                      value="{{ old('company_name') }}"
+                      maxlength="150"
+                      autocomplete="organization"
+                      required
+                      aria-required="true"
+                      aria-invalid="{{ $errors->first('company_name') ? 'true' : 'false' }}"
+                      aria-describedby="profileContactCompanyError"
+                    >
+                    <span id="profileContactCompanyError" class="profile-contact-error">{{ $errors->first('company_name') }}</span>
+                  </div>
+                </div>
+
+                <div class="profile-contact-row">
+                  <div class="form-group {{ $errors->first('email') ? 'has-error' : '' }}">
+                    <label for="profileContactEmail">Email Address <span class="req">*</span></label>
+                    <input
+                      type="email"
+                      id="profileContactEmail"
+                      name="email"
+                      class="form-input"
+                      value="{{ old('email') }}"
+                      maxlength="191"
+                      autocomplete="email"
+                      inputmode="email"
+                      required
+                      aria-required="true"
+                      aria-invalid="{{ $errors->first('email') ? 'true' : 'false' }}"
+                      aria-describedby="profileContactEmailError"
+                    >
+                    <span id="profileContactEmailError" class="profile-contact-error">{{ $errors->first('email') }}</span>
+                  </div>
+                  <div class="form-group {{ $errors->first('phone') ? 'has-error' : '' }}">
+                    <label for="profileContactPhone">Phone Number <span class="req">*</span></label>
+                    <input
+                      type="tel"
+                      id="profileContactPhone"
+                      name="phone"
+                      class="form-input"
+                      value="{{ old('phone') }}"
+                      maxlength="10"
+                      autocomplete="tel"
+                      inputmode="numeric"
+                      pattern="[0-9]{10}"
+                      required
+                      aria-required="true"
+                      aria-invalid="{{ $errors->first('phone') ? 'true' : 'false' }}"
+                      aria-describedby="profileContactPhoneError"
+                    >
+                    <span id="profileContactPhoneError" class="profile-contact-error">{{ $errors->first('phone') }}</span>
+                  </div>
+                </div>
+
+                <div class="form-group {{ $errors->first('subject') ? 'has-error' : '' }}">
+                  <label for="profileContactSubject">Subject <span class="req">*</span></label>
+                  <input
+                    type="text"
+                    id="profileContactSubject"
+                    name="subject"
+                    class="form-input"
+                    value="{{ old('subject') }}"
+                    maxlength="150"
+                    required
+                    aria-required="true"
+                    aria-invalid="{{ $errors->first('subject') ? 'true' : 'false' }}"
+                    aria-describedby="profileContactSubjectError"
+                  >
+                  <span id="profileContactSubjectError" class="profile-contact-error">{{ $errors->first('subject') }}</span>
+                </div>
+
+                <div class="form-group {{ $errors->first('message') ? 'has-error' : '' }}">
+                  <label for="profileContactMessage">Message <span class="req">*</span></label>
+                  <textarea
+                    id="profileContactMessage"
+                    name="message"
+                    class="form-input"
+                    rows="5"
+                    maxlength="2000"
+                    required
+                    aria-required="true"
+                    aria-invalid="{{ $errors->first('message') ? 'true' : 'false' }}"
+                    aria-describedby="profileContactMessageError"
+                  >{{ old('message') }}</textarea>
+                  <span class="contact-char"><span id="profileContactCount">0</span>/2000</span>
+                  <span id="profileContactMessageError" class="profile-contact-error">{{ $errors->first('message') }}</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary profile-contact-submit" id="profileContactSubmit">
+                  <span class="profile-contact-submit-label">Submit</span>
+                </button>
+              </form>
+            @endif
+          </div>
+
+            <aside class="profile-card profile-contact-info-card">
+              <h3>Sub Branch</h3>
+              @if($contactBranches !== [])
+                <div class="profile-contact-branch-list">
+                  @foreach($contactBranches as $branch)
+                    @php
+                      $branchMapUrl = $branch['address'] !== ''
+                        ? 'https://www.google.com/maps/search/?api=1&query='.rawurlencode($branch['address'])
+                        : null;
+                    @endphp
+                    <div class="profile-contact-branch">
+                      @if($branch['name'] !== '')
+                        <h4 class="profile-contact-branch-name">{{ $branch['name'] }}</h4>
+                      @endif
+                      <ul class="profile-contact-details">
+                        @if($branch['address'] !== '')
+                          <li>
+                            <span class="profile-contact-detail-icon" aria-hidden="true">
+                              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/></svg>
+                            </span>
+                            <div>
+                              <span>Address</span>
+                              <strong>
+                                @if($branchMapUrl)
+                                  <a href="{{ $branchMapUrl }}" target="_blank" rel="noopener">{{ $branch['address'] }}</a>
+                                @else
+                                  {{ $branch['address'] }}
+                                @endif
+                              </strong>
+                            </div>
+                          </li>
+                        @endif
+                        @if($branch['email'] !== '')
+                          <li>
+                            <span class="profile-contact-detail-icon" aria-hidden="true">
+                              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                            </span>
+                            <div>
+                              <span>Email</span>
+                              <strong><a href="mailto:{{ $branch['email'] }}">{{ $branch['email'] }}</a></strong>
+                            </div>
+                          </li>
+                        @endif
+                        @if($branch['phone'] !== '')
+                          <li>
+                            <span class="profile-contact-detail-icon" aria-hidden="true">
+                              <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                            </span>
+                            <div>
+                              <span>Phone</span>
+                              <strong><a href="tel:+91{{ $branch['phone'] }}">+91 {{ $branch['phone'] }}</a></strong>
+                            </div>
+                          </li>
+                        @endif
+                      </ul>
+                    </div>
+                  @endforeach
+                </div>
+              @else
+                <p class="profile-empty-note">No sub branch added yet.</p>
+              @endif
+
+              @if($hasContactSocials)
+                <div class="profile-contact-socials">
+                  <h4 class="profile-about-extra-title">Social</h4>
+                  <div class="profile-portfolio">
+                    @if($websiteUrl)
+                      <a href="{{ $websiteUrl }}" class="portfolio-link" target="_blank" rel="noopener">
+                        <span class="portfolio-icon web" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        </span>
+                        <span class="portfolio-link-text">
+                          <strong>Website</strong>
+                          <span>{{ parse_url($websiteUrl, PHP_URL_HOST) ?: $profile->social_website }}</span>
+                        </span>
+                      </a>
+                    @endif
+                    @if(!empty($facebookUrl))
+                      <a href="{{ $facebookUrl }}" class="portfolio-link" target="_blank" rel="noopener">
+                        <span class="portfolio-icon github">f</span>
+                        <span class="portfolio-link-text">
+                          <strong>Facebook</strong>
+                          <span>View page</span>
+                        </span>
+                      </a>
+                    @endif
+                    @if(!empty($twitterUrl))
+                      <a href="{{ $twitterUrl }}" class="portfolio-link" target="_blank" rel="noopener">
+                        <span class="portfolio-icon dribbble">X</span>
+                        <span class="portfolio-link-text">
+                          <strong>Twitter / X</strong>
+                          <span>View profile</span>
+                        </span>
+                      </a>
+                    @endif
+                    @if(!empty($linkedinUrl))
+                      <a href="{{ $linkedinUrl }}" class="portfolio-link" target="_blank" rel="noopener">
+                        <span class="portfolio-icon behance">in</span>
+                        <span class="portfolio-link-text">
+                          <strong>LinkedIn</strong>
+                          <span>View company</span>
+                        </span>
+                      </a>
+                    @endif
+                  </div>
+                </div>
+              @endif
+            </aside>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -1131,6 +1402,186 @@
       var tabBtn = document.querySelector('#profileTabs button[data-tab="' + target + '"]');
       if (tabBtn) tabBtn.click();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  var form = document.getElementById('profileContactForm');
+  if (!form) return;
+
+  var submitBtn = document.getElementById('profileContactSubmit');
+  var alertBox = document.getElementById('profileContactAlert');
+  var messageField = document.getElementById('profileContactMessage');
+  var countEl = document.getElementById('profileContactCount');
+  var submitting = false;
+  var fieldMap = {
+    name: { el: document.getElementById('profileContactName'), error: document.getElementById('profileContactNameError') },
+    company_name: { el: document.getElementById('profileContactCompany'), error: document.getElementById('profileContactCompanyError') },
+    email: { el: document.getElementById('profileContactEmail'), error: document.getElementById('profileContactEmailError') },
+    phone: { el: document.getElementById('profileContactPhone'), error: document.getElementById('profileContactPhoneError') },
+    subject: { el: document.getElementById('profileContactSubject'), error: document.getElementById('profileContactSubjectError') },
+    message: { el: messageField, error: document.getElementById('profileContactMessageError') }
+  };
+  var personRe = /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/;
+  var titleRe = /^[a-zA-Z0-9]+(?:\s[a-zA-Z0-9]+)*$/;
+  var emailRe = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  function updateCount() {
+    if (countEl && messageField) countEl.textContent = String(messageField.value.length);
+  }
+
+  function setFieldError(name, message) {
+    var field = fieldMap[name];
+    if (!field || !field.el) return;
+    var group = field.el.closest('.form-group');
+    if (group) group.classList.toggle('has-error', !!message);
+    field.el.setAttribute('aria-invalid', message ? 'true' : 'false');
+    if (field.error) field.error.textContent = message || '';
+  }
+
+  function clearErrors() {
+    Object.keys(fieldMap).forEach(function (name) { setFieldError(name, ''); });
+  }
+
+  function showAlert(type, message) {
+    if (!alertBox) return;
+    alertBox.hidden = !message;
+    alertBox.textContent = message || '';
+    alertBox.className = 'profile-contact-banner' + (type ? ' profile-contact-banner-' + type : '');
+    alertBox.setAttribute('role', type === 'error' ? 'alert' : 'status');
+  }
+
+  function toast(message, type) {
+    if (typeof showToast === 'function') showToast(message, type);
+  }
+
+  function validate() {
+    var values = {
+      name: (fieldMap.name.el.value || '').trim(),
+      company_name: (fieldMap.company_name.el.value || '').trim(),
+      email: (fieldMap.email.el.value || '').trim().toLowerCase(),
+      phone: (fieldMap.phone.el.value || '').replace(/\D+/g, '').slice(0, 10),
+      subject: (fieldMap.subject.el.value || '').trim(),
+      message: (fieldMap.message.el.value || '').trim()
+    };
+    if (fieldMap.email.el) fieldMap.email.el.value = values.email;
+    if (fieldMap.phone.el) fieldMap.phone.el.value = values.phone;
+    var errors = {};
+
+    if (!values.name) errors.name = 'Full name is required.';
+    else if (values.name.length < 2) errors.name = 'Full name must be at least 2 characters.';
+    else if (!personRe.test(values.name)) errors.name = 'Full name may only contain letters and spaces.';
+
+    if (!values.company_name) errors.company_name = 'Company name is required.';
+    else if (values.company_name.length < 2) errors.company_name = 'Company name must be at least 2 characters.';
+    else if (!titleRe.test(values.company_name)) errors.company_name = 'Company name may only contain letters, numbers, and spaces.';
+
+    if (!values.email) errors.email = 'Email address is required.';
+    else if (values.email.length > 191) errors.email = 'Email address must not exceed 191 characters.';
+    else if (!emailRe.test(values.email)) errors.email = 'Enter a valid email address.';
+
+    if (!values.phone) errors.phone = 'Phone number is required.';
+    else if (!/^\d{10}$/.test(values.phone)) errors.phone = 'Phone number must be exactly 10 digits.';
+
+    if (!values.subject) errors.subject = 'Subject is required.';
+    else if (values.subject.length < 3) errors.subject = 'Subject must be at least 3 characters.';
+    else if (!titleRe.test(values.subject)) errors.subject = 'Subject may only contain letters, numbers, and spaces.';
+
+    if (!values.message) errors.message = 'Message is required.';
+    else if (values.message.length < 10) errors.message = 'Message must be at least 10 characters.';
+    else if (values.message.length > 2000) errors.message = 'Message must not exceed 2000 characters.';
+
+    Object.keys(fieldMap).forEach(function (name) { setFieldError(name, errors[name] || ''); });
+    return { valid: Object.keys(errors).length === 0, errors: errors };
+  }
+
+  function setSubmitting(isBusy) {
+    submitting = isBusy;
+    if (!submitBtn) return;
+    submitBtn.disabled = isBusy;
+    submitBtn.setAttribute('aria-busy', isBusy ? 'true' : 'false');
+    var label = submitBtn.querySelector('.profile-contact-submit-label');
+    if (label) label.textContent = isBusy ? 'Sending...' : 'Submit';
+  }
+
+  if (messageField) {
+    messageField.addEventListener('input', updateCount);
+    updateCount();
+  }
+
+  if (fieldMap.phone.el) {
+    fieldMap.phone.el.addEventListener('input', function () {
+      fieldMap.phone.el.value = fieldMap.phone.el.value.replace(/\D+/g, '').slice(0, 10);
+    });
+  }
+
+  if (fieldMap.email.el) {
+    fieldMap.email.el.addEventListener('blur', function () {
+      fieldMap.email.el.value = fieldMap.email.el.value.trim().toLowerCase();
+    });
+  }
+
+  Object.keys(fieldMap).forEach(function (name) {
+    if (!fieldMap[name].el) return;
+    fieldMap[name].el.addEventListener('input', function () {
+      if (fieldMap[name].el.closest('.form-group').classList.contains('has-error')) {
+        validate();
+      }
+    });
+  });
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (submitting) return;
+
+    clearErrors();
+    showAlert('', '');
+    var result = validate();
+    if (!result.valid) {
+      showAlert('error', 'Please correct the highlighted fields and try again.');
+      return;
+    }
+
+    setSubmitting(true);
+    fetch(form.action, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: new FormData(form)
+    }).then(function (response) {
+      return response.json().then(function (data) {
+        return { ok: response.ok, status: response.status, data: data || {} };
+      }).catch(function () {
+        return { ok: response.ok, status: response.status, data: {} };
+      });
+    }).then(function (result) {
+      if (result.ok) {
+        form.reset();
+        updateCount();
+        clearErrors();
+        var success = result.data.message || 'Thank you. Your inquiry has been sent.';
+        showAlert('success', success);
+        toast(success, 'success');
+        return;
+      }
+
+      var errors = result.data.errors || {};
+      Object.keys(fieldMap).forEach(function (name) {
+        var messages = errors[name];
+        setFieldError(name, Array.isArray(messages) ? messages[0] : (messages || ''));
+      });
+
+      var message = result.data.message
+        || (result.status === 429 ? 'Too many requests. Please try again shortly.' : 'Please correct the highlighted fields and try again.');
+      showAlert('error', message);
+      toast(message, 'error');
+    }).catch(function () {
+      var message = 'Unable to send your inquiry right now. Please try again.';
+      showAlert('error', message);
+      toast(message, 'error');
+    }).finally(function () {
+      setSubmitting(false);
     });
   });
 })();

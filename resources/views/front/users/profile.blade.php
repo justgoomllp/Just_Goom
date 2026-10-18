@@ -264,6 +264,49 @@
               <small class="user-field-error">@error('zipcode'){{ $message }}@enderror</small>
             </div>
 
+            @php
+              $branchRows = old('branches', $profile->branchesList());
+              if (! is_array($branchRows) || $branchRows === []) {
+                  $branchRows = [['name' => '', 'address' => '', 'phone' => '', 'email' => '']];
+              }
+            @endphp
+            <div class="user-form-group profile-form-span-all" data-field="branches">
+              <label>Sub Branch</label>
+              <p class="user-form-hint">Optional extra office locations shown on your public Contact Us tab.</p>
+              <div id="profileBranches" class="profile-branch-list">
+                @foreach($branchRows as $branchIndex => $branchRow)
+                  <div class="profile-branch-row" data-branch-row>
+                    <div class="profile-branch-grid">
+                      <div>
+                        <label for="branchName{{ $branchIndex }}">Branch Name</label>
+                        <input type="text" id="branchName{{ $branchIndex }}" name="branches[{{ $branchIndex }}][name]" class="user-form-control @error('branches.'.$branchIndex.'.name') is-invalid @enderror" value="{{ $branchRow['name'] ?? '' }}" maxlength="150" pattern="[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*" placeholder="e.g. Surat Branch">
+                        <small class="user-field-error">@error('branches.'.$branchIndex.'.name'){{ $message }}@enderror</small>
+                      </div>
+                      <div>
+                        <label for="branchPhone{{ $branchIndex }}">Phone</label>
+                        <input type="tel" id="branchPhone{{ $branchIndex }}" name="branches[{{ $branchIndex }}][phone]" class="user-form-control @error('branches.'.$branchIndex.'.phone') is-invalid @enderror" value="{{ $branchRow['phone'] ?? '' }}" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" placeholder="Enter 10-digit phone">
+                        <small class="user-field-error">@error('branches.'.$branchIndex.'.phone'){{ $message }}@enderror</small>
+                      </div>
+                      <div>
+                        <label for="branchEmail{{ $branchIndex }}">Email</label>
+                        <input type="email" id="branchEmail{{ $branchIndex }}" name="branches[{{ $branchIndex }}][email]" class="user-form-control @error('branches.'.$branchIndex.'.email') is-invalid @enderror" value="{{ $branchRow['email'] ?? '' }}" maxlength="191" placeholder="Enter email">
+                        <small class="user-field-error">@error('branches.'.$branchIndex.'.email'){{ $message }}@enderror</small>
+                      </div>
+                      <div class="profile-branch-remove-wrap">
+                        <button type="button" class="user-btn user-btn-default profile-branch-remove" data-branch-remove>Remove</button>
+                      </div>
+                      <div class="profile-branch-span-all">
+                        <label for="branchAddress{{ $branchIndex }}">Address</label>
+                        <input type="text" id="branchAddress{{ $branchIndex }}" name="branches[{{ $branchIndex }}][address]" class="user-form-control @error('branches.'.$branchIndex.'.address') is-invalid @enderror" value="{{ $branchRow['address'] ?? '' }}" maxlength="500" minlength="5" placeholder="Enter branch address">
+                        <small class="user-field-error">@error('branches.'.$branchIndex.'.address'){{ $message }}@enderror</small>
+                      </div>
+                    </div>
+                  </div>
+                @endforeach
+              </div>
+              <button type="button" class="user-btn user-btn-default" id="profileBranchAdd">Add another branch</button>
+            </div>
+
             <div class="user-form-group" data-field="social_website">
               <label>Website</label>
               <input type="url" name="social_website" class="user-form-control @error('social_website') is-invalid @enderror" value="{{ old('social_website', $profile->social_website) }}" placeholder="https://www.example.com" maxlength="255">
@@ -417,4 +460,155 @@
   window.PROFILE_LOCATION = @json($profileLocation);
 </script>
 <script src="{{ asset('front/assets/js/profile.js') }}"></script>
+<script>
+(function () {
+  var list = document.getElementById('profileBranches');
+  var addBtn = document.getElementById('profileBranchAdd');
+  var form = list ? list.closest('form') : null;
+  if (!list || !addBtn) return;
+
+  var titleRe = /^[a-zA-Z0-9]+(?:\s[a-zA-Z0-9]+)*$/;
+  var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function nextIndex() {
+    return list.querySelectorAll('[data-branch-row]').length;
+  }
+
+  function refreshRemoveButtons() {
+    var rows = list.querySelectorAll('[data-branch-row]');
+    rows.forEach(function (row) {
+      var removeBtn = row.querySelector('[data-branch-remove]');
+      if (removeBtn) removeBtn.hidden = rows.length < 2;
+    });
+  }
+
+  function setError(input, message) {
+    if (!input) return;
+    input.classList.toggle('is-invalid', !!message);
+    var errorEl = input.parentElement ? input.parentElement.querySelector('.user-field-error') : null;
+    if (errorEl) errorEl.textContent = message || '';
+  }
+
+  function rowValues(row) {
+    var name = row.querySelector('input[name$="[name]"]');
+    var phone = row.querySelector('input[name$="[phone]"]');
+    var email = row.querySelector('input[name$="[email]"]');
+    var address = row.querySelector('input[name$="[address]"]');
+    return {
+      name: name,
+      phone: phone,
+      email: email,
+      address: address,
+      values: {
+        name: (name && name.value || '').trim(),
+        phone: (phone && phone.value || '').replace(/\D+/g, '').slice(0, 10),
+        email: (email && email.value || '').trim().toLowerCase(),
+        address: (address && address.value || '').trim()
+      }
+    };
+  }
+
+  function isRowEmpty(values) {
+    return !values.name && !values.phone && !values.email && !values.address;
+  }
+
+  function validateRow(row, showError) {
+    var fields = rowValues(row);
+    if (fields.phone) fields.phone.value = fields.values.phone;
+    if (isRowEmpty(fields.values)) {
+      ['name', 'phone', 'email', 'address'].forEach(function (key) { setError(fields[key], ''); });
+      return true;
+    }
+
+    var errors = {};
+    if (!fields.values.name) errors.name = 'Branch name is required.';
+    else if (fields.values.name.length < 2) errors.name = 'Branch name must be at least 2 characters.';
+    else if (!titleRe.test(fields.values.name)) errors.name = 'Branch name may only contain letters, numbers, and spaces.';
+
+    if (!fields.values.phone) errors.phone = 'Branch phone is required.';
+    else if (!/^\d{10}$/.test(fields.values.phone)) errors.phone = 'Branch phone must be exactly 10 digits.';
+
+    if (!fields.values.email) errors.email = 'Branch email is required.';
+    else if (!emailRe.test(fields.values.email)) errors.email = 'Enter a valid branch email address.';
+
+    if (!fields.values.address) errors.address = 'Branch address is required.';
+    else if (fields.values.address.length < 5) errors.address = 'Branch address must be at least 5 characters.';
+
+    if (showError) {
+      ['name', 'phone', 'email', 'address'].forEach(function (key) { setError(fields[key], errors[key] || ''); });
+    }
+
+    return Object.keys(errors).length === 0;
+  }
+
+  function validateAll(showError) {
+    var valid = true;
+    list.querySelectorAll('[data-branch-row]').forEach(function (row) {
+      if (!validateRow(row, showError)) valid = false;
+    });
+    return valid;
+  }
+
+  function bindRow(row) {
+    var phone = row.querySelector('input[name$="[phone]"]');
+    if (phone && !phone.dataset.bound) {
+      phone.dataset.bound = '1';
+      phone.addEventListener('input', function () {
+        phone.value = phone.value.replace(/\D+/g, '').slice(0, 10);
+        validateRow(row, false);
+      });
+    }
+    row.querySelectorAll('input').forEach(function (input) {
+      if (input.dataset.boundBlur) return;
+      input.dataset.boundBlur = '1';
+      input.addEventListener('blur', function () { validateRow(row, true); });
+    });
+  }
+
+  function branchRowHtml(index) {
+    return '<div class="profile-branch-grid">' +
+      '<div><label>Branch Name</label><input type="text" name="branches[' + index + '][name]" class="user-form-control" maxlength="150" pattern="[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*" placeholder="e.g. Surat Branch"><small class="user-field-error"></small></div>' +
+      '<div><label>Phone</label><input type="tel" name="branches[' + index + '][phone]" class="user-form-control" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" placeholder="Enter 10-digit phone"><small class="user-field-error"></small></div>' +
+      '<div><label>Email</label><input type="email" name="branches[' + index + '][email]" class="user-form-control" maxlength="191" placeholder="Enter email"><small class="user-field-error"></small></div>' +
+      '<div class="profile-branch-remove-wrap"><button type="button" class="user-btn user-btn-default profile-branch-remove" data-branch-remove>Remove</button></div>' +
+      '<div class="profile-branch-span-all"><label>Address</label><input type="text" name="branches[' + index + '][address]" class="user-form-control" maxlength="500" minlength="5" placeholder="Enter branch address"><small class="user-field-error"></small></div>' +
+    '</div>';
+  }
+
+  addBtn.addEventListener('click', function () {
+    var index = nextIndex();
+    if (index >= 10) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'profile-branch-row';
+    wrap.setAttribute('data-branch-row', '');
+    wrap.innerHTML = branchRowHtml(index);
+    list.appendChild(wrap);
+    bindRow(wrap);
+    refreshRemoveButtons();
+  });
+
+  list.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-branch-remove]');
+    if (!button) return;
+    var row = button.closest('[data-branch-row]');
+    if (row && list.querySelectorAll('[data-branch-row]').length > 1) {
+      row.remove();
+      refreshRemoveButtons();
+    }
+  });
+
+  list.querySelectorAll('[data-branch-row]').forEach(bindRow);
+  refreshRemoveButtons();
+
+  if (form) {
+    form.addEventListener('submit', function (event) {
+      if (!validateAll(true)) {
+        event.preventDefault();
+        var firstInvalid = list.querySelector('.user-form-control.is-invalid');
+        if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  }
+})();
+</script>
 @endpush

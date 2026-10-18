@@ -331,6 +331,10 @@ Route::get('/clear-cache', function () {
 Route::get('/{slug}/qr.png', [PublicProfileController::class, 'qrImage'])
     ->name('front.profile.qr')
     ->where('slug', '[a-z0-9\-]+');
+Route::post('/{slug}/inquiries', [PublicProfileController::class, 'storeInquiry'])
+    ->name('front.profile.inquiries.store')
+    ->middleware('throttle:5,1')
+    ->where('slug', '[a-z0-9\-]+');
 Route::get('/{slug}', [PublicProfileController::class, 'show'])
     ->name('front.profile.show')
     ->where('slug', '[a-z0-9\-]+');

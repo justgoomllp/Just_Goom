@@ -24,6 +24,7 @@ class CompanyProfile extends Model
         'email',
         'business_desc',
         'address',
+        'branches',
         'zipcode',
         'country',
         'state',
@@ -38,7 +39,26 @@ class CompanyProfile extends Model
 
     protected $casts = [
         'business_hours' => 'array',
+        'branches' => 'array',
     ];
+
+    public function branchesList(): array
+    {
+        return collect(is_array($this->branches) ? $this->branches : [])
+            ->map(function ($branch) {
+                $branch = is_array($branch) ? $branch : [];
+
+                return [
+                    'name' => trim((string) ($branch['name'] ?? '')),
+                    'address' => trim((string) ($branch['address'] ?? '')),
+                    'phone' => preg_replace('/\D+/', '', (string) ($branch['phone'] ?? '')),
+                    'email' => strtolower(trim((string) ($branch['email'] ?? ''))),
+                ];
+            })
+            ->filter(fn (array $branch) => $branch['name'] !== '' || $branch['address'] !== '' || $branch['phone'] !== '' || $branch['email'] !== '')
+            ->values()
+            ->all();
+    }
 
     public function user(): BelongsTo
     {

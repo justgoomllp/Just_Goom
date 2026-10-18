@@ -57,6 +57,7 @@ class ProfileService
                 'phone' => $data['phone'],
                 'email' => $data['email'],
                 'address' => $data['address'] ?? null,
+                'branches' => $data['branches'] ?? [],
                 'country' => $data['country'],
                 'state' => $data['state'],
                 'city' => $data['city'],

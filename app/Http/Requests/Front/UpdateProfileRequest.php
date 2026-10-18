@@ -34,6 +34,7 @@ class UpdateProfileRequest extends FormRequest
             'social_facebook' => $this->filled('social_facebook') ? trim((string) $this->input('social_facebook')) : null,
             'social_twitter' => $this->filled('social_twitter') ? trim((string) $this->input('social_twitter')) : null,
             'social_linkedin' => $this->filled('social_linkedin') ? trim((string) $this->input('social_linkedin')) : null,
+            'branches' => $this->normalizeBranches($this->input('branches', [])),
             'individual_documents' => $this->normalizeDocumentRows(
                 $this->input('individual_documents', []),
                 CompanyProfileDocument::TYPE_INDIVIDUAL
@@ -88,6 +89,11 @@ class UpdateProfileRequest extends FormRequest
             'social_facebook' => ['nullable', 'url', 'max:255'],
             'social_twitter' => ['nullable', 'url', 'max:255'],
             'social_linkedin' => ['nullable', 'url', 'max:255'],
+            'branches' => ['nullable', 'array', 'max:10'],
+            'branches.*.name' => ['required', 'string', 'min:2', 'max:150', SafeText::titleRule()],
+            'branches.*.address' => ['required', 'string', 'min:5', 'max:500'],
+            'branches.*.phone' => ['required', 'digits:10'],
+            'branches.*.email' => ['required', 'email:filter', 'max:191'],
             'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:2048'],
             'business_hours' => ['required', 'array'],
             'business_hours.*' => ['required', 'array'],
@@ -187,6 +193,19 @@ class UpdateProfileRequest extends FormRequest
             'social_facebook.url' => 'Enter a valid Facebook URL.',
             'social_twitter.url' => 'Enter a valid Twitter / X URL.',
             'social_linkedin.url' => 'Enter a valid LinkedIn URL.',
+            'branches.max' => 'You can add up to 10 sub branches.',
+            'branches.*.name.required' => 'Branch name is required.',
+            'branches.*.name.min' => 'Branch name must be at least 2 characters.',
+            'branches.*.name.max' => 'Branch name must not exceed 150 characters.',
+            'branches.*.name.regex' => SafeText::titleMessage('Branch name'),
+            'branches.*.address.required' => 'Branch address is required.',
+            'branches.*.address.min' => 'Branch address must be at least 5 characters.',
+            'branches.*.address.max' => 'Branch address must not exceed 500 characters.',
+            'branches.*.phone.required' => 'Branch phone is required.',
+            'branches.*.phone.digits' => 'Branch phone must be exactly 10 digits.',
+            'branches.*.email.required' => 'Branch email is required.',
+            'branches.*.email.email' => 'Enter a valid branch email address.',
+            'branches.*.email.max' => 'Branch email must not exceed 191 characters.',
             'logo.image' => 'Logo must be JPG, PNG, WebP, or GIF.',
             'logo.mimes' => 'Logo must be JPG, PNG, WebP, or GIF.',
             'logo.max' => 'Logo must not be larger than 2 MB.',
@@ -228,6 +247,10 @@ class UpdateProfileRequest extends FormRequest
             'social_twitter' => 'Twitter / X',
             'social_linkedin' => 'LinkedIn',
             'logo' => 'company logo',
+            'branches.*.name' => 'branch name',
+            'branches.*.address' => 'branch address',
+            'branches.*.phone' => 'branch phone',
+            'branches.*.email' => 'branch email',
         ];
 
         foreach (['individual_documents', 'business_documents'] as $group) {
@@ -240,6 +263,39 @@ class UpdateProfileRequest extends FormRequest
         }
 
         return $attributes;
+    }
+
+    /**
+     * @return list<array{name: string, address: string, phone: string, email: string}>
+     */
+    private function normalizeBranches(mixed $rows): array
+    {
+        if (! is_array($rows)) {
+            return [];
+        }
+
+        $normalized = [];
+
+        foreach ($rows as $row) {
+            if (! is_array($row)) {
+                continue;
+            }
+
+            $branch = [
+                'name' => trim((string) ($row['name'] ?? '')),
+                'address' => trim((string) ($row['address'] ?? '')),
+                'phone' => preg_replace('/\D+/', '', (string) ($row['phone'] ?? '')),
+                'email' => strtolower(trim((string) ($row['email'] ?? ''))),
+            ];
+
+            if ($branch['name'] === '' && $branch['address'] === '' && $branch['phone'] === '' && $branch['email'] === '') {
+                continue;
+            }
+
+            $normalized[] = $branch;
+        }
+
+        return $normalized;
     }
 
     /**

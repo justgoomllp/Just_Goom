@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Front\StorePublicInquiryRequest;
 use App\Services\Front\CategoryCatalogService;
 use App\Services\Front\DocumentService;
+use App\Services\Front\InquiryService;
 use App\Services\Front\ProfileService;
 use App\Services\Front\PublicProfileListingService;
 use App\Services\Front\ServiceService;
@@ -13,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
 
 class PublicProfileController extends Controller
 {
@@ -108,6 +111,63 @@ class PublicProfileController extends Controller
             'qrDownloadUrl' => route('front.profile.qr', ['slug' => $profile->slug, 'size' => 400]),
             'justgoomLogoUrl' => asset('front/assets/images/justgoom-logo.png'),
         ]);
+    }
+
+    public function storeInquiry(StorePublicInquiryRequest $request, string $slug, InquiryService $inquiryService)
+    {
+        $profile = $this->listingService->findPublicProfile($slug);
+        $user = $profile->user;
+        $successMessage = 'Thank you. Your inquiry has been sent.';
+
+        if (auth()->check() && (int) auth()->id() === (int) $user->id) {
+            $message = 'You cannot send an inquiry to your own profile.';
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $message], 422);
+            }
+
+            return redirect()
+                ->to(route('front.profile.show', $profile->slug).'#contact')
+                ->with('error', $message);
+        }
+
+        if (filled($request->input('website'))) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $successMessage]);
+            }
+
+            return redirect()
+                ->to(route('front.profile.show', $profile->slug).'#contact')
+                ->with('success', $successMessage);
+        }
+
+        try {
+            $inquiryService->createForProfile($user, [
+                'sender_name' => $request->validated('name'),
+                'sender_company' => $request->validated('company_name'),
+                'sender_email' => $request->validated('email'),
+                'sender_phone' => $request->validated('phone'),
+                'subject' => $request->validated('subject'),
+                'message' => $request->validated('message'),
+            ]);
+        } catch (ValidationException $e) {
+            if ($request->expectsJson()) {
+                throw $e;
+            }
+
+            return redirect()
+                ->to(route('front.profile.show', $profile->slug).'#contact')
+                ->withErrors($e->errors())
+                ->withInput();
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $successMessage]);
+        }
+
+        return redirect()
+            ->to(route('front.profile.show', $profile->slug).'#contact')
+            ->with('success', $successMessage);
     }
 
     public function qrImage(string $slug, Request $request)

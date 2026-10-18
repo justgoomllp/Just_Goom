@@ -19,7 +19,12 @@
             <tbody>
               @forelse($inquiries as $inquiry)
               <tr>
-                <td>{{ $inquiry->sender_name }}</td>
+                <td>
+                  {{ $inquiry->sender_name }}
+                  @if($inquiry->sender_company)
+                    <div class="user-text-muted" style="font-size:12px">{{ $inquiry->sender_company }}</div>
+                  @endif
+                </td>
                 <td>{{ $inquiry->subject }}</td>
                 <td>{{ $inquiry->created_at?->format('M j, Y') }}</td>
                 <td>

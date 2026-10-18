@@ -11,6 +11,7 @@
       <div class="user-form-card user-form-card-wide">
         <dl class="user-detail-grid">
           <dt>From</dt><dd>{{ $inquiry->sender_name }}</dd>
+          <dt>Company</dt><dd>{{ $inquiry->sender_company ?: '—' }}</dd>
           <dt>Email</dt><dd>{{ $inquiry->sender_email ?: '—' }}</dd>
           <dt>Phone</dt><dd>{{ $inquiry->sender_phone ?: '—' }}</dd>
           <dt>Date</dt><dd>{{ $inquiry->created_at?->format('M j, Y g:i A') }}</dd>
