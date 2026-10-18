@@ -1257,52 +1257,6 @@
               @else
                 <p class="profile-empty-note">No sub branch added yet.</p>
               @endif
-
-              @if($hasContactSocials)
-                <div class="profile-contact-socials">
-                  <h4 class="profile-about-extra-title">Social</h4>
-                  <div class="profile-portfolio">
-                    @if($websiteUrl)
-                      <a href="{{ $websiteUrl }}" class="portfolio-link" target="_blank" rel="noopener">
-                        <span class="portfolio-icon web" aria-hidden="true">
-                          <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                        </span>
-                        <span class="portfolio-link-text">
-                          <strong>Website</strong>
-                          <span>{{ parse_url($websiteUrl, PHP_URL_HOST) ?: $profile->social_website }}</span>
-                        </span>
-                      </a>
-                    @endif
-                    @if(!empty($facebookUrl))
-                      <a href="{{ $facebookUrl }}" class="portfolio-link" target="_blank" rel="noopener">
-                        <span class="portfolio-icon github">f</span>
-                        <span class="portfolio-link-text">
-                          <strong>Facebook</strong>
-                          <span>View page</span>
-                        </span>
-                      </a>
-                    @endif
-                    @if(!empty($twitterUrl))
-                      <a href="{{ $twitterUrl }}" class="portfolio-link" target="_blank" rel="noopener">
-                        <span class="portfolio-icon dribbble">X</span>
-                        <span class="portfolio-link-text">
-                          <strong>Twitter / X</strong>
-                          <span>View profile</span>
-                        </span>
-                      </a>
-                    @endif
-                    @if(!empty($linkedinUrl))
-                      <a href="{{ $linkedinUrl }}" class="portfolio-link" target="_blank" rel="noopener">
-                        <span class="portfolio-icon behance">in</span>
-                        <span class="portfolio-link-text">
-                          <strong>LinkedIn</strong>
-                          <span>View company</span>
-                        </span>
-                      </a>
-                    @endif
-                  </div>
-                </div>
-              @endif
             </aside>
         </div>
       </div>
