@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Just Goom — How the AI chatbot works</title>
+  <style>
+    :root {
+      --primary: #1A428A;
+      --primary-dark: #003366;
+      --primary-light: #E8F0FA;
+      --accent: #F7941D;
+      --accent-dark: #E8850C;
+      --text: #1e293b;
+      --muted: #64748b;
+      --bg: #f8fafc;
+      --white: #fff;
+      --border: #e2e8f0;
+      --ok: #16a34a;
+      --warn: #b45309;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    .hero {
+      background: var(--primary);
+      color: #fff;
+      padding: 40px 24px 48px;
+    }
+    .hero-inner, .wrap { max-width: 1100px; margin: 0 auto; }
+    .hero .tag {
+      display: inline-block;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .hero h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+    .hero p { max-width: 680px; opacity: .92; font-size: 16px; }
+    .wrap { padding: 32px 24px 80px; }
+    h2 { font-size: 22px; margin: 36px 0 14px; color: var(--primary-dark); }
+    h3 { font-size: 16px; margin-bottom: 8px; }
+    p, li { color: var(--text); }
+    .muted { color: var(--muted); }
+    .grid-3, .grid-2 { display: grid; gap: 16px; }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-2 { grid-template-columns: 1.15fr .85fr; }
+    @media (max-width: 900px) {
+      .grid-3, .grid-2 { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; margin-bottom: 8px;
+    }
+    .flow {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px;
+    }
+    .flow-box {
+      background: var(--primary-light); color: var(--primary-dark);
+      padding: 10px 12px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    }
+    .flow-arrow { color: var(--muted); font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; background: #fff; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: top; }
+    th { background: var(--primary-light); color: var(--primary-dark); font-size: 12px; text-transform: uppercase; letter-spacing: .03em; }
+    .yes { color: var(--ok); font-weight: 600; }
+    .no { color: #b91c1c; font-weight: 600; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .chip {
+      border: 1px solid var(--border); background: #fff; color: var(--primary);
+      border-radius: 999px; padding: 6px 12px; font-size: 13px; cursor: pointer;
+    }
+    .chip:hover { border-color: var(--primary); background: var(--primary-light); }
+    .demo-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start; }
+    @media (max-width: 900px) { .demo-layout { grid-template-columns: 1fr; } }
+    .site-fake {
+      background: #fff; border: 1px solid var(--border); border-radius: 12px;
+      min-height: 420px; position: relative; overflow: hidden;
+    }
+    .site-bar { background: var(--primary); color: #fff; padding: 14px 18px; font-weight: 700; }
+    .site-body { padding: 24px; }
+    .widget-btn {
+      position: absolute; right: 18px; bottom: 18px;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--accent); color: #fff; border: 0; cursor: pointer;
+      font-size: 22px; font-weight: 700;
+    }
+    .panel {
+      background: #fff; border: 1px solid var(--border); border-radius: 14px;
+      display: flex; flex-direction: column; height: 480px; overflow: hidden;
+    }
+    .panel-head {
+      background: var(--primary); color: #fff; padding: 14px 16px;
+    }
+    .panel-head small { opacity: .8; display: block; font-size: 12px; }
+    .msgs { flex: 1; overflow: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: #f8fafc; }
+    .msg { max-width: 88%; padding: 10px 12px; border-radius: 12px; font-size: 13.5px; }
+    .msg.bot { background: #fff; border: 1px solid var(--border); align-self: flex-start; }
+    .msg.user { background: var(--primary); color: #fff; align-self: flex-end; }
+    .composer { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border); }
+    .composer input {
+      flex: 1; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 14px;
+    }
+    .composer button {
+      background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 10px 14px;
+      font-weight: 700; cursor: pointer;
+    }
+    ul.plain { padding-left: 18px; }
+    ul.plain li { margin: 4px 0; }
+    .note {
+      background: #fff7ed; border: 1px solid #fed7aa; color: var(--warn);
+      border-radius: 10px; padding: 12px 14px; font-size: 14px; margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="tag">Plan walkthrough · not live yet</span>
+      <h1>How the Just Goom AI chatbot will work</h1>
+      <p>A help assistant for system questions: register, plans, inquiries, verification, and agents. It answers only from an admin-managed FAQ. Open this file in a browser and try the demo on the right.</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h2>1. What it is</h2>
+    <div class="grid-3">
+      <div class="card">
+        <h3>Help bot</h3>
+        <p class="muted">Answers “How do I list my business?” and “What is Gold plan?” It is not live chat with a company, and not a ticket desk.</p>
+      </div>
+      <div class="card">
+        <h3>Who sees it</h3>
+        <p class="muted">Floating widget on the public site (home, about, contact, pricing) and on business/agent dashboards. Not in admin.</p>
+      </div>
+      <div class="card">
+        <h3>Where answers come from</h3>
+        <p class="muted">Admin FAQ rows + a short system brief (prices, contact). If it does not know, it sends the user to Contact.</p>
+      </div>
+    </div>
+
+    <h2>2. How a question is answered</h2>
+    <div class="flow">
+      <span class="flow-box">User types in widget</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-box">POST /chatbot/ask</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-box">Load active FAQs</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-box">LLM writes the reply</span>
+      <span class="flow-arrow">→</span>
+      <span class="flow-box">Show answer + save log</span>
+    </div>
+    <div class="grid-3" style="margin-top:16px">
+      <div class="card">
+        <div class="step-num">1</div>
+        <h3>Widget sends the message</h3>
+        <p class="muted">JSON: message + session id. CSRF token is required. Max about 1000 characters. Rate limit: 10 per minute per IP.</p>
+      </div>
+      <div class="card">
+        <div class="step-num">2</div>
+        <h3>Server builds a strict prompt</h3>
+        <p class="muted">Active FAQ text + last 6 turns. Role is only guest / user / agent. No passwords, inquiries, or payment data.</p>
+      </div>
+      <div class="card">
+        <div class="step-num">3</div>
+        <h3>LLM answers or escalates</h3>
+        <p class="muted">Uses OpenAI or Groq (API key stays on the server). Unknown topics: “I don’t have that — contact us.”</p>
+      </div>
+    </div>
+
+    <h2>3. Try the widget (demo)</h2>
+    <p class="muted">This page uses the planned FAQ copy locally. The real bot will call the LLM. Click a chip or type a question.</p>
+    <div class="demo-layout" style="margin-top:14px">
+      <div class="site-fake">
+        <div class="site-bar">Just Goom · sample public page</div>
+        <div class="site-body">
+          <h3>Pricing, listing, and support</h3>
+          <p class="muted" style="margin:8px 0 12px">The live widget sits on the bottom-right of every public and dashboard page. Suggested questions appear when the panel opens.</p>
+          <div class="chips">
+            <button class="chip" type="button" data-q="How do I fill My Team, Services, Documents, Listings, Articles, Videos and Offers?">Fill all menus</button>
+            <button class="chip" type="button" data-q="How do I add a team member?">My Team</button>
+            <button class="chip" type="button" data-q="How do I add a service or product?">Services & Products</button>
+            <button class="chip" type="button" data-q="How do I upload a document?">My Documents</button>
+            <button class="chip" type="button" data-q="How do I add a listing?">My Listings</button>
+            <button class="chip" type="button" data-q="How do I write an article?">My Articles</button>
+            <button class="chip" type="button" data-q="How do I upload a video?">My Videos</button>
+            <button class="chip" type="button" data-q="How do I add an offer?">My Offers</button>
+            <button class="chip" type="button" data-q="What are the plans and prices?">Plans</button>
+          </div>
+        </div>
+        <button class="widget-btn" type="button" title="Open chat" onclick="document.getElementById('q').focus()">JG</button>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          Just Goom Help
+          <small>System questions only · demo answers</small>
+        </div>
+        <div class="msgs" id="msgs"></div>
+        <form class="composer" id="form">
+          <input id="q" type="text" placeholder="Ask how to fill Team, Documents, Listings…" autocomplete="off" maxlength="1000">
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+    <p class="note">This HTML file is a plan demo only. It is not wired to Laravel or an API key. After we implement the plan, the real widget will live on the site layouts.</p>
+
+    <h2>4. Fill every dashboard menu (from the sidebar)</h2>
+    <p class="muted">Matches the logged-in sidebar: My Business (Team, Services &amp; Products, Documents, Listings) and Content &amp; Marketing (Articles, Videos, Offers). All of these need an active plan. Questions below list every form column.</p>
+
+    <div class="card" style="padding:0; overflow:auto; margin-top:14px">
+      <table>
+        <thead>
+          <tr>
+            <th>Menu</th>
+            <th>Path</th>
+            <th>Required columns</th>
+            <th>Optional columns</th>
+            <th>Limit S / G / P</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>My Team</strong></td>
+            <td>My Team → Add Member</td>
+            <td>Full Name, Designation / Role, Email, Phone (10 digits)</td>
+            <td>Department (Sales, Operations, Wholesale, Customer Support, Management, or Other), Profile Photo (JPG/PNG/WEBP/GIF, 2 MB), Bio / Responsibilities, Show as primary contact</td>
+            <td>3 / 5 / 10</td>
+          </tr>
+          <tr>
+            <td><strong>Services &amp; Products</strong></td>
+            <td>Services &amp; Products → Add New</td>
+            <td>Type (Service or Product), Name</td>
+            <td>Short Description, Price (e.g. 1500 or 1500+), Image (2 MB)</td>
+            <td>5 / 10 / 20 combined</td>
+          </tr>
+          <tr>
+            <td><strong>My Documents</strong></td>
+            <td>My Documents → Upload</td>
+            <td>Document Name, Document Type (PDF / Word / Excel), File</td>
+            <td>—</td>
+            <td>5 / 10 / 20 · PDF/Word/Excel 5 MB</td>
+          </tr>
+          <tr>
+            <td><strong>My Listings</strong> (real estate / engineering)</td>
+            <td>My Listings → Add</td>
+            <td>Listing Title, Price, Location, at least 1 listing image on create</td>
+            <td>Description, EMI / Price Note, Configuration, Sale Type, Possession, Parking, Amenities, Service Type, Industry / Domain, Lead Time, Capacity / Spec, Features, Brochure URL, extra images (max 12 × 2 MB)</td>
+            <td>5 / 10 / 20</td>
+          </tr>
+          <tr>
+            <td><strong>My Projects</strong> (other categories)</td>
+            <td>My Projects → Add</td>
+            <td>Project Title, Project Type (Document / Video / Link). File required unless type is Link. External URL required if type is Link</td>
+            <td>Description, Thumbnail (2 MB). File max 100 MB (PDF, DOC, PPT, MP4…)</td>
+            <td>5 / 10 / 20</td>
+          </tr>
+          <tr>
+            <td><strong>My Articles</strong></td>
+            <td>My Articles → Write</td>
+            <td>Article Title, Article Content, Status (Draft or Published)</td>
+            <td>Featured Image (2 MB)</td>
+            <td>5 / 10 / 20</td>
+          </tr>
+          <tr>
+            <td><strong>My Videos</strong></td>
+            <td>My Videos → Upload</td>
+            <td>Video Title, plus either External Video URL or Video File (MP4/AVI/MOV/WMV/WebM)</td>
+            <td>Thumbnail Image (2 MB)</td>
+            <td>2 / 5 / 10 · file usually 5 MB</td>
+          </tr>
+          <tr>
+            <td><strong>My Offers</strong></td>
+            <td>My Offers → Create</td>
+            <td>Offer Title, Start Date (today+), End Date</td>
+            <td>Description, Banner Image (2 MB), Link URL. On edit: Status Active / Paused</td>
+            <td>2 / 5 / 10</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px">
+      <div class="card">
+        <h3>My Team — how to fill</h3>
+        <p class="muted">Log in → <strong>My Team</strong> → Add Member. Shows on the public profile immediately.</p>
+        <ul class="plain">
+          <li>* Full Name (max 150)</li>
+          <li>* Designation / Role (max 150)</li>
+          <li>* Email</li>
+          <li>* Phone — exactly 10 digits</li>
+          <li>Department — Sales, Operations, Wholesale, Customer Support, Management, or type Other</li>
+          <li>Profile Photo — optional, max 2 MB</li>
+          <li>Bio / Responsibilities — optional, max 5000</li>
+          <li>Checkbox: Show as primary contact on public profile</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Services &amp; Products — how to fill</h3>
+        <p class="muted">Same Add form. Choose Type. Filter list: All / Services / Products.</p>
+        <ul class="plain">
+          <li>* Type — Service or Product</li>
+          <li>* Name (2–200 characters)</li>
+          <li>Short Description — max 5000</li>
+          <li>Price — e.g. 1500, 1500.00, or 1500+</li>
+          <li>Image — JPG/PNG/WEBP/GIF, max 2 MB</li>
+          <li>Quota is shared: products + services together</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>My Documents — how to fill</h3>
+        <p class="muted">GST, BIS, certificates, catalogues on the public profile.</p>
+        <ul class="plain">
+          <li>* Document Name (2–200)</li>
+          <li>* Document Type — PDF, Word, or Excel (file must match the type)</li>
+          <li>* File — PDF/Word/Excel max 5 MB</li>
+          <li>You can later toggle status on the list</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>My Listings — how to fill</h3>
+        <p class="muted">Menu label is My Listings for real estate / engineering; otherwise My Projects.</p>
+        <ul class="plain">
+          <li><strong>Property listing:</strong> * Title, * Price, * Location, * listing images (up to 12). Optional: description, EMI, configuration (3 BHK), sale type, possession, parking, amenities, brochure URL</li>
+          <li><strong>Engineering listing:</strong> * Title, * Price / Quote, * Location / Site, * images. Optional: price note, service type, industry, lead time, capacity, features, brochure URL</li>
+          <li><strong>Normal project:</strong> * Title, * Type (Document / Video / Link), file or URL, optional thumbnail</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>My Articles — how to fill</h3>
+        <p class="muted">Dashboard → <strong>My Articles</strong> → Write New Article.</p>
+        <ul class="plain">
+          <li>* Article Title (max 300)</li>
+          <li>* Article Content</li>
+          <li>* Status — Draft or Published (publish sets the public date)</li>
+          <li>Featured Image — optional cover, max 2 MB</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>My Videos — how to fill</h3>
+        <p class="muted">Dashboard → <strong>My Videos</strong> → Upload Video. Provide a link <em>or</em> a file.</p>
+        <ul class="plain">
+          <li>* Video Title (max 200)</li>
+          <li>External Video URL — YouTube, Vimeo, etc. <strong>or</strong></li>
+          <li>Upload Video File — MP4, AVI, MOV, WMV, WebM (plan max, usually 5 MB)</li>
+          <li>Thumbnail Image — optional, 2 MB (useful for reel-style links)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>My Offers — how to fill</h3>
+        <p class="muted">Dashboard → <strong>My Offers</strong> → Create Offer. Homepage shows Active + date range includes today.</p>
+        <ul class="plain">
+          <li>* Offer Title (max 200)</li>
+          <li>* Start Date — today or later on create</li>
+          <li>* End Date — on or after start</li>
+          <li>Description — max 2000</li>
+          <li>Banner Image — max 2 MB</li>
+          <li>Link URL — optional https://…</li>
+          <li>On edit: Status Active or Paused</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Locked menus?</h3>
+        <p class="muted">If the sidebar shows a lock, buy Silver / Gold / Platinum first (Subscription). Profile, subscription, payments, activity log, password, and notifications stay open without a plan.</p>
+      </div>
+    </div>
+
+    <h2>5. Knowledge seeded on day one</h2>
+    <div class="card" style="padding:0; overflow:auto">
+      <table>
+        <thead>
+          <tr><th>Category</th><th>Example questions</th><th>Source</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Getting started</td><td>Free listing, register, email verify, complete profile</td><td>Contact FAQ + register flow</td></tr>
+          <tr><td>Dashboard how-to</td><td>Fill Team, Services &amp; Products, Documents, Listings/Projects, Articles, Videos, Offers — every form column</td><td>User dashboard forms</td></tr>
+          <tr><td>Plans</td><td>Silver ₹3,000 / Gold ₹5,000 / Platinum ₹7,000, limits, Razorpay</td><td>PricingCatalog</td></tr>
+          <tr><td>Inquiries</td><td>How buyers send leads, how businesses reply</td><td>Contact FAQ + dashboard</td></tr>
+          <tr><td>Verification</td><td>GST / documents, verified badge</td><td>Contact FAQ</td></tr>
+          <tr><td>Agents</td><td>Referral, commission (high level, no private rates)</td><td>Agent portal copy</td></tr>
+          <tr><td>Support</td><td>info@justgoom.com, phones, Ahmedabad office, Mon–Sat</td><td>Contact page</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted" style="margin-top:8px">Admins add, edit, or disable FAQs later at <strong>/admin/chatbot-faqs</strong> without a code change. Featured FAQs become the chips.</p>
+
+    <h2>6. What it will and will not do</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3 class="yes">Will</h3>
+        <ul class="plain">
+          <li>Answer how Just Goom works</li>
+          <li>Quote published plan prices and limits</li>
+          <li>Point unknown questions to Contact</li>
+          <li>Keep a short conversation memory (last 6 turns)</li>
+          <li>Log chats so the FAQ can improve</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 class="no">Will not (v1)</h3>
+        <ul class="plain">
+          <li>Chat buyer ↔ company</li>
+          <li>Read inquiries, invoices, or documents</li>
+          <li>Change plans or create tickets</li>
+          <li>Search all articles with RAG</li>
+          <li>Appear in the admin panel</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>7. Build pieces (when we implement)</h2>
+    <div class="card" style="padding:0; overflow:auto">
+      <table>
+        <thead>
+          <tr><th>Piece</th><th>Where</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>FAQ + chat log tables</td><td>Migrations: chatbot_faqs, chatbot_conversations, chatbot_messages</td></tr>
+          <tr><td>Ask API</td><td>POST /chatbot/ask → ChatbotController + ChatbotService (Guzzle to OpenAI/Groq)</td></tr>
+          <tr><td>Widget</td><td>front layouts + chatbot.blade.php + chatbot.js + style.css</td></tr>
+          <tr><td>Admin FAQ CRUD</td><td>Same pattern as Categories; module flag chatbot</td></tr>
+          <tr><td>Config</td><td>CHATBOT_ENABLED, CHATBOT_API_KEY, CHATBOT_MODEL in .env</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    var faqs = [
+      { q: "How do I fill My Team, Services, Documents, Listings, Articles, Videos and Offers?", k: ["all menu", "fill all", "my business", "content & marketing", "sidebar"], a: "Buy an active plan first. Then fill each locked menu: My Team (people), Services & Products (type + name), My Documents (name + PDF/Word/Excel file), My Listings or My Projects (title and extra fields by category), My Articles (title, content, draft/published), My Videos (title + URL or file), My Offers (title + dates). Photos are usually optional and max 2 MB." },
+      { q: "How do I add a team member?", k: ["team member", "my team", "add team", "team"], a: "My Team → Add Member. Required columns: Full Name, Designation / Role, Email, Phone (exactly 10 digits). Optional: Department (Sales, Operations, Wholesale, Customer Support, Management, or Other), Profile Photo (2 MB), Bio / Responsibilities, checkbox “Show as primary contact”. Limits 3 / 5 / 10. Shows on the public profile immediately." },
+      { q: "How do I add a service or product?", k: ["service or product", "services & products", "add service", "add product", "my service", "my product", "services", "products"], a: "Services & Products → Add New. Required: Type (Service or Product) and Name. Optional: Short Description, Price (1500 or 1500+), Image max 2 MB. Same form for both. They share one quota 5 / 10 / 20. Property or machinery items go under My Listings, not here." },
+      { q: "How do I upload a document?", k: ["my document", "upload document", "add document", "documents", "certificate", "catalogue"], a: "My Documents → Upload. Required: Document Name, Document Type (PDF, Word, or Excel), and the File. The file must match the type. PDF/Word/Excel max 5 MB. Use this for GST, BIS, registration, catalogues. Limits 5 / 10 / 20. You can toggle status on the list later." },
+      { q: "How do I add a listing?", k: ["my listing", "listings", "add listing", "my project", "projects", "property"], a: "Open My Listings (real estate / engineering) or My Projects (other categories). Property: required Title, Price, Location, at least one image (max 12 × 2 MB); optional description, EMI, configuration, sale type, possession, parking, amenities, brochure URL. Engineering: required Title, Price/Quote, Location/Site, images; optional price note, service type, industry, lead time, capacity, features. Normal project: required Title and Type (Document/Video/Link), plus file or URL. Limits 5 / 10 / 20." },
+      { q: "How do I write an article?", k: ["my article", "articles", "write article", "publish article"], a: "My Articles → Write New Article. Required: Article Title (max 300), Article Content, Status Draft or Published. Optional: Featured Image max 2 MB. Published articles appear on the public site. Limits 5 / 10 / 20." },
+      { q: "How do I upload a video?", k: ["my video", "videos", "upload video", "youtube", "vimeo"], a: "My Videos → Upload Video. Required: Video Title, and either an External Video URL (YouTube/Vimeo) or a Video File (MP4, AVI, MOV, WMV, WebM). Optional: Thumbnail Image max 2 MB. File size is usually 5 MB from the plan. Limits 2 / 5 / 10 videos. There is no edit screen — delete and upload again if needed." },
+      { q: "How do I add an offer?", k: ["add offer", "my offer", "offers", "promo", "promotion", "banner"], a: "My Offers → Create Offer. Required: Offer Title, Start Date (today or later), End Date on or after start. Optional: Description (max 2000), Banner Image 2 MB, Link URL. New offers are Active. On edit you can set Status Active or Paused. Homepage shows only Active offers whose dates include today. Limits 2 / 5 / 10." },
+      { q: "Do I need a plan to add team or offers?", k: ["locked", "need a plan", "active plan", "unlock"], a: "Yes. My Team, Services & Products, My Documents, My Listings/Projects, My Articles, My Videos, My Offers, and My Inquiries need an active subscription. Locked links go to Subscription. Profile, subscription, payments, activity log, password, and notifications stay open." },
+      { q: "How do I list my business for free?", k: ["list my business", "free listing", "register", "signup", "sign up"], a: "Click Register, create your account, verify your email, and complete My Profile. Listing on Just Goom is free for MSMEs. Paid Silver, Gold, or Platinum plans unlock the My Business and Content menus (team, services, documents, listings, articles, videos, offers)." },
+      { q: "What are the plans and prices?", k: ["plan", "price", "silver", "gold", "platinum", "cost", "pricing"], a: "Yearly: Silver ₹3,000, Gold ₹5,000, Platinum ₹7,000. Limits examples — team 3/5/10, products+services 5/10/20, documents 5/10/20, listings 5/10/20, articles 5/10/20, videos 2/5/10, offers 2/5/10. Pay with Razorpay from Subscription." },
+      { q: "How do buyers send inquiries?", k: ["inquir", "lead", "buyer", "enquiry"], a: "Buyers browse All Profiles, open a company page, and submit the inquiry form. You reply from Dashboard → My Inquiries." },
+      { q: "What is profile verification?", k: ["verified", "verification", "gst badge"], a: "A verified badge helps buyers trust your business. Upload GST or registration files in My Documents and contact Just Goom to apply. Admin reviews documents." },
+      { q: "How do agents earn commission?", k: ["agent", "commission", "referral"], a: "Agents onboard businesses and earn plan-based India/Global commission from the agent portal. Exact rates are set by admin per agent — I do not quote private commission figures." },
+      { q: "How do I contact support?", k: ["contact", "phone", "email", "office", "support", "hour"], a: "Email info@justgoom.com or call +91 96248 98242 / +91 72018 38383. Office: A/201, Oxford Avenue, Ashram Road, Ahmedabad 380014. Hours Mon–Sat (IST). Reply in 24–48 hours." }
+    ];
+    var fallback = "I do not have that detail in the Just Goom help knowledge. Please use the Contact page, email info@justgoom.com, or call +91 96248 98242. I only answer how the platform works — I cannot refund payments or read your account.";
+
+    var msgs = document.getElementById("msgs");
+    function add(role, text) {
+      var el = document.createElement("div");
+      el.className = "msg " + role;
+      el.textContent = text;
+      msgs.appendChild(el);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+    add("bot", "Hi — I am the Just Goom help assistant. Ask how to fill My Team, Services & Products, Documents, Listings, Articles, Videos, or Offers. I will list the form columns. For anything else I will point you to Contact.");
+
+    function answer(text) {
+      var t = text.toLowerCase();
+      var best = null;
+      var bestScore = 0;
+      for (var i = 0; i < faqs.length; i++) {
+        var hits = 0;
+        for (var j = 0; j < faqs[i].k.length; j++) {
+          if (t.indexOf(faqs[i].k[j]) !== -1) hits++;
+        }
+        var need = faqs[i].minHits || 1;
+        if (hits >= need && hits > bestScore) {
+          bestScore = hits;
+          best = faqs[i];
+        }
+      }
+      return best ? best.a : fallback;
+    }
+
+    function ask(text) {
+      text = (text || "").trim();
+      if (!text) return;
+      add("user", text);
+      setTimeout(function () { add("bot", answer(text)); }, 350);
+    }
+
+    document.getElementById("form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var input = document.getElementById("q");
+      ask(input.value);
+      input.value = "";
+    });
+    document.querySelectorAll(".chip").forEach(function (btn) {
+      btn.addEventListener("click", function () { ask(btn.getAttribute("data-q")); });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Just Goom LLP — Global B2B Business Discovery Platform</title>
+  <meta name="description" content="JustGoom — Connect with verified business profiles, browse categories, and grow your business across India.">
+  <link rel="icon" href="https://latest.justgoom.com/front/assets/images/justgoom-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://latest.justgoom.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Syne:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1A428A;
+      --navy-deep: #0b1d44;
+      --orange: #F7941D;
+      --orange-hot: #ffb347;
+      --blue: #1A428A;
+      --bg: #fff;
+      --bg-2: #f5f5f5;
+      --surface: #fff;
+      --surface-2: #fff;
+      --line: rgba(0, 0, 0, 0.1);
+      --line-strong: rgba(0, 0, 0, 0.22);
+      --text: #111;
+      --muted: #5c5c5c;
+      --success: #111;
+      --ink: #111;
+      --paper: #fff;
+      --radius: 22px;
+      --header: 78px;
+      --max: 1240px;
+      --font: "Outfit", sans-serif;
+      --display: "Syne", sans-serif;
+      --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    html, body { background: var(--bg); color: var(--text); }
+    body {
+      font-family: var(--font);
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; color: inherit; }
+    button { cursor: pointer; border: 0; background: none; }
+
+    .skip {
+      position: absolute; left: 16px; top: -40px; z-index: 80;
+      background: #111; color: #fff; padding: 8px 14px; border-radius: 999px;
+    }
+    .skip:focus { top: 16px; }
+
+    .progress {
+      position: fixed; inset: 0 auto auto 0; height: 2px; width: 0;
+      background: #111;
+      z-index: 70;
+    }
+
+    .grid-bg {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(0, 0, 0, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.045) 1px, transparent 1px);
+      background-size: 72px 72px;
+    }
+
+    .wrap { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; position: relative; z-index: 1; }
+    .section { padding: 92px 0; position: relative; z-index: 1; content-visibility: auto; contain-intrinsic-size: 1px 720px; }
+    .cards > *, .offers > *, .articles > *, .sector-track > *, .steps > * { min-width: 0; }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      color: var(--orange); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; font-weight: 600;
+    }
+    .eyebrow::before {
+      content: ""; width: 28px; height: 1px; background: var(--orange);
+    }
+    h1, h2, h3 { font-family: var(--display); line-height: 1.05; letter-spacing: -.03em; }
+    .lead { color: var(--muted); max-width: 56ch; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 48px; padding: 0 22px; border-radius: 999px; font-weight: 600;
+      white-space: nowrap; flex-shrink: 0;
+      border: 1px solid transparent;
+      transition: transform .25s var(--ease), background-position .45s var(--ease), color .25s, border-color .25s, box-shadow .25s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-orange,
+    .btn-navy {
+      background-color: #1A428A;
+      background-image: linear-gradient(90deg, #F7941D 50%, #1A428A 50%);
+      background-size: 220% 100%;
+      background-position: 100% 0;
+      color: #fff;
+      border-color: #1A428A;
+    }
+    .btn-orange:hover,
+    .btn-navy:hover {
+      background-position: 0 0;
+      color: #111;
+      border-color: #F7941D;
+    }
+    .btn-ghost {
+      background-color: #fff;
+      background-image: linear-gradient(90deg, #F7941D 50%, #fff 50%);
+      background-size: 220% 100%;
+      background-position: 100% 0;
+      color: #1A428A;
+      border-color: #1A428A;
+    }
+    .btn-ghost:hover {
+      background-position: 0 0;
+      color: #111;
+      border-color: #F7941D;
+    }
+
+    .topbar {
+      position: relative; z-index: 40;
+      border-bottom: 1px solid var(--line);
+      background: #111;
+      font-size: 13px;
+    }
+    .topbar .wrap { display: flex; justify-content: space-between; align-items: center; min-height: 38px; gap: 16px; }
+    .topbar a { color: rgba(255,255,255,.82); transition: color .2s; }
+    .topbar a:hover { color: #fff; }
+    .top-links { display: flex; gap: 18px; }
+    .top-links a:hover { color: #fff; }
+    .top-cta { color: #fff !important; font-weight: 600; }
+    .top-cta:hover { color: #fff !important; }
+
+    header {
+      position: sticky; top: 0; z-index: 50;
+      height: var(--header);
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+    }
+    .header-in {
+      height: 100%; display: flex; align-items: center; gap: 28px;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+    }
+    .logo-plate {
+      width: 148px; height: 46px; border-radius: 12px;
+      background: #fff; display: grid; place-items: center; padding: 6px 10px;
+      box-shadow: 0 0 0 1px #111;
+    }
+    .logo-plate img { height: 32px; width: auto; }
+    .nav { display: flex; gap: 2px; margin-left: auto; flex-wrap: nowrap; }
+    .nav a {
+      padding: 8px 10px; border-radius: 999px; color: #1A428A; font-size: 13.5px; font-weight: 500; white-space: nowrap;
+    }
+    .nav a:hover { color: #111; background: #F7941D; }
+    .nav a.active { color: #fff; background: #1A428A; }
+    .nav a.active:hover { color: #111; background: #F7941D; }
+    .header-actions { display: flex; gap: 8px; }
+    .menu-btn, .mobile-nav { display: none; }
+
+    .hero { min-height: clamp(640px, calc(100vh - 116px), 860px); padding: 54px 0 80px; display: grid; align-items: center; }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+    .hero h1 { font-size: clamp(28px, 3.6vw, 44px); margin: 12px 0 14px; }
+    .hero h1 em {
+      font-style: normal;
+      color: #111;
+      border-bottom: 3px solid #111;
+    }
+    .hero .lead { font-size: 18px; margin-bottom: 28px; }
+
+    .console {
+      border: 1px solid #111;
+      background: #fff;
+      border-radius: 16px;
+      padding: 8px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+    }
+    .console-in { background: #fff; border-radius: 12px; padding: 8px; }
+    .tabs { display: flex; gap: 4px; margin-bottom: 8px; }
+    .tabs button {
+      padding: 5px 10px; border-radius: 999px; color: #1A428A; background: #f3f3f3; font-size: 13px;
+    }
+    .tabs button:hover { background: #F7941D; color: #111; }
+    .tabs button.active { background: #1A428A; color: #fff; }
+    .tabs button.active:hover { background: #F7941D; color: #111; }
+    .search-row { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(120px, .7fr) 108px; gap: 6px; align-items: stretch; }
+    .search-row .btn { width: 100%; min-width: 0; height: 100%; min-height: 42px; padding: 0 12px; border-radius: 10px; font-size: 14px; }
+    .field { display: flex; flex-direction: column; justify-content: center; gap: 2px; background: #f5f5f5; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; min-width: 0; min-height: 42px; }
+    .field label { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .field input { background: none; border: 0; outline: 0; padding: 1px 0 0; font-size: 14px; }
+    .hero-actions { display: flex; gap: 10px; margin: 20px 0 18px; flex-wrap: wrap; }
+    .trust { display: flex; gap: 16px; flex-wrap: wrap; color: var(--muted); font-size: 14px; }
+    .trust span { display: flex; align-items: center; gap: 6px; }
+    .trust i {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: #111; color: #fff;
+      display: grid; place-items: center; font-size: 10px; font-style: normal;
+    }
+
+    .hero-visual { position: relative; min-height: 540px; }
+    .circuit-mark {
+      position: absolute; inset: 12% 8% 18% 10%; opacity: .18; pointer-events: none;
+    }
+    .orb, .orb-2 {
+      position: absolute; border-radius: 50%; pointer-events: none;
+    }
+    .orb { width: 220px; height: 220px; background: rgba(0,0,0,.06); right: 8%; top: 8%; }
+    .orb-2 { width: 180px; height: 180px; background: rgba(0,0,0,.04); left: 6%; bottom: 12%; }
+
+    .stat-float {
+      position: absolute; width: 168px; padding: 16px 16px 14px;
+      background: #fff; border: 1px solid #111;
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(0,0,0,.08);
+    }
+    .stat-float strong { display: block; font-family: var(--display); font-size: 28px; }
+    .stat-float span { color: var(--muted); font-size: 13px; }
+    .sf1 { top: 12%; left: 4%; }
+    .sf2 { top: 42%; right: 0; }
+    .sf3 { bottom: 10%; left: 18%; }
+
+    .head-row { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 32px; }
+    .head-row h2 { font-size: clamp(22px, 2.6vw, 32px); }
+    .view-all { color: var(--orange); font-weight: 600; }
+
+    .sector-track {
+      display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px;
+    }
+    .sector {
+      min-height: 128px; padding: 16px;
+      background: var(--surface-2); border: 1px solid var(--line); border-radius: 18px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      transition: transform .25s var(--ease), border-color .25s, background .25s;
+    }
+    .sector:hover, .sector.active {
+      transform: translateY(-4px);
+      border-color: #111;
+      background: #111;
+      color: #fff;
+    }
+    .sector .ico { font-size: 22px; }
+    .sector b { font-size: 14px; line-height: 1.25; }
+    .sector small { color: var(--muted); }
+    .sector-panel {
+      display: none; margin-top: 16px; padding: 18px 20px;
+      border: 1px solid var(--line); border-radius: 18px; background: #f5f5f5;
+    }
+    .sector-panel.open { display: block; }
+    .subs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .subs a {
+      padding: 6px 10px; border-radius: 999px; background: #fff; color: #111; border: 1px solid var(--line); font-size: 13px;
+    }
+    .subs a:hover { color: #111; background: #F7941D; }
+
+    .toolbar { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+    .search-mini, .select-mini {
+      background: #fff; border: 1px solid #111; border-radius: 14px; padding: 12px 14px; min-width: 0; flex: 1;
+    }
+    .tools { display: flex; gap: 8px; }
+    .icon-btn {
+      width: 44px; height: 44px; border-radius: 12px; border: 1px solid #1A428A; background: #fff; color: #1A428A;
+    }
+    .icon-btn:hover { color: #111; background: #F7941D; border-color: #F7941D; }
+    .icon-btn.active { color: #fff; background: #1A428A; border-color: #1A428A; }
+    .icon-btn.active:hover { color: #111; background: #F7941D; border-color: #F7941D; }
+    .count { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .card h3 { font-size: 18px; }
+    .cards.list { grid-template-columns: 1fr; }
+    .card {
+      background: var(--surface-2); border: 1px solid var(--line); border-radius: 22px; overflow: hidden;
+      transition: border-color .25s, transform .25s var(--ease);
+    }
+    .card:hover { border-color: #111; }
+    .card-banner { height: 132px; position: relative; overflow: hidden; }
+    .card-banner img { width: 100%; height: 100%; object-fit: cover; }
+    .card-banner::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent, rgba(6,8,15,.55));
+    }
+    .badge {
+      position: absolute; top: 12px; left: 12px; z-index: 1;
+      background: #111; color: #fff;
+      border: 1px solid #111; padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 700;
+    }
+    .badge.feat { left: auto; right: 12px; background: #fff; color: #111; border-color: #111; }
+    .card-body { padding: 18px 18px 20px; }
+    .logo-row { display: flex; align-items: center; gap: 12px; margin-top: -36px; position: relative; }
+    .av {
+      width: 54px; height: 54px; border-radius: 16px; background: #fff; border: 3px solid #fff;
+      display: grid; place-items: center; overflow: hidden; font-weight: 800; color: var(--navy);
+    }
+    .av img { width: 100%; height: 100%; object-fit: cover; }
+    .card h3 { font-size: 18px; margin: 12px 0 4px; }
+    .meta { color: var(--muted); font-size: 13px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .cards.list .card { display: grid; grid-template-columns: 220px 1fr; }
+    .cards.list .card-banner { height: 100%; }
+
+    .switch { display: flex; background: #f3f3f3; padding: 5px; border-radius: 999px; border: 1px solid #111; }
+    .switch button { padding: 8px 16px; border-radius: 999px; color: #1A428A; }
+    .switch button:hover { background: #F7941D; color: #111; }
+    .switch button.active { background: #1A428A; color: #fff; font-weight: 700; }
+    .switch button.active:hover { background: #F7941D; color: #111; }
+
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .step {
+      padding: 24px; border-radius: 22px; background: #fff; border: 1px solid var(--line); position: relative;
+    }
+    .step.hot { border-color: #111; background: #111; color: #fff; }
+    .step.hot p, .step.hot a { color: rgba(255,255,255,.78); }
+    .sector:hover small, .sector.active small { color: rgba(255,255,255,.7); }
+    .step-k { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--orange); }
+    .step h3 { margin: 10px 0 8px; font-size: 20px; }
+    .step p { color: var(--muted); margin-bottom: 14px; }
+    .step a { color: var(--orange); font-weight: 600; }
+    .flow-cta { display: flex; align-items: center; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
+    .note { color: var(--muted); font-size: 14px; }
+
+    .loc-box {
+      display: grid; grid-template-columns: 1.1fr .9fr; gap: 28px; align-items: center;
+      background: #f5f5f5;
+      border: 1px solid #111; border-radius: 28px; padding: 28px;
+    }
+    .loc-fields { display: grid; gap: 10px; }
+    .loc-fields select, .loc-fields button { width: 100%; }
+    select {
+      background: #fff; border: 1px solid #111; border-radius: 14px; padding: 14px 14px; appearance: none;
+    }
+    .countries { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .country {
+      position: relative; height: 118px; border-radius: 16px; overflow: hidden; border: 1px solid var(--line);
+    }
+    .country img { width: 100%; height: 100%; object-fit: cover; }
+    .country span {
+      position: absolute; inset: auto 8px 8px 8px; font-size: 13px; font-weight: 700; color: #fff;
+      text-shadow: 0 2px 10px #000;
+    }
+
+    .offers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .offer h3 { font-size: 22px; }
+    .offer {
+      position: relative; min-height: 280px; border-radius: 22px; overflow: hidden; border: 1px solid var(--line);
+    }
+    .offer img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .offer-shade {
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(6,8,15,.15), rgba(6,8,15,.88));
+    }
+    .offer-in { position: absolute; inset: auto 0 0; padding: 22px; }
+    .plan-chip {
+      display: inline-block; margin-bottom: 10px; padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 800;
+    }
+    .gold { background: #1A428A; color: #fff; }
+    .silver { background: #fff; color: #111; }
+    .offer h3 { font-size: 22px; color: #fff; }
+    .offer p { color: rgba(255,255,255,.82); margin: 6px 0 14px; }
+
+    .stats {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border: 1px solid #111; border-radius: 24px; overflow: hidden; background: #111; color: #fff;
+    }
+    .stat { padding: 28px 20px; text-align: center; border-right: 1px solid var(--line); }
+    .stat:last-child { border-right: 0; }
+    .stat b { display: block; font-family: var(--display); font-size: 42px; }
+    .stat { border-right-color: rgba(255,255,255,.12); }
+    .stat span { color: rgba(255,255,255,.65); }
+
+    .marquee-wrap { overflow: hidden; margin: 0 0 22px; mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+    .marquee { display: flex; gap: 10px; width: max-content; animation: drift 38s linear infinite; }
+    .marquee span {
+      padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line);
+      background: #fff; color: #111; white-space: nowrap; font-size: 13px;
+    }
+    @keyframes drift { to { transform: translateX(-50%); } }
+    .articles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .article {
+      background: #fff; border: 1px solid var(--line); border-radius: 22px; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .article img { height: 168px; width: 100%; object-fit: cover; }
+    .article-in { padding: 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .tag { color: var(--orange); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+    .article h3 { font-size: 20px; }
+    .article p { color: var(--muted); font-size: 14px; }
+    .article-foot { margin-top: auto; color: var(--muted); font-size: 13px; display: flex; justify-content: space-between; }
+
+    .cta-band {
+      margin: 10px 0 0; padding: 48px;
+      border-radius: 30px;
+      background: #111;
+      color: #fff;
+      border: 1px solid #111;
+      display: flex; justify-content: space-between; align-items: center; gap: 24px;
+    }
+    .cta-band h2 { font-size: clamp(22px, 2.8vw, 32px); max-width: 16ch; }
+    .cta-band .lead { color: rgba(255,255,255,.7); }
+    .cta-band .eyebrow { color: #fff; }
+    .cta-band .eyebrow::before { background: #fff; }
+    .cta-band .btn-orange,
+    .offer .btn-orange {
+      background-color: #1A428A;
+      background-image: linear-gradient(90deg, #F7941D 50%, #1A428A 50%);
+      background-size: 220% 100%;
+      background-position: 100% 0;
+      color: #fff;
+      border-color: #1A428A;
+    }
+    .cta-band .btn-orange:hover,
+    .offer .btn-orange:hover {
+      background-position: 0 0;
+      color: #111;
+      border-color: #F7941D;
+    }
+    .step.hot .step-k { color: #fff; }
+
+    footer { padding: 64px 0 28px; border-top: 1px solid #111; position: relative; z-index: 1; background: #111; color: #fff; }
+    .foot-grid { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 28px; }
+    footer p { color: rgba(255,255,255,.72); margin: 14px 0; }
+    .social { display: flex; gap: 8px; }
+    .social a {
+      width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,.28);
+      display: grid; place-items: center; color: rgba(255,255,255,.8);
+    }
+    .social a:hover { background: #fff; color: #111; border-color: #fff; }
+    footer h4 { margin-bottom: 12px; color: #fff; }
+    footer li { list-style: none; margin: 8px 0; }
+    footer li a { color: rgba(255,255,255,.72); }
+    footer li a:hover { color: #fff; }
+    .foot-end {
+      margin-top: 28px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.16);
+      display: flex; justify-content: space-between; gap: 16px; color: rgba(255,255,255,.72); font-size: 13px; flex-wrap: wrap;
+    }
+    .foot-end a { color: rgba(255,255,255,.72); }
+    .foot-end a:hover { color: #fff; }
+
+    .reveal { opacity: 0; transform: translateY(24px); animation: rise .8s var(--ease) forwards; }
+    .d1 { animation-delay: .08s; } .d2 { animation-delay: .16s; } .d3 { animation-delay: .24s; }
+
+    @keyframes rise { to { opacity: 1; transform: none; } }
+
+    @media (max-width: 1280px) {
+      .cards, .offers, .articles { grid-template-columns: repeat(3, 1fr); }
+      .sector-track { grid-template-columns: repeat(4, 1fr); }
+      .nav a { padding: 8px 8px; font-size: 13px; }
+      .header-in { gap: 16px; }
+    }
+
+    @media (max-width: 1180px) {
+      .nav { display: none; }
+      .menu-btn { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #1A428A; border-radius: 12px; background: #1A428A; color: #fff; }
+      .menu-btn:hover { background: #F7941D; border-color: #F7941D; color: #111; }
+      .mobile-nav {
+        display: none; position: fixed; inset: 0; z-index: 80; background: rgba(0,0,0,.45);
+      }
+      .mobile-nav.open { display: block; }
+      .mobile-panel {
+        position: absolute; inset: 0 0 0 auto; width: min(360px, 88vw); height: 100%; background: #fff;
+        border-left: 1px solid #111; padding: 22px; display: flex; flex-direction: column; gap: 12px; overflow: auto;
+      }
+      .mobile-panel a { padding: 12px 10px; border-bottom: 1px solid var(--line); color: var(--text); border-radius: 8px; }
+      .mobile-panel a { color: #1A428A; }
+      .mobile-panel a:hover { background: #F7941D; color: #111; }
+      .mobile-panel a.active { background: #1A428A; color: #fff; }
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid, .loc-box, .steps, .cta-band { grid-template-columns: 1fr; }
+      .cards, .offers, .articles { grid-template-columns: repeat(2, 1fr); }
+      .search-row { grid-template-columns: 1fr 1fr; }
+      .search-row .btn { grid-column: 1 / -1; }
+      .hero { min-height: auto; padding: 36px 0 48px; }
+      .hero-visual { min-height: 360px; }
+      .cards.list, .cards.list .card { grid-template-columns: 1fr; }
+      .sector-track { grid-template-columns: repeat(3, 1fr); }
+      .stats, .foot-grid, .countries { grid-template-columns: 1fr 1fr; }
+      .stat { border-bottom: 1px solid rgba(255,255,255,.12); }
+      .stat:nth-child(2n) { border-right: 0; }
+      .head-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .toolbar { flex-direction: column; }
+      .tools { width: 100%; }
+      .select-mini { width: 100%; }
+    }
+
+    @media (max-width: 720px) {
+      .wrap { width: min(var(--max), calc(100% - 24px)); }
+      .section { padding: 56px 0; }
+      .topbar { font-size: 12px; }
+      .topbar .wrap { flex-wrap: wrap; justify-content: center; min-height: auto; padding: 8px 0; gap: 8px; }
+      .top-links { flex-wrap: wrap; justify-content: center; gap: 10px 14px; }
+      .logo-plate { width: 124px; height: 40px; }
+      .logo-plate img { height: 26px; }
+      :root { --header: 64px; }
+      .header-in { gap: 10px; }
+      .header-actions .btn-ghost { display: none; }
+      .header-actions .btn { min-height: 40px; padding: 0 14px; font-size: 14px; }
+      .hero-grid, .loc-box, .offers, .articles, .cards, .steps, .countries, .foot-grid, .cta-band, .search-row, .stats {
+        grid-template-columns: 1fr;
+      }
+      .sector-track { grid-template-columns: 1fr 1fr; }
+      .hero { padding: 24px 0 36px; min-height: auto; }
+      .hero .lead { font-size: 15px; margin-bottom: 18px; }
+      .hero-actions { gap: 8px; }
+      .hero-actions .btn { width: 100%; }
+      .hero-visual { min-height: 220px; margin-top: 8px; }
+      .stat-float { width: 120px; padding: 10px; }
+      .stat-float strong { font-size: 20px; }
+      .sf1 { top: 8%; left: 0; }
+      .sf2 { right: 0; top: 38%; }
+      .sf3 { left: 8%; bottom: 6%; }
+      .search-row .btn { grid-column: auto; width: 100%; }
+      .offer { min-height: 240px; }
+      .offer h3 { font-size: 20px; }
+      .article h3 { font-size: 18px; }
+      .article-foot { flex-direction: column; gap: 4px; }
+      .stat { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.12); }
+      .stat:last-child { border-bottom: 0; }
+      .stat b { font-size: 32px; }
+      .cta-band { padding: 24px 18px; flex-direction: column; align-items: flex-start; }
+      .cta-band .btn { width: 100%; }
+      .loc-box { padding: 18px; border-radius: 18px; }
+      .switch { width: 100%; }
+      .switch button { flex: 1; text-align: center; }
+      .flow-cta { flex-direction: column; align-items: stretch; }
+      .flow-cta .btn { width: 100%; }
+      footer { padding: 40px 0 20px; }
+      .foot-end { flex-direction: column; }
+    }
+
+    @media (max-width: 480px) {
+      .sector-track { grid-template-columns: 1fr; }
+      .top-links a:nth-child(2) { display: none; }
+      .trust { gap: 10px; font-size: 13px; }
+      .cards.list .card { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" id="progress"></div>
+  <div class="grid-bg"></div>
+
+  <div class="topbar">
+    <div class="wrap">
+      <div class="top-links">
+        <a href="tel:+919876543210">+91 98765 43210</a>
+        <a href="mailto:info@justgoom.com">info@justgoom.com</a>
+      </div>
+      <a class="top-cta" href="https://latest.justgoom.com/register">+ List Your Business Free</a>
+    </div>
+  </div>
+
+  <header>
+    <div class="wrap header-in">
+      <a class="logo" href="#top" aria-label="JustGoom home">
+        <span class="logo-plate"><img src="https://latest.justgoom.com/front/assets/images/justgoom-logo.png" alt="JustGoom"></span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a class="active" href="#top">Home</a>
+        <a href="https://latest.justgoom.com/about">About Us</a>
+        <a href="#categories">Categories</a>
+        <a href="#profiles">All Profiles</a>
+        <a href="#articles">Articles</a>
+        <a href="https://latest.justgoom.com/pricing">Pricing</a>
+        <a href="https://latest.justgoom.com/contact">Contact Us</a>
+      </nav>
+      <div class="header-actions">
+        <a class="btn btn-ghost" href="https://latest.justgoom.com/login">Login</a>
+        <a class="btn btn-orange" href="https://latest.justgoom.com/register">Register</a>
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-nav" id="mobileNav">
+    <div class="mobile-panel">
+      <button class="btn btn-ghost" id="menuClose">Close</button>
+      <a href="#top">Home</a>
+      <a href="https://latest.justgoom.com/about">About Us</a>
+      <a href="#categories">Categories</a>
+      <a href="#profiles">All Profiles</a>
+      <a href="#articles">Articles</a>
+      <a href="https://latest.justgoom.com/pricing">Pricing</a>
+      <a href="https://latest.justgoom.com/contact">Contact Us</a>
+      <a class="btn btn-orange" href="https://latest.justgoom.com/register">Register</a>
+    </div>
+  </div>
+
+  <main id="main">
+    <section class="hero wrap" id="top">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow reveal">Global B2B Business Discovery Platform</p>
+          <h1 class="reveal d1">Connect Buyers with <em>Verified Business Profiles</em></h1>
+          <p class="lead reveal d2">Discover trusted suppliers, service providers, and local businesses — all in one place. Search by category, city, or business name.</p>
+
+          <form class="console reveal d3" id="searchForm" action="https://latest.justgoom.com/all-profiles" method="get">
+            <div class="console-in">
+              <div class="tabs" role="tablist">
+                <button type="button" class="active" data-tab="find">Find Businesses</button>
+                <button type="button" data-tab="post">Post Requirement</button>
+              </div>
+              <div class="search-row">
+                <label class="field">
+                  <span>What are you looking for?</span>
+                  <input id="q" name="q" placeholder="Business name, category, or service...">
+                </label>
+                <label class="field">
+                  <span>City</span>
+                  <input id="city" name="city" placeholder="Enter city...">
+                </label>
+                <button class="btn btn-orange" type="submit">Search →</button>
+              </div>
+            </div>
+          </form>
+
+          <div class="hero-actions">
+            <a class="btn btn-navy" href="https://latest.justgoom.com/all-profiles">Browse All Profiles</a>
+            <a class="btn btn-ghost" href="https://latest.justgoom.com/register">Register Your Business</a>
+          </div>
+          <div class="trust">
+            <span><i>✓</i> Verified Profiles</span>
+            <span><i>✓</i> Free Business Listing</span>
+            <span><i>✓</i> Global Reach</span>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="orb"></div>
+          <div class="orb-2"></div>
+          <svg class="circuit-mark" viewBox="0 0 320 220" fill="none" aria-hidden="true">
+            <circle cx="160" cy="110" r="78" stroke="#111" stroke-width="10"/>
+            <circle cx="160" cy="110" r="54" stroke="#111" stroke-width="6"/>
+            <path d="M92 110h46m44 0h46M138 110c8-16 22-24 36-16m8 16c-8 16-22 24-36 16" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+          </svg>
+          <div class="stat-float sf1"><strong>30+</strong><span>Verified Businesses</span></div>
+          <div class="stat-float sf2"><strong>24+</strong><span>Business Sectors</span></div>
+          <div class="stat-float sf3"><strong>50+</strong><span>Cities Covered</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="categories">
+      <div class="wrap">
+        <div class="head-row">
+          <div>
+            <p class="eyebrow">Sectors</p>
+            <h2>Wide range of business sectors</h2>
+            <p class="lead">Explore categories with offers from verified suppliers across India</p>
+          </div>
+          <a class="view-all" href="https://latest.justgoom.com/categories">View all categories →</a>
+        </div>
+        <div class="marquee-wrap" aria-hidden="true">
+          <div class="marquee" id="sectorMarquee"></div>
+        </div>
+        <div class="sector-track" id="sectorGrid"></div>
+        <div class="sector-panel" id="sectorPanel"></div>
+      </div>
+    </section>
+
+    <section class="section" id="profiles">
+      <div class="wrap">
+        <div class="head-row">
+          <div>
+            <p class="eyebrow">Directory</p>
+            <h2>Featured Business Profiles</h2>
+            <p class="lead">Browse verified business profiles from the live JustGoom network</p>
+          </div>
+          <a class="view-all" href="https://latest.justgoom.com/all-profiles">View All →</a>
+        </div>
+        <div class="toolbar">
+          <input class="search-mini" id="profileSearch" placeholder="Search for name or designation...">
+          <div class="tools">
+            <select class="select-mini" id="profileFilter">
+              <option value="all">All listings</option>
+              <option value="verified">Verified</option>
+              <option value="featured">Featured</option>
+            </select>
+            <button class="icon-btn active" id="viewGrid" title="Grid view">▦</button>
+            <button class="icon-btn" id="viewList" title="List view">☰</button>
+          </div>
+        </div>
+        <p class="count" id="profileCount"></p>
+        <div class="cards" id="profileGrid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="journey">
+      <div class="wrap">
+        <div class="head-row">
+          <div>
+            <p class="eyebrow">How it works</p>
+            <h2>How the Profile Journey Works</h2>
+            <p class="lead">From registration to listing to inquiry — grow your business in 3 simple steps</p>
+          </div>
+          <div class="switch" role="tablist">
+            <button class="active" data-flow="seller">For Sellers</button>
+            <button data-flow="buyer">For Buyers</button>
+          </div>
+        </div>
+        <div id="flowSeller" class="steps">
+          <article class="step">
+            <div class="step-k">Step 1</div>
+            <h3>Register Profile</h3>
+            <p>Create your free business account. Add company details, category, services, and contact information.</p>
+            <a href="https://latest.justgoom.com/register">Register Now →</a>
+          </article>
+          <article class="step">
+            <div class="step-k">Step 2</div>
+            <h3>Get Listed</h3>
+            <p>Your profile goes live on JustGoom. Appear in category search, city filters, and featured listings.</p>
+            <a href="https://latest.justgoom.com/all-profiles">View Listings →</a>
+          </article>
+          <article class="step hot">
+            <div class="step-k">Step 3</div>
+            <h3>Receive Inquiries</h3>
+            <p>Buyers discover your profile and send inquiries. Connect directly and convert leads into customers.</p>
+            <a href="https://latest.justgoom.com/contact">Learn More →</a>
+          </article>
+        </div>
+        <div id="flowBuyer" class="steps" hidden>
+          <article class="step">
+            <div class="step-k">Step 1</div>
+            <h3>Browse Profiles</h3>
+            <p>Search by category, city, or business name. Explore verified profiles across 24+ business sectors.</p>
+            <a href="https://latest.justgoom.com/all-profiles">Browse Profiles →</a>
+          </article>
+          <article class="step">
+            <div class="step-k">Step 2</div>
+            <h3>View Listing Details</h3>
+            <p>Check services, location, verification status, and business info before you reach out.</p>
+            <a href="https://latest.justgoom.com/all-profiles">View a Profile →</a>
+          </article>
+          <article class="step hot">
+            <div class="step-k">Step 3</div>
+            <h3>Send Inquiry</h3>
+            <p>Contact the business directly or post your requirement to get matched with the right supplier.</p>
+            <a href="https://latest.justgoom.com/contact">Post Requirement →</a>
+          </article>
+        </div>
+        <div class="flow-cta" id="flowCta">
+          <a class="btn btn-orange" href="https://latest.justgoom.com/register">List Your Business Free</a>
+          <span class="note">100% Free · No credit card required</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="location">
+      <div class="wrap">
+        <div class="head-row">
+          <div>
+            <p class="eyebrow">Worldwide</p>
+            <h2>Find Businesses by Location</h2>
+            <p class="lead">Select your country, state, and city to discover local businesses worldwide</p>
+          </div>
+        </div>
+        <div class="loc-box">
+          <div class="loc-fields">
+            <select id="locCountry"><option value="">Select Country</option></select>
+            <select id="locState" disabled><option value="">Select State / Province</option></select>
+            <select id="locCity" disabled><option value="">Select City</option></select>
+            <button class="btn btn-orange" id="locSearch" disabled>Search Businesses</button>
+          </div>
+          <div class="countries" id="countries"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="offers">
+      <div class="wrap">
+        <div class="head-row">
+          <div>
+            <p class="eyebrow">Live now</p>
+            <h2>Running Offers & Promotions</h2>
+            <p class="lead">Exclusive deals and promotions from registered businesses</p>
+          </div>
+          <a class="view-all" href="https://latest.justgoom.com/offers">Browse All →</a>
+        </div>
+        <div class="offers">
+          <a class="offer" href="https://latest.justgoom.com/gujju?celebrate=1#offers">
+            <img src="https://latest.justgoom.com/uploads/test_user56@gmail.com/offers/1791617361-ZVTHCfXZGeOW.jpg" alt="Gujju Navratri Offer" loading="lazy">
+            <div class="offer-shade"></div>
+            <div class="offer-in">
+              <span class="plan-chip gold">Gold</span>
+              <h3>Navratri Offer</h3>
+              <p>Festive discount from Gujju — Hotels & Travel, Newcastle.</p>
+              <span class="btn btn-orange">View Offer</span>
+            </div>
+          </a>
+          <a class="offer" href="https://latest.justgoom.com/thiya-and-company?celebrate=1#offers">
+            <img src="https://latest.justgoom.com/uploads/bhaveshpatel1101987@gmail.com/offers/1790493698-Q49ilSUnz1C6.JPG" alt="Thiya and Company mid month deal" loading="lazy">
+            <div class="offer-shade"></div>
+            <div class="offer-in">
+              <span class="plan-chip silver">Silver</span>
+              <h3>mid month deal</h3>
+              <p>Current promotion from Thiya and Company — Digital Marketing, Austin.</p>
+              <span class="btn btn-orange">View Offer</span>
+            </div>
+          </a>
+          <a class="offer" href="https://latest.justgoom.com/articles">
+            <img src="https://latest.justgoom.com/front/assets/images/blog-1.jpg" alt="Shree Gold Wedding Collection 2026" loading="lazy">
+            <div class="offer-shade"></div>
+            <div class="offer-in">
+              <span class="plan-chip gold">Featured</span>
+              <h3>Wedding Collection</h3>
+              <p>Shree Gold Jewellers — 22K gold wedding jewellery for B2B buyers and retailers.</p>
+              <span class="btn btn-orange">View Offer</span>
+            </div>
+          </a>
+          <a class="offer" href="https://latest.justgoom.com/articles">
+            <img src="https://latest.justgoom.com/front/assets/images/cat-real-estate.jpg" alt="Mehta Real Estate commercial spaces" loading="lazy">
+            <div class="offer-shade"></div>
+            <div class="offer-in">
+              <span class="plan-chip silver">Featured</span>
+              <h3>Office Spaces</h3>
+              <p>Mehta Real Estate — commercial property options for SME buyers and tenants.</p>
+              <span class="btn btn-orange">View Offer</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="stats">
+          <div class="stat"><b data-count="30" data-suffix="+">0+</b><span>Verified Businesses</span></div>
+          <div class="stat"><b data-count="24" data-suffix="+">0+</b><span>Business Sectors</span></div>
+          <div class="stat"><b data-count="50" data-suffix="+">0+</b><span>Cities Covered</span></div>
+          <div class="stat"><b data-count="10" data-suffix="K+">0K+</b><span>Monthly Inquiries</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="articles">
+      <div class="wrap">
+        <div class="head-row">
+          <div>
+            <p class="eyebrow">Insights</p>
+            <h2>Latest Articles & Insights</h2>
+            <p class="lead">Business tips and promotional articles from verified members</p>
+          </div>
+          <a class="view-all" href="https://latest.justgoom.com/articles">View All →</a>
+        </div>
+        <div class="articles">
+          <a class="article" href="https://latest.justgoom.com/articles/digital-marketing">
+            <img src="https://latest.justgoom.com/uploads/bhaveshpatel1101987@gmail.com/articles/1788665472-oJ6jeKBnCHEo.webp" alt="Digital marketing" loading="lazy">
+            <div class="article-in">
+              <span class="tag">Digital Marketing</span>
+              <h3>Digital marketing</h3>
+              <p>Digital marketing has become an essential part of modern business growth, helping companies connect with customers.</p>
+              <div class="article-foot"><span>Thiya and Company</span><span>Sep 6, 2026 · 1 min</span></div>
+            </div>
+          </a>
+          <a class="article" href="https://latest.justgoom.com/articles/technology">
+            <img src="https://latest.justgoom.com/uploads/user_jg@yopmail.com/articles/1788615760-eQoKTK9eN0Rj.webp" alt="technology" loading="lazy">
+            <div class="article-in">
+              <span class="tag">Electronics & Electrical</span>
+              <h3>technology</h3>
+              <p>Technology has become an essential part of modern life, transforming the way we work, communicate, learn, and grow.</p>
+              <div class="article-foot"><span>Samsung</span><span>Sep 5, 2026 · 1 min</span></div>
+            </div>
+          </a>
+          <a class="article" href="https://latest.justgoom.com/articles">
+            <img src="https://latest.justgoom.com/front/assets/images/blog-1.jpg" alt="Why 22K Gold is the Smart Choice for Wedding Jewellery" loading="lazy">
+            <div class="article-in">
+              <span class="tag">Jewellery</span>
+              <h3>Why 22K Gold is the Smart Choice for Wedding Jewellery</h3>
+              <p>Purity, making charges, and resale value explained for B2B buyers and retailers.</p>
+              <div class="article-foot"><span>Shree Gold Jewellers</span><span>May 28, 2026 · 5 min</span></div>
+            </div>
+          </a>
+          <a class="article" href="https://latest.justgoom.com/articles">
+            <img src="https://latest.justgoom.com/front/assets/images/cat-real-estate.jpg" alt="Commercial Property Investment Guide for SMEs" loading="lazy">
+            <div class="article-in">
+              <span class="tag">Real Estate</span>
+              <h3>Commercial Property Investment Guide for SMEs</h3>
+              <p>What business owners should know before investing in office or warehouse space.</p>
+              <div class="article-foot"><span>Mehta Real Estate</span><span>May 25, 2026 · 8 min</span></div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="cta-band">
+          <div>
+            <p class="eyebrow">Partnership · Technology · Trust</p>
+            <h2>List your business on JustGoom</h2>
+            <p class="lead">Just Goom LLP is a B2B discovery platform from Ahmedabad, Gujarat — connecting buyers with verified suppliers across 24+ sectors.</p>
+          </div>
+          <div>
+            <a class="btn btn-orange" href="https://latest.justgoom.com/register">List Your Business Free</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <a class="logo" href="#top"><span class="logo-plate"><img src="https://latest.justgoom.com/front/assets/images/justgoom-logo.png" alt="JustGoom"></span></a>
+          <p>Just Goom LLP — Your trusted B2B platform for discovering verified business profiles, categories, and expert content across India.</p>
+          <div class="social">
+            <a href="#" aria-label="Facebook">f</a>
+            <a href="#" aria-label="Twitter">𝕏</a>
+            <a href="#" aria-label="Instagram">◎</a>
+            <a href="#" aria-label="LinkedIn">in</a>
+          </div>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#top">Home</a></li>
+            <li><a href="https://latest.justgoom.com/about">About Us</a></li>
+            <li><a href="https://latest.justgoom.com/categories">Categories</a></li>
+            <li><a href="https://latest.justgoom.com/all-profiles">All Profiles</a></li>
+            <li><a href="https://latest.justgoom.com/offers">All Offers</a></li>
+            <li><a href="https://latest.justgoom.com/pricing">Pricing</a></li>
+            <li><a href="https://latest.justgoom.com/contact">Contact Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Profile Categories</h4>
+          <ul>
+            <li><a href="https://latest.justgoom.com/all-profiles">Real Estate</a></li>
+            <li><a href="https://latest.justgoom.com/all-profiles">Health & Wellness</a></li>
+            <li><a href="https://latest.justgoom.com/all-profiles">Entertainment</a></li>
+            <li><a href="https://latest.justgoom.com/all-profiles">Education</a></li>
+            <li><a href="https://latest.justgoom.com/all-profiles">Business Services</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Support</h4>
+          <ul>
+            <li><a href="https://latest.justgoom.com/contact">Contact Us</a></li>
+            <li><a href="https://latest.justgoom.com/contact">FAQ</a></li>
+            <li><a href="https://latest.justgoom.com/contact">Privacy Policy</a></li>
+            <li><a href="https://latest.justgoom.com/contact">Terms & Conditions</a></li>
+            <li><a href="https://latest.justgoom.com/contact">Advertise</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot-end">
+        <span>© 2026 Just Goom LLP. All rights reserved.</span>
+        <span>Partnered By <strong>NeatifyDocs LLP</strong></span>
+        <span>Privacy · Terms · Sitemap</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const SITE = "https://latest.justgoom.com";
+    const SECTORS = [
+      { name: "Agriculture & Farming", icon: "🌾", subs: ["Agricultural Equipment", "Fertilizers", "Irrigation Systems", "Organic Farming", "Seeds"] },
+      { name: "Automotive & Transportation", icon: "🚗", subs: ["Auto Repair & Garage", "Car Accessories", "Car Dealers", "Car Rental & Taxi Services", "Used Vehicle Dealers"] },
+      { name: "Beauty & Wellness", icon: "💄", subs: ["Salons", "Spas", "Cosmetics", "Wellness Centers", "Beauty Supplies"] },
+      { name: "Construction & Infrastructure", icon: "🏗️", subs: ["Building Materials", "Contractors", "Civil Engineering", "Architecture", "Interior Fit-outs"] },
+      { name: "Digital Marketing", icon: "📣", subs: ["SEO", "Social Media", "Performance Ads", "Content Studios", "Branding"] },
+      { name: "Education & Training", icon: "🎓", subs: ["Schools & Colleges", "Coaching Centers", "Corporate Training", "EdTech", "Skill Development"] },
+      { name: "Electronics & Electrical", icon: "⚡", subs: ["Consumer Electronics", "Electrical Components", "Lighting", "Repair Services", "Industrial Electronics"] },
+      { name: "Entertainment & Media", icon: "🎬", subs: ["Studios", "Production Houses", "Publishing", "Streaming", "Talent Agencies"] },
+      { name: "Event Management", icon: "🎉", subs: ["Wedding Planning", "Corporate Events", "Exhibition Services", "Catering Partners", "Stage Production"] },
+      { name: "Food & Beverage", icon: "🍽️", subs: ["Restaurants", "Catering", "Packaged Foods", "Beverages", "Cloud Kitchens"] },
+      { name: "Franchise & Business Opportunities", icon: "🤝", subs: ["Retail Franchise", "F&B Franchise", "Service Franchise", "Distributorship", "Licensing"] },
+      { name: "Government & Public Services", icon: "🏛️", subs: ["Civic Services", "Public Works", "Compliance", "Tenders", "Community Programs"] },
+      { name: "Healthcare & Medical", icon: "🏥", subs: ["Hospitals", "Clinics", "Diagnostics", "Pharmacy", "Medical Equipment"] },
+      { name: "Home Improvement & Maintenance", icon: "🔧", subs: ["Interior Design", "Plumbing", "Electrical", "Painting", "Facility Management"] },
+      { name: "Hotels & Travel", icon: "🏨", subs: ["Hotels", "Resorts", "Homestays", "Travel Agency", "Tours"] },
+      { name: "Import & Export", icon: "🌍", subs: ["Trading Houses", "Customs Brokers", "Export Houses", "Sourcing Agents", "Commodity Trade"] },
+      { name: "Industrial Machinery", icon: "⚙️", subs: ["Manufacturing Equipment", "Automation", "Tools", "Spare Parts", "Plant Setup"] },
+      { name: "Information Technology", icon: "💻", subs: ["Software Development", "IT Services", "Cloud", "Cybersecurity", "Product Engineering"] },
+      { name: "Jobs & Recruitment", icon: "🧾", subs: ["Staffing", "Executive Search", "HR Consulting", "Payroll", "Campus Hiring"] },
+      { name: "Legal & Financial Services", icon: "💼", subs: ["Law Firms", "Chartered Accountants", "Insurance", "Loans & Finance", "Compliance"] },
+      { name: "Logistics & Supply Chain", icon: "🚚", subs: ["Freight", "Warehousing", "Courier", "Packers & Movers", "Fleet"] },
+      { name: "Manufacturing", icon: "🏭", subs: ["OEM Units", "Fabrication", "Packaging Plants", "Textiles", "Metals"] },
+      { name: "NGOs & Community Organizations", icon: "💚", subs: ["Non-profits", "Foundations", "CSR Partners", "Community Groups", "Social Enterprises"] },
+      { name: "Pets & Animal Care", icon: "🐾", subs: ["Veterinary Clinics", "Pet Stores", "Grooming", "Pet Food", "Boarding"] },
+      { name: "Printing & Advertising", icon: "📦", subs: ["Offset Printing", "Packaging", "Signage", "Outdoor Ads", "Creative Studios"] },
+      { name: "Professional Services", icon: "🧠", subs: ["Consultants", "Business Coaches", "Freelancers", "Agencies", "Advisory"] },
+      { name: "Real Estate", icon: "🏢", subs: ["Residential", "Commercial", "Industrial Parks", "Brokers", "Property Management"] },
+      { name: "Security Services", icon: "🛡️", subs: ["Manpower Security", "CCTV", "Fire Safety", "Access Control", "Risk Consulting"] },
+      { name: "Sports & Fitness", icon: "💪", subs: ["Gyms", "Sports Academies", "Equipment", "Yoga Studios", "Wellness Clubs"] },
+      { name: "Wholesale & Distribution", icon: "🏬", subs: ["Distributors", "Cash & Carry", "B2B Wholesale", "Import Distribution", "Dealerships"] }
+    ];
+
+    const PROFILES = [
+      { name: "Gujju", category: "Hotels & Travel", city: "Newcastle", country: "Australia", verified: true, featured: false, url: SITE + "/gujju", logo: "", banner: SITE + "/front/assets/images/cat-food.jpg" },
+      { name: "Moon Technolabs", category: "Professional Services", city: "Abu Dhabi", country: "United Arab Emirates", verified: false, featured: false, url: SITE + "/moon-technolabs", logo: SITE + "/uploads/user_jg_02@yopmail.com/company-logos/1788665850-ImUtus6WHO1s.webp", banner: SITE + "/front/assets/images/cat-business.jpg" },
+      { name: "Samsung", category: "Electronics & Electrical", city: "Ahmedabad", country: "India", verified: false, featured: true, url: SITE + "/samsung", logo: SITE + "/uploads/user_jg@yopmail.com/company-logos/1788615333-t0EEgIpGRJbm.webp", banner: SITE + "/uploads/user_jg@yopmail.com/projects/thumbnails/1788615663-Q28MwIaCShEz.webp" },
+      { name: "Thiya and Company", category: "Digital Marketing", city: "Austin", country: "United States", verified: false, featured: true, url: SITE + "/thiya-and-company", logo: SITE + "/uploads/bhaveshpatel1101987@gmail.com/company-logos/1788664969-WcnRMySicFb8.webp", banner: SITE + "/front/assets/images/cat-business.jpg" },
+      { name: "OMFormattingService PVT LTD", category: "Education & Training", city: "Bangalore", country: "India", verified: false, featured: false, url: SITE + "/omformattingservice-pvt-ltd", logo: "", banner: SITE + "/front/assets/images/cat-education.jpg" },
+      { name: "KP Infotech", category: "Information Technology", city: "Vancouver", country: "Canada", verified: false, featured: false, url: SITE + "/kp-infotech", logo: SITE + "/uploads/kpinfotech@yopmail.com/company-logos/1787997140-wAhjzA7HIa9j.png", banner: SITE + "/front/assets/images/cat-business.jpg" },
+      { name: "NeatifyDocs LLP", category: "Information Technology", city: "Ahmedabad", country: "India", verified: false, featured: false, url: SITE + "/neatifydocs-llp", logo: "", banner: SITE + "/front/assets/images/cat-business.jpg" },
+      { name: "Bowers Nixon Traders", category: "Home Improvement & Maintenance", city: "Global", country: "International", verified: false, featured: false, url: SITE + "/bowers-nixon-traders", logo: "", banner: SITE + "/front/assets/images/cat-real-estate.jpg" },
+      { name: "Shree Gold Jewellers", category: "Jewellery", city: "Ahmedabad", country: "India", verified: true, featured: true, url: SITE + "/articles", logo: "", banner: SITE + "/front/assets/images/blog-1.jpg" },
+      { name: "Mehta Real Estate", category: "Real Estate", city: "Ahmedabad", country: "India", verified: true, featured: false, url: SITE + "/articles", logo: "", banner: SITE + "/front/assets/images/cat-real-estate.jpg" },
+      { name: "Amit Mehta Consulting", category: "Business Services", city: "Ahmedabad", country: "India", verified: true, featured: false, url: SITE + "/articles", logo: "", banner: SITE + "/front/assets/images/blog-3.jpg" },
+      { name: "Fixmycars", category: "Travel Agency", city: "Ahmedabad", country: "India", verified: true, featured: true, url: SITE + "/all-profiles", logo: "", banner: SITE + "/front/assets/images/cat-automobile.jpg" }
+    ];
+
+    const GEO = {
+      India: { Gujarat: ["Ahmedabad", "Surat", "Vadodara"], Maharashtra: ["Mumbai", "Pune"], Karnataka: ["Bangalore"], "Tamil Nadu": ["Chennai", "Madurai"], Delhi: ["New Delhi"] },
+      "United States": { Texas: ["Austin"], California: ["Los Angeles"], "New York": ["New York"] },
+      "United Arab Emirates": { "Abu Dhabi": ["Abu Dhabi"], Dubai: ["Dubai"] },
+      "United Kingdom": { England: ["London"] },
+      Australia: { "New South Wales": ["Newcastle", "Sydney"] },
+      Canada: { "British Columbia": ["Vancouver"], Ontario: ["Toronto"] }
+    };
+
+    const COUNTRIES = [
+      { name: "India", landmark: "Taj Mahal", image: "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=640&h=480&fit=crop&q=80" },
+      { name: "United States", landmark: "Statue of Liberty", image: "https://images.unsplash.com/photo-1485738422979-f5c462d49f74?w=640&h=480&fit=crop&q=80" },
+      { name: "United Arab Emirates", landmark: "Burj Khalifa", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=640&h=480&fit=crop&q=80" },
+      { name: "United Kingdom", landmark: "Big Ben", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=640&h=480&fit=crop&q=80" },
+      { name: "Australia", landmark: "Sydney Opera House", image: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=640&h=480&fit=crop&q=80" },
+      { name: "Canada", landmark: "Toronto skyline", image: "https://images.unsplash.com/photo-1517935706615-2717063c2225?w=640&h=480&fit=crop&q=80" }
+    ];
+
+    const initials = (name) => name.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+
+    const sectorGrid = document.getElementById("sectorGrid");
+    const sectorPanel = document.getElementById("sectorPanel");
+    const marquee = document.getElementById("sectorMarquee");
+    marquee.innerHTML = SECTORS.concat(SECTORS).map((s) => `<span>${s.icon} ${s.name}</span>`).join("");
+    SECTORS.forEach((sector, index) => {
+      const el = document.createElement("button");
+      el.className = "sector";
+      el.type = "button";
+      el.innerHTML = `<span class="ico">${sector.icon}</span><b>${sector.name}</b><small>${sector.subs.length} subcategories</small>`;
+      el.addEventListener("click", () => {
+        document.querySelectorAll(".sector").forEach((s) => s.classList.remove("active"));
+        el.classList.add("active");
+        sectorPanel.classList.add("open");
+        sectorPanel.innerHTML = `<strong>${sector.name}</strong><div class="subs">${sector.subs.map((sub) => `<a href="${SITE}/all-profiles?q=${encodeURIComponent(sub)}">${sub}</a>`).join("")}</div>`;
+      });
+      if (index < 12) sectorGrid.appendChild(el);
+    });
+
+    const profileGrid = document.getElementById("profileGrid");
+    const profileCount = document.getElementById("profileCount");
+    const renderProfiles = () => {
+      const q = document.getElementById("profileSearch").value.toLowerCase();
+      const filter = document.getElementById("profileFilter").value;
+      const list = PROFILES.filter((p) => {
+        const hay = `${p.name} ${p.category} ${p.city}`.toLowerCase();
+        const match = !q || hay.includes(q);
+        const flag = filter === "all" || (filter === "verified" && p.verified) || (filter === "featured" && p.featured);
+        return match && flag;
+      });
+      profileCount.textContent = `Showing ${list.length} of ${PROFILES.length} company profiles`;
+      profileGrid.innerHTML = list.map((p) => `
+        <a class="card" href="${p.url}">
+          <div class="card-banner">
+            <img src="${p.banner}" alt="${p.name}" loading="lazy">
+            ${p.verified ? `<span class="badge">Verified</span>` : ""}
+            ${p.featured ? `<span class="badge feat">Featured</span>` : ""}
+          </div>
+          <div class="card-body">
+            <div class="logo-row">
+              <div class="av">${p.logo ? `<img src="${p.logo}" alt="${p.name}" loading="lazy">` : initials(p.name)}</div>
+            </div>
+            <h3>${p.name}</h3>
+            <div class="meta"><span>${p.category}</span><span>${p.city}, ${p.country}</span></div>
+          </div>
+        </a>
+      `).join("");
+    };
+    document.getElementById("profileSearch").addEventListener("input", renderProfiles);
+    document.getElementById("profileFilter").addEventListener("change", renderProfiles);
+    document.getElementById("viewGrid").addEventListener("click", () => {
+      profileGrid.classList.remove("list");
+      document.getElementById("viewGrid").classList.add("active");
+      document.getElementById("viewList").classList.remove("active");
+    });
+    document.getElementById("viewList").addEventListener("click", () => {
+      profileGrid.classList.add("list");
+      document.getElementById("viewList").classList.add("active");
+      document.getElementById("viewGrid").classList.remove("active");
+    });
+    renderProfiles();
+
+    document.querySelectorAll("[data-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-tab]").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const form = document.getElementById("searchForm");
+        const q = document.getElementById("q");
+        if (btn.dataset.tab === "post") {
+          form.action = SITE + "/contact";
+          q.placeholder = "Describe your requirement...";
+        } else {
+          form.action = SITE + "/all-profiles";
+          q.placeholder = "Business name, category, or service...";
+        }
+      });
+    });
+
+    document.querySelectorAll("[data-flow]").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll("[data-flow]").forEach((t) => t.classList.remove("active"));
+        tab.classList.add("active");
+        const seller = tab.dataset.flow === "seller";
+        document.getElementById("flowSeller").hidden = !seller;
+        document.getElementById("flowBuyer").hidden = seller;
+        document.getElementById("flowCta").innerHTML = seller
+          ? `<a class="btn btn-orange" href="${SITE}/register">List Your Business Free</a><span class="note">100% Free · No credit card required</span>`
+          : `<a class="btn btn-navy" href="${SITE}/contact">Post Your Requirement</a><span class="note">Get matched with verified businesses</span>`;
+      });
+    });
+
+    const countrySelect = document.getElementById("locCountry");
+    const stateSelect = document.getElementById("locState");
+    const citySelect = document.getElementById("locCity");
+    const locSearch = document.getElementById("locSearch");
+    Object.keys(GEO).forEach((country) => {
+      const opt = document.createElement("option");
+      opt.value = country; opt.textContent = country; countrySelect.appendChild(opt);
+    });
+    countrySelect.addEventListener("change", () => {
+      stateSelect.innerHTML = `<option value="">Select State / Province</option>`;
+      citySelect.innerHTML = `<option value="">Select City</option>`;
+      stateSelect.disabled = !countrySelect.value;
+      citySelect.disabled = true; locSearch.disabled = true;
+      if (!countrySelect.value) return;
+      Object.keys(GEO[countrySelect.value]).forEach((state) => {
+        const opt = document.createElement("option");
+        opt.value = state; opt.textContent = state; stateSelect.appendChild(opt);
+      });
+    });
+    stateSelect.addEventListener("change", () => {
+      citySelect.innerHTML = `<option value="">Select City</option>`;
+      citySelect.disabled = !stateSelect.value; locSearch.disabled = true;
+      if (!stateSelect.value) return;
+      GEO[countrySelect.value][stateSelect.value].forEach((city) => {
+        const opt = document.createElement("option");
+        opt.value = city; opt.textContent = city; citySelect.appendChild(opt);
+      });
+    });
+    citySelect.addEventListener("change", () => { locSearch.disabled = !citySelect.value; });
+    locSearch.addEventListener("click", () => {
+      window.location.href = SITE + "/all-profiles?city=" + encodeURIComponent(citySelect.value);
+    });
+    document.getElementById("countries").innerHTML = COUNTRIES.map((c) => `
+      <a class="country" href="${SITE}/all-profiles?country=${encodeURIComponent(c.name)}">
+        <img src="${c.image}" alt="${c.name} — ${c.landmark}" loading="lazy">
+        <span>${c.name}</span>
+      </a>
+    `).join("");
+
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileNav = document.getElementById("mobileNav");
+    menuBtn.addEventListener("click", () => mobileNav.classList.add("open"));
+    document.getElementById("menuClose").addEventListener("click", () => mobileNav.classList.remove("open"));
+    mobileNav.addEventListener("click", (e) => { if (e.target === mobileNav) mobileNav.classList.remove("open"); });
+
+    let scrollTick = false;
+    window.addEventListener("scroll", () => {
+      if (scrollTick) return;
+      scrollTick = true;
+      requestAnimationFrame(() => {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        document.getElementById("progress").style.width = (max ? (scrollY / max) * 100 : 0) + "%";
+        scrollTick = false;
+      });
+    }, { passive: true });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "/" && document.activeElement.tagName !== "INPUT") {
+        e.preventDefault(); document.getElementById("q").focus();
+      }
+    });
+
+    const counters = document.querySelectorAll("[data-count]");
+    const countObs = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const end = Number(el.dataset.count);
+        const suffix = el.dataset.suffix || "";
+        const start = performance.now();
+        const step = (now) => {
+          const p = Math.min((now - start) / 1100, 1);
+          el.textContent = Math.round(end * p) + suffix;
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+        countObs.unobserve(el);
+      });
+    }, { threshold: 0.5 });
+    counters.forEach((el) => countObs.observe(el));
+
+  </script>
+</body>
+</html>
