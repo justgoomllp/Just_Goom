@@ -12,12 +12,45 @@ const COMPANY_BANNER_FILES = [
   'cat-food.jpg', 'cat-business.jpg', 'hero-banner.jpg'
 ];
 
+function categoryBannerFile(company) {
+  var slug = String((company && company.categorySlug) || '').toLowerCase().trim();
+  var map = window.CATEGORY_BANNER_FILES || {};
+  if (slug && map[slug]) {
+    return map[slug];
+  }
+
+  var key = slug || String((company && company.category) || '').toLowerCase();
+  if (key.indexOf('real') !== -1 || key.indexOf('construction') !== -1 || key.indexOf('home') !== -1) {
+    return 'cat-real-estate.jpg';
+  }
+  if (key.indexOf('health') !== -1 || key.indexOf('medical') !== -1 || key.indexOf('wellness') !== -1 || key.indexOf('fitness') !== -1 || key.indexOf('beauty') !== -1 || key.indexOf('pet') !== -1) {
+    return 'cat-health.jpg';
+  }
+  if (key.indexOf('entertain') !== -1 || key.indexOf('event') !== -1 || key.indexOf('media') !== -1) {
+    return 'cat-entertainment.jpg';
+  }
+  if (key.indexOf('educat') !== -1 || key.indexOf('train') !== -1) {
+    return 'cat-education.jpg';
+  }
+  if (key.indexOf('auto') !== -1 || key.indexOf('transport') !== -1 || key.indexOf('logistic') !== -1) {
+    return 'cat-automobile.jpg';
+  }
+  if (key.indexOf('food') !== -1 || key.indexOf('hotel') !== -1 || key.indexOf('travel') !== -1 || key.indexOf('beverage') !== -1 || key.indexOf('agricult') !== -1 || key.indexOf('farm') !== -1) {
+    return 'cat-food.jpg';
+  }
+  if (key.indexOf('shop') !== -1 || key.indexOf('retail') !== -1 || key.indexOf('fashion') !== -1 || key.indexOf('wholesale') !== -1 || key.indexOf('jewell') !== -1 || key.indexOf('print') !== -1 || key.indexOf('advert') !== -1) {
+    return 'cat-shopping.jpg';
+  }
+
+  return 'cat-business.jpg';
+}
+
 function getCompanyBanner(company, index) {
   if (company && company.bannerUrl) {
     return company.bannerUrl;
   }
   var base = window.FRONT_ASSETS || 'front/assets/images';
-  return base + '/' + COMPANY_BANNER_FILES[index % COMPANY_BANNER_FILES.length];
+  return base.replace(/\/?$/, '/') + categoryBannerFile(company);
 }
 
 const COMPANY_LOGO_COLORS = ['#1A428A', '#F7941D', '#16a34a', '#7c3aed', '#0891b2', '#dc2626', '#ca8a04', '#059669'];

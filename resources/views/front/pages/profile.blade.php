@@ -15,7 +15,7 @@
     ? 'https://www.google.com/maps/search/?api=1&query='.rawurlencode($mapQuery)
     : null;
   $logoUrl = $profile->logo ? asset($profile->logo) : null;
-  $bannerUrl = $bannerUrl ?? \App\Support\ProfileBanner::url($profile, $user);
+  $bannerUrl = $bannerUrl ?? \App\Support\ProfileBanner::categoryUrl($user->category->slug ?? '');
   $initials = collect(explode(' ', $profile->company_name))
     ->filter()
     ->take(2)
@@ -96,26 +96,28 @@
         </div>
       </div>
 
-      <div class="profile-hero-nav">
-        <nav class="profile-tabs" id="profileTabs">
-          <button type="button" class="active" data-tab="overview">Overview</button>
-          <!-- <button type="button" data-tab="activities">Activities</button> -->
-          <button type="button" data-tab="services">Services</button>
-          <button type="button" data-tab="product">Products</button>
-          @php
-            $profileProjectSection = \App\Support\ProjectSection::forUser($user);
-            $profileProjectsTabLabel = \App\Support\ProjectSection::pluralLabel($profileProjectSection);
-          @endphp
-          <button type="button" data-tab="projects">{{ $profileProjectsTabLabel }}</button>
-          <button type="button" data-tab="documents">Documents</button>
-          <button type="button" data-tab="videos">Videos</button>
-          <button type="button" data-tab="blog">My Blog</button>
-          <button type="button" data-tab="offers">My Advertisement</button>
-          <button type="button" data-tab="contact">Contact Us</button>
-        </nav>
-      </div>
     </div>
   </section>
+
+  <div class="profile-tabs-bar">
+    <div class="container">
+      <nav class="profile-tabs" id="profileTabs" aria-label="Profile sections">
+        <button type="button" class="active" data-tab="overview">Overview</button>
+        <button type="button" data-tab="services">Services</button>
+        <button type="button" data-tab="product">Products</button>
+        @php
+          $profileProjectSection = \App\Support\ProjectSection::forUser($user);
+          $profileProjectsTabLabel = \App\Support\ProjectSection::pluralLabel($profileProjectSection);
+        @endphp
+        <button type="button" data-tab="projects">{{ $profileProjectsTabLabel }}</button>
+        <button type="button" data-tab="documents">Documents</button>
+        <button type="button" data-tab="videos">Videos</button>
+        <button type="button" data-tab="blog">My Blog</button>
+        <button type="button" data-tab="offers">My Advertisement</button>
+        <button type="button" data-tab="contact">Contact Us</button>
+      </nav>
+    </div>
+  </div>
 
   <div class="container profile-body">
     <aside class="profile-sidebar">

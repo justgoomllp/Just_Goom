@@ -19,7 +19,6 @@ class PublicProfileListingService
                 'user' => fn ($q) => $q
                     ->with([
                         'category',
-                        'projects' => fn ($pq) => $pq->where('status', 1)->latest()->limit(1),
                     ])
                     ->withCount([
                         'projects as projects_count' => fn ($q) => $q->where('status', 1),
@@ -124,7 +123,7 @@ class PublicProfileListingService
             'profileUrl' => route('front.profile.show', $profile->slug),
             'tagline' => $profile->tagline,
             'logoUrl' => $profile->logo ? asset($profile->logo) : null,
-            'bannerUrl' => ProfileBanner::url($profile, $user),
+            'bannerUrl' => ProfileBanner::categoryUrl($user->category->slug ?? ''),
         ];
     }
 

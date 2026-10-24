@@ -101,7 +101,7 @@ class PublicProfileController extends Controller
             'offers' => $offers,
             'videos' => $videos,
             'activities' => $activities,
-            'bannerUrl' => \App\Support\ProfileBanner::url($profile, $user),
+            'bannerUrl' => \App\Support\ProfileBanner::categoryUrl($user->category->slug ?? ''),
             'completionPercent' => $completion['percent'],
             'completionLevel' => $completion['level'],
             'planName' => $this->profileService->planName($user),

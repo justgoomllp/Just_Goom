@@ -4791,8 +4791,8 @@ select.form-input:disabled {
   .profile-hero-top { flex-direction: column; align-items: flex-start; gap: 20px; }
   .profile-hero-stats { text-align: left; }
   .profile-hero-badges { justify-content: flex-start; }
-  .profile-hero-nav { flex-direction: column; align-items: stretch; }
-  .profile-tabs { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+  .profile-tabs-bar { top: var(--header-h); }
+  .profile-tabs button { padding: 14px 14px; font-size: 13px; }
   .profile-body { grid-template-columns: 1fr; }
 }
 
@@ -4802,7 +4802,7 @@ select.form-input:disabled {
   position: relative;
   color: #fff;
   margin-bottom: 0;
-  min-height: 220px;
+  min-height: 280px;
   overflow: hidden;
 }
 .profile-hero-bg {
@@ -4810,24 +4810,25 @@ select.form-input:disabled {
   inset: 0;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
 }
 .profile-hero-bg::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(0, 51, 102, 0.92), rgba(26, 66, 138, 0.88));
+  background: linear-gradient(180deg, rgba(8, 22, 48, 0.22) 0%, rgba(8, 22, 48, 0.38) 48%, rgba(8, 22, 48, 0.62) 100%);
 }
 .profile-hero-inner {
   position: relative;
   z-index: 1;
-  padding: 32px 20px 0;
+  padding: 40px 20px 36px;
 }
 .profile-hero-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
-  padding-bottom: 28px;
+  padding-bottom: 0;
 }
 .profile-hero-brand {
   display: flex;
@@ -4929,6 +4930,7 @@ select.form-input:disabled {
   font-size: 26px;
   font-weight: 700;
   margin-bottom: 4px;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
 }
 .profile-tagline {
   font-size: 15px;
@@ -4937,11 +4939,13 @@ select.form-input:disabled {
   opacity: 0.95;
   margin: 0 0 6px;
   max-width: 42rem;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
 }
 .profile-category {
   font-size: 14px;
   opacity: 0.85;
   margin-bottom: 10px;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
 }
 .profile-about-tagline {
   font-size: 15px;
@@ -5030,35 +5034,56 @@ select.form-input:disabled {
   background: linear-gradient(180deg, #fff7ed 0%, #ffedd5 100%);
   border: 1px solid rgba(234, 88, 12, 0.35);
 }
-.profile-hero-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  padding-top: 0;
+.profile-tabs-bar {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  position: sticky;
+  top: var(--header-h);
+  z-index: 40;
+}
+.profile-tabs-bar .container {
+  padding-left: 20px;
+  padding-right: 20px;
 }
 .profile-tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+.profile-tabs::-webkit-scrollbar { height: 4px; }
+.profile-tabs::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 50px;
 }
 .profile-tabs button {
-  padding: 14px 16px;
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.75);
+  appearance: none;
+  background: transparent;
+  border: 0;
   border-bottom: 3px solid transparent;
-  border-radius: 6px 6px 0 0;
-  transition: all var(--transition);
-  white-space: nowrap;
-}
-.profile-tabs button:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
-.profile-tabs button.active {
-  color: #fff;
-  border-bottom-color: #fff;
+  border-radius: 0;
+  padding: 16px 18px;
+  font-size: 14px;
   font-weight: 600;
-  background: rgba(0, 0, 0, 0.22);
+  color: var(--text-muted);
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--transition), background var(--transition), border-color var(--transition);
+}
+.profile-tabs button:hover {
+  color: var(--primary);
+  background: #f8fafc;
+}
+.profile-tabs button.active {
+  color: var(--primary);
+  background: transparent;
+  border-bottom-color: var(--accent);
+  font-weight: 700;
 }
 .btn-share-profile {
   background: #22c55e;
